@@ -19,7 +19,6 @@ var init = function(){
 	
 	addEventListener("keydown", function (e) { // when a key is pressed
 		keysDown[e.keyCode] = true;
-		//event.preventDefault();
 	}, false);
 
 	addEventListener("keyup", function (e) { // when a key is unpressed
@@ -61,8 +60,36 @@ var init = function(){
 }
 
 var update = function(delta){
-	
 	server.update();
+	
+	var player = client.world.getPlayer();
+	
+	if (87 in keysDown) { // up
+		server.onUpdateRequest( player.velocity + 0.005, "world", "player", "velocity" );
+	}
+	else if (83 in keysDown) { // down
+		if (client.world.getPlayer().velocity > -0.3) {
+			server.onUpdateRequest( player.velocity - 0.005, "world", "player", "velocity" );
+		}
+		
+	}else{
+		server.onUpdateRequest( player.velocity / 1.01, "world", "player", "velocity" );
+		
+	}
+	
+	if (65 in keysDown) { // left
+		server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+	}
+	if (68 in keysDown) { // right
+		server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+	}
+	
+	if (81 in keysDown) { // q
+		cam_zoom += (cam_zoom / 25);
+		
+	}else if (69 in keysDown) { // e
+		cam_zoom -= (cam_zoom / 25);
+	}
 	
 	framecount++;
 }
@@ -78,6 +105,32 @@ var render = function(){
 	
 	ctx.fillStyle = "rgb(13, 0, 13)"; // blank color for the canvas
 	ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.lineWidth = 1;
+	
+	for ( var chunk of client.world.loadedChunks ) {
+		ctx.strokeStyle = "rgb(128, 128, 128)";
+		var chunkx = tra_x(chunk.x * client.world.CHUNK_DIM); var chunky = tra_y(chunk.y * client.world.CHUNK_DIM);
+		ctx.strokeRect( chunkx , chunky , client.world.CHUNK_DIM * cam_zoom, client.world.CHUNK_DIM * cam_zoom);
+	}
+	
+	for ( var uuid in client.world.entities ){
+		var e = client.world.entities[uuid];
+		if (e.filled){
+			ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
+		}else{
+			ctx.strokeStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
+		}
+		
+		ctx.beginPath();
+		ctx.moveTo(tra_x(e.getAbsolutePoints()[0]), tra_y(e.getAbsolutePoints()[1]));
+		for (i = 0; i < e.getAbsolutePoints().length; i += 2){
+			var px = e.getAbsolutePoints()[i]; var py = e.getAbsolutePoints()[i+1];
+			ctx.lineTo(tra_x(px), tra_y(py));
+			
+		}
+		ctx.closePath();
+		if (e.filled){ ctx.fill(); } else { ctx.stroke(); };
+	}
 };
 
 init();
