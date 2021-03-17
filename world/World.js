@@ -8,7 +8,7 @@ class World {
 		
 		// temporarily pushing a single loaded chunk into the arrays
 		this.chunks[0] = [];
-		this.chunks[0][0] = new Chunk(0,0);
+		this.chunks[0][0] = new Chunk(0,0, this);
 		this.loadedChunks.push(this.chunks[0][0]);
 		
 		this.player = new EntityPlayer(0, 0, 0)
@@ -18,7 +18,7 @@ class World {
 	}
 	
 	spawnEntity(entity){
-		var uuid = Math.round(Math.random() * 100000);
+		var uuid = Math.round(Math.random() * 10000000);
 		entity.uuid = uuid;
 		this.entities[uuid] = entity;
 	}
@@ -28,6 +28,13 @@ class World {
 		for ( var uuid in this.entities ){
 			var e = this.entities[uuid];
 			e.update();
+		}
+		for (var chunk of this.loadedChunks){
+			
+			for ( var uuid in chunk.bodies ){
+				var b = chunk.bodies[uuid];
+				b.update();
+			}
 		}
 		
 		this.worldTime++;
@@ -42,5 +49,15 @@ class World {
 			}
 		}
 		return null;
+	}
+	
+	loadChunk(chunkx, chunky){
+		if (!this.chunks[chunkx]){
+			this.chunks[chunkx] = [];
+		}
+		if (!this.chunks[chunkx][chunky]){
+			this.chunks[chunkx][chunky] = new Chunk(chunkx, chunky, this);
+		}
+		this.loadedChunks.push(this.chunks[chunkx][chunky]);
 	}
 }

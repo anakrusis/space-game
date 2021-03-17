@@ -111,26 +111,36 @@ var render = function(){
 		ctx.strokeStyle = "rgb(128, 128, 128)";
 		var chunkx = tra_x(chunk.x * client.world.CHUNK_DIM); var chunky = tra_y(chunk.y * client.world.CHUNK_DIM);
 		ctx.strokeRect( chunkx , chunky , client.world.CHUNK_DIM * cam_zoom, client.world.CHUNK_DIM * cam_zoom);
+		
+		for ( var uuid in chunk.bodies ){
+			var b = chunk.bodies[uuid];
+			renderEntity(b);
+		}
 	}
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
-		if (e.filled){
-			ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
-		}else{
-			ctx.strokeStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
-		}
-		
-		ctx.beginPath();
-		ctx.moveTo(tra_x(e.getAbsolutePoints()[0]), tra_y(e.getAbsolutePoints()[1]));
-		for (i = 0; i < e.getAbsolutePoints().length; i += 2){
-			var px = e.getAbsolutePoints()[i]; var py = e.getAbsolutePoints()[i+1];
-			ctx.lineTo(tra_x(px), tra_y(py));
-			
-		}
-		ctx.closePath();
-		if (e.filled){ ctx.fill(); } else { ctx.stroke(); };
+		renderEntity(e);
 	}
 };
+
+var renderEntity = function(e){
+	if (e.filled){
+		ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
+	}else{
+		ctx.strokeStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
+	}
+	var pts = e.getAbsolutePoints();
+	
+	ctx.beginPath();
+	ctx.moveTo(tra_x(pts[0]), tra_y(pts[1]));
+	for (i = 0; i < pts.length; i += 2){
+		var px = pts[i]; var py = pts[i+1];
+		ctx.lineTo(tra_x(px), tra_y(py));
+		
+	}
+	ctx.closePath();
+	if (e.filled){ ctx.fill(); } else { ctx.stroke(); };
+}
 
 init();

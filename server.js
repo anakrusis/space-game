@@ -28,4 +28,5 @@ class Server {
 			this[key1] = data; return;
 		}
 	}
+	
 }

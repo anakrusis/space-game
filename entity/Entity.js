@@ -9,7 +9,7 @@ class Entity {
         this.name = "Entity";
         this.color = [ 255, 255, 255 ];
 		this.filled = true;
-        this.uuid = Math.round(Math.random() * 100000);
+        this.uuid = Math.round(Math.random() * 10000000);
         this.rotSpeed = 0;
 	}
 	
@@ -21,6 +21,14 @@ class Entity {
 		
 		this.ticksExisted++;
 		cam_x = this.x; cam_y = this.y;
+		
+		if (!this.getChunk()){
+			
+			var chunkx = Math.floor( this.x / server.world.CHUNK_DIM );
+			var chunky = Math.floor( this.y / server.world.CHUNK_DIM );
+			
+			server.world.loadChunk(chunkx, chunky);
+		}
 	}
 	
 	getChunk() {
