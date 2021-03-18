@@ -5,7 +5,7 @@ class EntityBody extends Entity {
 		this.color = [255, 255, 255];
 		this.radius = radius;
 		this.terrain = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-		this.rotSpeed = 0.01;
+		this.canEntitiesCollide = false;
 	}
 	
 	update(){
@@ -23,7 +23,7 @@ class EntityBody extends Entity {
             var pointx = rot_x(angle, this.radius + this.terrain[i], 0.0) + this.x;
             var pointy = rot_y(angle, this.radius + this.terrain[i], 0.0) + this.y;
 			
-			console.log(pointx + "," + pointy);
+			//console.log(pointx + "," + pointy);
 			
 			absPoints.push(pointx); absPoints.push(pointy);
             //absPoints[2 * i] = pointx;

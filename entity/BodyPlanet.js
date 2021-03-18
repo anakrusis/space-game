@@ -1,0 +1,3 @@
+class BodyPlanet extends EntityBody {
+	
+}

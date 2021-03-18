@@ -8,7 +8,7 @@ class Chunk {
 		var genx = world.CHUNK_DIM * (this.x + 0.5);
 		var geny = world.CHUNK_DIM * (this.y + 0.5);
 		
-		var body = new EntityBody(genx, geny, 0, 130);
+		var body = new BodyStar(genx, geny, 0, 130);
 		this.spawnBody(body);
 	}
 	
