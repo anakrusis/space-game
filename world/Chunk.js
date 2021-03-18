@@ -10,6 +10,31 @@ class Chunk {
 		
 		var body = new BodyStar(genx, geny, 0, 130);
 		this.spawnBody(body);
+		
+		       // Every star gets potentially up to 4 planets
+        var planetcount = 0;
+        var orbitDistanceInterval = 240;
+        var orbitVariance = 60;
+
+        for (var uuid in this.bodies) {
+			var body = this.bodies[uuid];
+            if (body instanceof BodyStar) {
+                var planetnum = orbitDistanceInterval * Math.floor(Math.random()*4 + 2) + orbitDistanceInterval;
+                for (var planetdist = 2 * orbitDistanceInterval; planetdist < planetnum; planetdist += orbitDistanceInterval) {
+
+                    //var orbitDistance = RandomUtil.fromRangeF(planetdist - orbitVariance, planetdist + orbitVariance);
+					var orbitDistance = planetdist;
+
+                    //String name = body.getName() + " " + NymGen.greekLetters()[planetcount];
+
+                    var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body);
+
+                    //bodiesToSpawn.add(planet);
+					this.spawnBody(planet);
+                    planetcount++;
+                }
+            }
+        }
 	}
 	
 	spawnBody(body){

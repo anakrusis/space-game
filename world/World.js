@@ -11,7 +11,7 @@ class World {
 		this.chunks[0][0] = new Chunk(0,0, this);
 		this.loadedChunks.push(this.chunks[0][0]);
 		
-		this.player = new EntityPlayer(2000, 2000, 0)
+		this.player = new EntityPlayer(1900, 2000, 0)
 		this.spawnEntity( this.player );
 		
 		this.worldTime = 0;
