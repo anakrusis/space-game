@@ -41,7 +41,11 @@ class Chunk {
 		body.uuid = uuid;
 		this.bodies[uuid] = body;
 		
-		
+		if (body.canEntitiesCollide){
+			
+			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*3, body);
+			this.spawnBody(bgr);
+		}
 	}
 	
 	update(){

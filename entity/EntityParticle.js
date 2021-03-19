@@ -22,6 +22,7 @@ class ParticleSmoke extends EntityParticle {
         super(x, y, dir);
         this.velocity = 0.05;
         this.size = 0.02 + Math.random() * 0.2;
+		this.color = [128, 128, 128];
     }
 
 	getAbsolutePoints() {

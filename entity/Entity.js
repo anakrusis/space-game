@@ -46,6 +46,7 @@ class Entity {
 			for (var uuid in this.getChunk().bodies) {
 				var body = this.getChunk().bodies[uuid];
 				
+				// examples of bodies that can collide are Planets and Stars
 				if (body.canEntitiesCollide){
 					
 					if (CollisionUtil.isColliding(this, body)) {
@@ -58,6 +59,33 @@ class Entity {
                             this.groundedBodyUUID = body.uuid;
                             isColliding = true;
                             CollisionUtil.resolveCollision(this, body);
+                        }
+                    }
+					
+				// examples of bodies that do not collide are GravityRadius and Atmosphere
+				}else{
+					if (CollisionUtil.isColliding(this, body)){
+                        if (body instanceof BodyGravityRadius) {
+                            var bgr = body;
+                            var dependentBody = bgr.getDependentBody();
+                            var distance = CollisionUtil.euclideanDistance(this.x, this.y, bgr.getX(), bgr.getY());
+
+                            // This function returns ~0 at the edge of the gravity radius, and ~1 at the surface of the body.
+                            var annulusPosition = (-1 / (bgr.getRadius() - dependentBody.getRadius())) * ( distance - dependentBody.getRadius() ) + 1;
+                            var forceMagnitude;
+
+                            // It is then mapped to a coefficient representing its "mass"
+                            // which determines how much to pull in the entity every tick
+                            if (dependentBody instanceof BodyStar){
+                                forceMagnitude = 0.5 * annulusPosition;
+                            }else{
+                                forceMagnitude = 0.15 * annulusPosition;
+                            }
+                            this.gravityAttraction = forceMagnitude;
+
+                            var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
+                            this.x -= forceMagnitude * Math.cos(angleFromCenter);
+                            this.y -= forceMagnitude * Math.sin(angleFromCenter);
                         }
                     }
 				}

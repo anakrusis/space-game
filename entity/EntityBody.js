@@ -32,4 +32,6 @@ class EntityBody extends Entity {
 
         return absPoints;
     }
+	
+	getRadius(){ return this.radius; }
 }
