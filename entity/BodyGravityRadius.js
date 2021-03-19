@@ -1,0 +1,3 @@
+class BodyGravityRadius extends EntityBody {
+	
+}

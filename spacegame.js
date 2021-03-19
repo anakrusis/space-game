@@ -63,25 +63,26 @@ var update = function(delta){
 	server.update();
 	
 	var player = client.world.getPlayer();
-	
-	if (87 in keysDown) { // up
-		server.onUpdateRequest( player.velocity + 0.005, "world", "player", "velocity" );
-	}
-	else if (83 in keysDown) { // down
-		if (client.world.getPlayer().velocity > -0.3) {
-			server.onUpdateRequest( player.velocity - 0.005, "world", "player", "velocity" );
+	if (player){
+		if (87 in keysDown) { // up
+			server.onUpdateRequest( player.velocity + 0.005, "world", "player", "velocity" );
+		}
+		else if (83 in keysDown) { // down
+			if (client.world.getPlayer().velocity > -0.3) {
+				server.onUpdateRequest( player.velocity - 0.005, "world", "player", "velocity" );
+			}
+			
+		}else{
+			server.onUpdateRequest( player.velocity / 1.01, "world", "player", "velocity" );
+			
 		}
 		
-	}else{
-		server.onUpdateRequest( player.velocity / 1.01, "world", "player", "velocity" );
-		
-	}
-	
-	if (65 in keysDown) { // left
-		server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
-	}
-	if (68 in keysDown) { // right
-		server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+		if (65 in keysDown) { // left
+			server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+		}
+		if (68 in keysDown) { // right
+			server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+		}
 	}
 	
 	if (81 in keysDown) { // q
@@ -107,6 +108,11 @@ var render = function(){
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 	ctx.lineWidth = 1;
 	
+	for ( var uuid in client.world.entities ){
+		var e = client.world.entities[uuid];
+		if (!(e instanceof EntityPlayer)){ renderEntity(e); }
+	}
+	
 	for ( var chunk of client.world.loadedChunks ) {
 		ctx.strokeStyle = "rgb(128, 128, 128)";
 		var chunkx = tra_x(chunk.x * client.world.CHUNK_DIM); var chunky = tra_y(chunk.y * client.world.CHUNK_DIM);
@@ -114,13 +120,20 @@ var render = function(){
 		
 		for ( var uuid in chunk.bodies ){
 			var b = chunk.bodies[uuid];
+			
+			if (b instanceof BodyPlanet){
+				var orbitbody = new EntityBody(b.star.x, b.star.y, 0, b.getOrbitDistance());
+				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
+				renderEntity(orbitbody);
+			}
+			
 			renderEntity(b);
 		}
 	}
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
-		renderEntity(e);
+		if (e instanceof EntityPlayer){ renderEntity(e); }
 	}
 };
 

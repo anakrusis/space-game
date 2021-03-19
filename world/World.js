@@ -1,6 +1,7 @@
 class World {
 	constructor(){
-		this.CHUNK_DIM    = 4096; // both width and height of the chunks are equal. this could technically be very large.
+		this.CHUNK_DIM        = 4096; // both width and height of the chunks are equal. this could technically be very large.
+		this.RESPAWN_INTERVAL = 100;
 		
 		this.chunks       = [];
 		this.loadedChunks = [];
@@ -27,7 +28,17 @@ class World {
 		
 		for ( var uuid in this.entities ){
 			var e = this.entities[uuid];
-			e.update();
+			
+			if (e.isDead()){
+				
+				if (e instanceof EntityPlayer){
+					this.playerLastDeathTime = this.worldTime;
+				}
+				
+				delete this.entities[uuid];
+			}else{
+				e.update();
+			}
 		}
 		for (var chunk of this.loadedChunks){
 			
@@ -36,6 +47,12 @@ class World {
 				b.update();
 			}
 		}
+		
+		if (this.worldTime - this.playerLastDeathTime == this.RESPAWN_INTERVAL){
+
+            this.player = new EntityPlayer(1900,2000,0);
+            this.spawnEntity(this.player);
+        }
 		
 		this.worldTime++;
 		

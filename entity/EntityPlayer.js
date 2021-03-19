@@ -17,4 +17,14 @@ class EntityPlayer extends Entity {
 
         return [ point1x, point1y, point2x, point2y, point3x, point3y ];
     }
+	
+	update(){
+		super.update();
+		
+		if (this.velocity > 0.1 && this.ticksExisted % 10 == 0){
+            var dir = (this.dir - Math.PI + (Math.random() * 0.5));
+            var smoke = new ParticleSmoke(this.x, this.y, dir);
+            server.world.spawnEntity(smoke);
+        }
+	}
 }

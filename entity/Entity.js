@@ -14,6 +14,12 @@ class Entity {
 		this.filled = true;
         this.uuid = Math.round(Math.random() * 10000000);
         this.rotSpeed = 0;
+		
+		this.dead = false;
+	}
+	
+	isDead(){
+		return this.dead;
 	}
 	
 	update() {
@@ -45,8 +51,8 @@ class Entity {
 					if (CollisionUtil.isColliding(this, body)) {
 
                         // Setting collision markers
-                        if (this.velocity > 1.0 ) {
-                            //this.explode();
+                        if (this.velocity > 1.0 || body instanceof BodyStar ) {
+                            this.explode();
                         } else {
                             this.grounded = true;
                             this.groundedBodyUUID = body.uuid;
@@ -117,4 +123,14 @@ class Entity {
 		}
 		return null;
 	}
+	
+	explode(){
+        this.dead = true;
+
+        for (var i = 0; i < 20; i++){
+            var randomdir = (2 * Math.PI) * Math.random();
+			var particle = new ParticleSmoke(this.x, this.y, randomdir); particle.color = [255, 128, 0]; particle.velocity = 1; particle.size = 0.1;
+            server.world.spawnEntity(particle);
+        }
+    }
 }

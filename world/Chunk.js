@@ -29,7 +29,6 @@ class Chunk {
 
                     var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body);
 
-                    //bodiesToSpawn.add(planet);
 					this.spawnBody(planet);
                     planetcount++;
                 }
@@ -41,6 +40,8 @@ class Chunk {
 		var uuid = Math.round(Math.random() * 10000000);
 		body.uuid = uuid;
 		this.bodies[uuid] = body;
+		
+		
 	}
 	
 	update(){
