@@ -3,9 +3,7 @@
 class Server {
 	
 	constructor(){
-	
 		this.world = new World();
-		
 	}
 	
 	update(){

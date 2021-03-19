@@ -1,14 +1,14 @@
 class BodyGravityRadius extends EntityBody {
-	constructor(x,y,dir,radius,dependentBody){
+	constructor(x,y,dir,radius,dependentBodyUUID){
 		super(x,y,dir,radius);
-		this.dependentBody = dependentBody;
+		this.dependentBodyUUID = dependentBodyUUID;
 		this.rotSpeed = 0;
 		this.filled = false;
-		
+		this.name = "GravityRadius";
 	}
 	
 	getDependentBody() {
-        return this.dependentBody;
+        return this.getChunk().bodies[this.dependentBodyUUID];
     }
 	
 	update() {

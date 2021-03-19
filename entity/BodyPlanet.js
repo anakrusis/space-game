@@ -1,8 +1,8 @@
 class BodyPlanet extends EntityBody {
-	constructor(x,y,dir,orbitDistance,star){
+	constructor(x,y,dir,orbitDistance,starUUID){
 		super(x, y, dir, RandomUtil.fromRangeF(32,64));
 		
-		this.star = star;
+		this.starUUID = starUUID;
 		
 		this.orbitDistance = orbitDistance;
         this.orbitPeriod = RandomUtil.fromRangeI(90000, 200000);
@@ -20,6 +20,8 @@ class BodyPlanet extends EntityBody {
 		
 		this.orbitStart =  RandomUtil.fromRangeF(0, Math.PI * 2);
         this.orbitAngle = this.orbitStart;
+		
+		this.name = "Planet";
 	}
 	
 	update(){
@@ -31,7 +33,7 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	getStar(){
-		return this.star;
+		return this.getChunk().bodies[this.starUUID];
 	}
 	
 	getOrbitAngle(){ return this.orbitAngle; }

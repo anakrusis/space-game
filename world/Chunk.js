@@ -1,12 +1,11 @@
 class Chunk {
-	constructor(x,y, world){
+	constructor(x,y){
 		this.x = x;
 		this.y = y;
 		this.bodies = {};
-		this.world = world;
 		
-		var genx = world.CHUNK_DIM * (this.x + 0.5);
-		var geny = world.CHUNK_DIM * (this.y + 0.5);
+		var genx = CHUNK_DIM * (this.x + 0.5);
+		var geny = CHUNK_DIM * (this.y + 0.5);
 		
 		var body = new BodyStar(genx, geny, 0, 130);
 		this.spawnBody(body);
@@ -27,7 +26,7 @@ class Chunk {
 
                     //String name = body.getName() + " " + NymGen.greekLetters()[planetcount];
 
-                    var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body);
+                    var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body.uuid);
 
 					this.spawnBody(planet);
                     planetcount++;
@@ -43,7 +42,7 @@ class Chunk {
 		
 		if (body.canEntitiesCollide){
 			
-			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*3, body);
+			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*3, body.uuid);
 			this.spawnBody(bgr);
 		}
 	}

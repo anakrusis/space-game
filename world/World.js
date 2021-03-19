@@ -1,16 +1,11 @@
 class World {
 	constructor(){
-		this.CHUNK_DIM        = 4096; // both width and height of the chunks are equal. this could technically be very large.
 		this.RESPAWN_INTERVAL = 100;
 		
-		this.chunks       = [];
-		this.loadedChunks = [];
-		this.entities     = {};
-		
-		// temporarily pushing a single loaded chunk into the arrays
-		this.chunks[0] = [];
-		this.chunks[0][0] = new Chunk(0,0, this);
-		this.loadedChunks.push(this.chunks[0][0]);
+		this.chunks        = [];
+		this.loadedChunksX = []; // a pair of X and Y coordinates of every loaded chunk
+		this.loadedChunksY = [];
+		this.entities      = {};
 		
 		this.player = new EntityPlayer(1700, 2000, 0)
 		this.spawnEntity( this.player );
@@ -40,7 +35,7 @@ class World {
 				e.update();
 			}
 		}
-		for (var chunk of this.loadedChunks){
+		for (var chunk of this.getLoadedChunks()){
 			
 			for ( var uuid in chunk.bodies ){
 				var b = chunk.bodies[uuid];
@@ -68,13 +63,24 @@ class World {
 		return null;
 	}
 	
+	getLoadedChunks(){
+		var loadedchunks = [];
+		for (var i = 0; i < this.loadedChunksX.length; i++){
+			var chunkx = this.loadedChunksX[i]; var chunky = this.loadedChunksY[i];
+			var cc = this.chunks[chunkx][chunky];
+			loadedchunks.push(cc);
+		}
+		return loadedchunks;
+	}
+	
 	loadChunk(chunkx, chunky){
 		if (!this.chunks[chunkx]){
 			this.chunks[chunkx] = [];
 		}
 		if (!this.chunks[chunkx][chunky]){
-			this.chunks[chunkx][chunky] = new Chunk(chunkx, chunky, this);
+			this.chunks[chunkx][chunky] = new Chunk(chunkx, chunky);
 		}
-		this.loadedChunks.push(this.chunks[chunkx][chunky]);
+		this.loadedChunksX.push(chunkx);
+		this.loadedChunksY.push(chunky);
 	}
 }

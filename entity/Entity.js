@@ -34,8 +34,8 @@ class Entity {
 		// what to do if the entity is not found within a chunk
 		if (!this.getChunk()){
 			
-			var chunkx = Math.floor( this.x / server.world.CHUNK_DIM );
-			var chunky = Math.floor( this.y / server.world.CHUNK_DIM );
+			var chunkx = Math.floor( this.x / CHUNK_DIM );
+			var chunky = Math.floor( this.y / CHUNK_DIM );
 			
 			server.world.loadChunk(chunkx, chunky);
 			
@@ -126,8 +126,8 @@ class Entity {
 	}
 	
 	getChunk() {
-		var chunkx = Math.floor( this.x / server.world.CHUNK_DIM );
-		var chunky = Math.floor( this.y / server.world.CHUNK_DIM );
+		var chunkx = Math.floor( this.x / CHUNK_DIM );
+		var chunky = Math.floor( this.y / CHUNK_DIM );
 		
 		if (server.world.chunks[chunkx]){
 			if (server.world.chunks[chunkx][chunky]){

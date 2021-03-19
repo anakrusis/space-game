@@ -5,7 +5,11 @@ var keysDown = {};
 
 var framecount = 0;
 
+CHUNK_DIM = 4096; // both width and height of the chunks are equal. this could technically be very large.
+
 server = new Server();
+//server.world = new World();
+
 client = new Client();
 
 var init = function(){
@@ -85,6 +89,11 @@ var update = function(delta){
 		}
 	}
 	
+	if (80 in keysDown){
+		var myJSON = JSON.stringify(server.world);
+		document.getElementById("bodydiv2").innerHTML = myJSON;
+	}
+	
 	if (81 in keysDown) { // q
 		cam_zoom += (cam_zoom / 25);
 		
@@ -113,16 +122,16 @@ var render = function(){
 		if (!(e instanceof EntityPlayer)){ renderEntity(e); }
 	}
 	
-	for ( var chunk of client.world.loadedChunks ) {
+	for ( var chunk of client.world.getLoadedChunks() ) {
 		ctx.strokeStyle = "rgb(128, 128, 128)";
-		var chunkx = tra_x(chunk.x * client.world.CHUNK_DIM); var chunky = tra_y(chunk.y * client.world.CHUNK_DIM);
-		ctx.strokeRect( chunkx , chunky , client.world.CHUNK_DIM * cam_zoom, client.world.CHUNK_DIM * cam_zoom);
+		var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
+		ctx.strokeRect( chunkx , chunky , CHUNK_DIM * cam_zoom, CHUNK_DIM * cam_zoom);
 		
 		for ( var uuid in chunk.bodies ){
 			var b = chunk.bodies[uuid];
 			
 			if (b instanceof BodyPlanet){
-				var orbitbody = new EntityBody(b.star.x, b.star.y, 0, b.getOrbitDistance());
+				var orbitbody = new EntityBody(b.getStar().x, b.getStar().y, 0, b.getOrbitDistance());
 				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
 				renderEntity(orbitbody);
 			}
