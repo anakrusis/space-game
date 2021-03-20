@@ -49,7 +49,7 @@ var init = function(){
 	var main = function () {
 		var now = Date.now();
 		var delta = now - then;
-	
+		
 		update(delta);
 		render();
 		
@@ -69,11 +69,11 @@ var update = function(delta){
 	var player = client.world.getPlayer();
 	if (player){
 		if (87 in keysDown) { // up
-			server.onUpdateRequest( player.velocity + 0.005, "world", "getPlayer", "velocity" );
+			server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 		}
 		else if (83 in keysDown) { // down
-			if (client.world.getPlayer().velocity > -0.3) {
-				server.onUpdateRequest( player.velocity - 0.005, "world", "player", "velocity" );
+			if (player.boostForce.magnitude > 0) {
+				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
 			}
 			
 		}else{
@@ -144,6 +144,12 @@ var render = function(){
 		var e = client.world.entities[uuid];
 		if (e instanceof EntityPlayer){ renderEntity(e); }
 	}
+	var c = 1;
+	for (var force of client.world.player.forceVectors){
+		ctx.fillText("Mag: " + force.magnitude + " Dir: " + force.dir, 20, c*40);
+		c++;
+	}
+	ctx.fillText("Player dir: " + client.world.player.dir, 20, 200)
 };
 
 var renderEntity = function(e){

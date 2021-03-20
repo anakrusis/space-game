@@ -92,3 +92,10 @@ class CollisionUtil{
         entity.x = newx; entity.y = newy;
     }
 }
+
+class ForceVector {
+	constructor(magnitude, dir){
+		this.magnitude = magnitude;
+		this.dir       = dir;
+	}
+}

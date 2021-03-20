@@ -16,6 +16,8 @@ class Entity {
         this.rotSpeed = 0;
 		
 		this.dead = false;
+		
+		this.forceVectors = [];
 	}
 	
 	isDead(){
@@ -23,7 +25,26 @@ class Entity {
 	}
 	
 	update() {
-		this.dir = this.dir % (2 * Math.PI);
+		
+		var forcesSum = 0;
+		for (var force of this.forceVectors){
+			forcesSum += Math.abs(force.magnitude);
+		}
+		if (forcesSum != 0){
+			var avgDirection = 0;
+			for (var i = 0; i < this.forceVectors.length; i++){
+				var force = this.forceVectors[i];
+				avgDirection += (force.magnitude/forcesSum) * force.dir;
+				this.x += force.magnitude * Math.cos(force.dir);
+				this.y += force.magnitude * Math.sin(force.dir);
+			}
+			console.log(avgDirection);
+			this.dir = avgDirection;
+		}
+		
+		this.forceVectors = []; // clears forces for the next tick
+		
+		//this.dir = this.dir % (2 * Math.PI);
 		
 		// THIS IS TEMPORARY, once we have more than one entity this should really be removed
 		cam_x = this.x; cam_y = this.y;
@@ -67,6 +88,9 @@ class Entity {
                             var dependentBody = bgr.getDependentBody();
                             var distance = CollisionUtil.euclideanDistance(this.x, this.y, bgr.getX(), bgr.getY());
 
+							
+							
+							
                             // This function returns ~0 at the edge of the gravity radius, and ~1 at the surface of the body.
                             var annulusPosition = (-1 / (bgr.getRadius() - dependentBody.getRadius())) * ( distance - dependentBody.getRadius() ) + 1;
                             var forceMagnitude;
@@ -83,12 +107,8 @@ class Entity {
                             this.gravityAttraction = forceMagnitude;
 
                             var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
-                            this.x -= forceMagnitude * Math.cos(angleFromCenter);
-                            this.y -= forceMagnitude * Math.sin(angleFromCenter);
-							//this.dir -= 0.01
 							
-							//var anglediff = 0 - this.dir - angleFromCenter;
-							//this.dir += (anglediff / 50);
+							this.forceVectors.push ( new ForceVector( 0 - forceMagnitude, angleFromCenter ) );
                         }
                     }
 				}
@@ -104,7 +124,7 @@ class Entity {
                 if (this.velocity > 0.5){ // maximum velocity cap
                     this.velocity = 0.5;
                 }
-				this.velocity /= 1.01; // friction coeff
+				this.boostForce.magnitude /= 1.01; // friction coeff
 
                 // This moves the entity along with a planet by anticipating where it will be in the next tick
                 if (this.getGroundedBody() instanceof BodyPlanet) {
@@ -124,10 +144,6 @@ class Entity {
                 this.x = rot_x(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getX();
                 this.y = rot_y(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getY();
             }
-			
-			this.dir += this.rotSpeed;
-			this.x   += this.velocity * Math.cos(this.dir);
-			this.y   += this.velocity * Math.sin(this.dir);
 		}
 		
 		this.ticksExisted++;

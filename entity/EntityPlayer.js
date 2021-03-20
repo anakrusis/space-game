@@ -3,6 +3,8 @@ class EntityPlayer extends Entity {
 		super(x,y,dir);
 		this.name = "Player";
 		this.color = [ 0, 255, 255 ];
+		
+		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
 	}
 	
 	getAbsolutePoints() {
@@ -19,7 +21,10 @@ class EntityPlayer extends Entity {
     }
 	
 	update(){
+		this.boostForce.dir = this.dir;
 		super.update();
+		
+		this.forceVectors.push(this.boostForce);
 		
 		if (this.velocity > 0.1 && this.ticksExisted % 10 == 0){
             var dir = (this.dir - Math.PI + (Math.random() * 0.5));
