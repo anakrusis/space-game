@@ -23,10 +23,7 @@ class Entity {
 	}
 	
 	update() {
-		
-		this.dir += this.rotSpeed;
-        this.x   += this.velocity * Math.cos(this.dir);
-        this.y   += this.velocity * Math.sin(this.dir);
+		this.dir = this.dir % (2 * Math.PI);
 		
 		// THIS IS TEMPORARY, once we have more than one entity this should really be removed
 		cam_x = this.x; cam_y = this.y;
@@ -78,14 +75,20 @@ class Entity {
                             // which determines how much to pull in the entity every tick
                             if (dependentBody instanceof BodyStar){
                                 forceMagnitude = 0.5 * annulusPosition;
+								//forceMagnitude = 1 * annulusPosition;
                             }else{
                                 forceMagnitude = 0.15 * annulusPosition;
+								//forceMagnitude = 0.5 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
 
                             var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
                             this.x -= forceMagnitude * Math.cos(angleFromCenter);
                             this.y -= forceMagnitude * Math.sin(angleFromCenter);
+							//this.dir -= 0.01
+							
+							//var anglediff = 0 - this.dir - angleFromCenter;
+							//this.dir += (anglediff / 50);
                         }
                     }
 				}
@@ -98,9 +101,10 @@ class Entity {
 
             if (this.grounded && this.getGroundedBody() != null) {
 
-                if (this.velocity > 0.2){
-                    this.velocity = 0.2;
+                if (this.velocity > 0.5){ // maximum velocity cap
+                    this.velocity = 0.5;
                 }
+				this.velocity /= 1.01; // friction coeff
 
                 // This moves the entity along with a planet by anticipating where it will be in the next tick
                 if (this.getGroundedBody() instanceof BodyPlanet) {
@@ -120,6 +124,10 @@ class Entity {
                 this.x = rot_x(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getX();
                 this.y = rot_y(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getY();
             }
+			
+			this.dir += this.rotSpeed;
+			this.x   += this.velocity * Math.cos(this.dir);
+			this.y   += this.velocity * Math.sin(this.dir);
 		}
 		
 		this.ticksExisted++;

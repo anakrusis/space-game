@@ -69,7 +69,7 @@ var update = function(delta){
 	var player = client.world.getPlayer();
 	if (player){
 		if (87 in keysDown) { // up
-			server.onUpdateRequest( player.velocity + 0.005, "world", "player", "velocity" );
+			server.onUpdateRequest( player.velocity + 0.005, "world", "getPlayer", "velocity" );
 		}
 		else if (83 in keysDown) { // down
 			if (client.world.getPlayer().velocity > -0.3) {
@@ -77,7 +77,7 @@ var update = function(delta){
 			}
 			
 		}else{
-			server.onUpdateRequest( player.velocity / 1.01, "world", "player", "velocity" );
+			//server.onUpdateRequest( player.velocity / 1.01, "world", "player", "velocity" );
 			
 		}
 		
