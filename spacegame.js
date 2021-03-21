@@ -50,8 +50,12 @@ var init = function(){
 		var now = Date.now();
 		var delta = now - then;
 		
-		update(delta);
+		if (framecount % 1 == 0){
+			update(delta);
+		}
 		render();
+		
+		framecount++;
 		
 		then = now;
 		requestAnimationFrame(main);
@@ -101,7 +105,6 @@ var update = function(delta){
 		cam_zoom -= (cam_zoom / 25);
 	}
 	
-	framecount++;
 }
 
 var render = function(){
@@ -148,7 +151,24 @@ var render = function(){
 	for (var force of client.world.player.forceVectors){
 		ctx.fillText("Mag: " + force.magnitude + " Dir: " + force.dir, 20, c*40);
 		c++;
+		var spx = client.world.player.x; var spy = client.world.player.y;
+		var dpx = spx + (20 * force.magnitude * Math.cos(force.dir));
+		var dpy = spy + (20 * force.magnitude * Math.sin(force.dir));
+		ctx.beginPath();
+		ctx.moveTo( tra_x( spx ), tra_y( spy ) );
+		ctx.lineTo( tra_x( dpx ), tra_y( dpy ) );
+		ctx.closePath();
+		ctx.stroke();
 	}
+	ctx.strokeStyle = "rgb(240, 0, 0)";
+	var spx = client.world.player.x; var spy = client.world.player.y;
+	var dpx = spx + (20 * Math.cos(avgDirection)); var dpy = spy + (20 * Math.sin(avgDirection));
+	ctx.beginPath();
+	ctx.moveTo( tra_x( spx ), tra_y( spy ) );
+	ctx.lineTo( tra_x( dpx ), tra_y( dpy ) );
+	ctx.closePath();
+	ctx.stroke();
+	
 	ctx.fillText("Player dir: " + client.world.player.dir, 20, 200)
 };
 

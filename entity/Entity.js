@@ -1,3 +1,5 @@
+var avgDirection;
+
 class Entity {
 	constructor(x, y, dir){
         this.x = x;
@@ -26,21 +28,53 @@ class Entity {
 	
 	update() {
 		
-		var forcesSum = 0;
+/* 		var forcesSum = 0;
 		for (var force of this.forceVectors){
 			forcesSum += Math.abs(force.magnitude);
 		}
 		if (forcesSum != 0){
-			var avgDirection = 0;
+			//avgDirection = 0;
 			for (var i = 0; i < this.forceVectors.length; i++){
 				var force = this.forceVectors[i];
-				avgDirection += (force.magnitude/forcesSum) * force.dir;
+				
+				console.log(force.magnitude/forcesSum);
+				
+				//avgDirection += (force.magnitude/forcesSum) * force.dir;
+				
 				this.x += force.magnitude * Math.cos(force.dir);
 				this.y += force.magnitude * Math.sin(force.dir);
+				//this.velocity += force.magnitude;
 			}
-			console.log(avgDirection);
+			//avgDirection /= this.forceVectors.length;
+			
+			//console.log(avgDirection);
+			//this.dir += avgDirection;
+		} */
+		var magnitudeSum = 0;
+		for (var force of this.forceVectors){
+			magnitudeSum += Math.abs(force.magnitude);
+		}
+		
+		var forcesXSum = 0; var forcesYSum = 0;
+		for (var i = 0; i < this.forceVectors.length; i++){
+			var force  = this.forceVectors[i];
+			var magratio = (force.magnitude / magnitudeSum);
+			
+			var forcex = Math.cos(force.dir); var forcey = Math.sin(force.dir);
+			forcesXSum += forcex * magratio; forcesYSum += forcey * magratio;
+			
+			this.velocity += 0.001 * force.magnitude;
+			//this.x += force.magnitude * Math.cos(force.dir);
+			//this.y += force.magnitude * Math.sin(force.dir);
+		}
+		//forcesXSum /= this.forceVectors.length; forcesYSum /= this.forceVectors.length;
+		avgDirection = Math.atan2(forcesYSum, forcesXSum);
+		if (avgDirection && !this.grounded){
 			this.dir = avgDirection;
 		}
+		
+		this.x += this.velocity * Math.cos(this.dir);
+        this.y += this.velocity * Math.sin(this.dir);
 		
 		this.forceVectors = []; // clears forces for the next tick
 		
@@ -98,10 +132,10 @@ class Entity {
                             // It is then mapped to a coefficient representing its "mass"
                             // which determines how much to pull in the entity every tick
                             if (dependentBody instanceof BodyStar){
-                                forceMagnitude = 0.5 * annulusPosition;
+                                forceMagnitude = 0.025 * annulusPosition;
 								//forceMagnitude = 1 * annulusPosition;
                             }else{
-                                forceMagnitude = 0.15 * annulusPosition;
+                                forceMagnitude = 0.015 * annulusPosition;
 								//forceMagnitude = 0.5 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
