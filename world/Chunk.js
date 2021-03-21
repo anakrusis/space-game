@@ -42,7 +42,7 @@ class Chunk {
 		
 		if (body.canEntitiesCollide){
 			
-			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*3, body.uuid);
+			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*5, body.uuid);
 			this.spawnBody(bgr);
 		}
 	}

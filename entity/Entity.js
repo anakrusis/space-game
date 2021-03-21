@@ -132,10 +132,10 @@ class Entity {
                             // It is then mapped to a coefficient representing its "mass"
                             // which determines how much to pull in the entity every tick
                             if (dependentBody instanceof BodyStar){
-                                forceMagnitude = 0.025 * annulusPosition;
+                                forceMagnitude = 1000 / ( distance * distance );
 								//forceMagnitude = 1 * annulusPosition;
                             }else{
-                                forceMagnitude = 0.015 * annulusPosition;
+                                forceMagnitude = 500 / ( distance * distance );
 								//forceMagnitude = 0.5 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
@@ -158,6 +158,7 @@ class Entity {
                 if (this.velocity > 0.5){ // maximum velocity cap
                     this.velocity = 0.5;
                 }
+				this.velocity /= 1.01;
 				this.boostForce.magnitude /= 1.01; // friction coeff
 
                 // This moves the entity along with a planet by anticipating where it will be in the next tick

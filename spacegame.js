@@ -73,7 +73,9 @@ var update = function(delta){
 	var player = client.world.getPlayer();
 	if (player){
 		if (87 in keysDown) { // up
-			server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+			if (player.boostForce.magnitude < 0.5) {
+				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+			}
 		}
 		else if (83 in keysDown) { // down
 			if (player.boostForce.magnitude > 0) {
@@ -90,6 +92,10 @@ var update = function(delta){
 		}
 		if (68 in keysDown) { // right
 			server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+		}
+		
+		if (82 in keysDown){
+			server.onUpdateRequest( 0, "world", "player", "boostForce", "magnitude" );
 		}
 	}
 	
