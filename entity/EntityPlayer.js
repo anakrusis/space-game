@@ -44,25 +44,10 @@ class EntityPlayer extends Entity {
             server.world.spawnEntity(smoke);
         }
 		
-		this.predictFuturePoints();
-		
 		if (cam_zoom < 1.5){
 			this.filled = framecount % 60 > 30;
 		}else{
 			this.filled = true;
-		}
-	}
-	
-	predictFuturePoints(){
-		this.futurePointsX = [];
-		this.futurePointsY = [];
-
-		var e = new Entity( this.x, this.y, this.dir );
-		for (var i = 0; i < 500; i++){
-			e.update();
-			e.boostForce = this.boostForce; e.boostForce.dir = e.dir;
-			e.forceVectors.push(e.boostForce);
-			this.futurePointsX.push(e.x); this.futurePointsY.push(e.y);
 		}
 	}
 	

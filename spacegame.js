@@ -17,6 +17,11 @@ function setup(){
 }
 
 function draw(){
+	if (framecount % 1 == 0){
+		update();
+	}
+	framecount++;
+	
 	var outerw  = window.innerWidth;
 	var outerh = window.innerHeight;
 	var window_aspect_ratio = outerh/outerw
@@ -36,11 +41,11 @@ function draw(){
 	
 	for ( var chunk of client.world.getLoadedChunks() ) {
 		//ctx.strokeStyle = "rgb(128, 128, 128)";
-		//var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
+		var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
 		//ctx.strokeRect( chunkx , chunky , CHUNK_DIM * cam_zoom, CHUNK_DIM * cam_zoom);
 		stroke(128);
 		noFill();
-		square(tra_x(chunk.x * CHUNK_DIM), tra_y(chunk.x * CHUNK_DIM), CHUNK_DIM * cam_zoom);
+		square(chunkx, chunky, CHUNK_DIM * cam_zoom);
 		
 		for ( var uuid in chunk.bodies ){
 			var b = chunk.bodies[uuid];
@@ -60,11 +65,13 @@ function draw(){
 			
 			if (cam_zoom < 1.5){ var scale = 20/cam_zoom; } else { var scale = 1; }
 			var fx = e.x; var fy = e.y;
+			var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
+			
 			stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
 			noFill();
 			beginShape();
-			for (var i = 0; i < e.futurePointsX.length; i++){
-				fx = e.futurePointsX[i]; fy = e.futurePointsY[i];
+			for (var i = 0; i < futurePointsX.length; i++){
+				fx = futurePointsX[i]; fy = futurePointsY[i];
 				vertex(tra_x(fx),tra_y(fy));
 			}
 			endShape();
@@ -97,72 +104,31 @@ var drawEntity = function(e, scale){
 	endShape(CLOSE);
 }
 
-var init = function(){
-	canvas = document.getElementById("Canvas");
-	//canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto;"
-	
-	//canvas.style = "margin:auto;"
-	
-	ctx = canvas.getContext("2d");
-	ctx.imageSmoothingEnabled = false;
-	
-	addEventListener("keydown", function (e) { // when a key is pressed
-		keysDown[e.keyCode] = true;
-	}, false);
+var predictFuturePoints = function(player){
+	var futurePointsX = [];
+	var futurePointsY = [];
 
-	addEventListener("keyup", function (e) { // when a key is unpressed
-		delete keysDown[e.keyCode];
-	}, false);
-	
-	// TODO make use of these functions (very soon)
-	
-	if (ctx) {
-		// React to mouse events on the canvas, and mouseup on the entire document
-		//canvas.addEventListener('mousedown', mousedown, false);
-		//canvas.addEventListener('mousemove', mousemove, false);
-		//window.addEventListener('mouseup',   mouseup, false);
-
-		// React to touch events on the canvas
-		//canvas.addEventListener('touchstart', touchstart, false);
-		//canvas.addEventListener('touchmove', touchmove, false);
-		canvas.addEventListener('click', function (e) {
-			
-		});	
+	var e = new Entity( player.x, player.y, player.dir );
+	for (var i = 0; i < 500; i++){
+		e.update();
+		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
+		e.forceVectors.push(e.boostForce);
+		futurePointsX.push(e.x); futurePointsY.push(e.y);
 	}
-	
-	// main loop
-	var main = function () {
-		var now = Date.now();
-		var delta = now - then;
-		
-		if (framecount % 1 == 0){
-			update(delta);
-		}
-		//render();
-		
-		framecount++;
-		
-		then = now;
-		requestAnimationFrame(main);
-	};
-	var w = window;
-	requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
-
-	var then = performance.now();
-	main();
+	return [futurePointsX, futurePointsY];
 }
 
-var update = function(delta){
+var update = function(){
 	server.update();
 	
 	var player = client.world.getPlayer();
 	if (player){
-		if (87 in keysDown) { // up
+		if (keyIsDown(87)) { // up
 			if (player.boostForce.magnitude < 5) {
 				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 			}
 		}
-		else if (83 in keysDown) { // down
+		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
 				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
 			}
@@ -172,114 +138,26 @@ var update = function(delta){
 			
 		}
 		
-		if (65 in keysDown) { // left
+		if (keyIsDown(65)) { // left
 			server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
 		}
-		if (68 in keysDown) { // right
+		if (keyIsDown(68)) { // right
 			server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
 		}
 		
-		if (82 in keysDown){
+		if (keyIsDown(82)) {
 			server.onUpdateRequest( 0, "world", "player", "boostForce", "magnitude" );
 		}
 	}
-	
-	if (80 in keysDown){
+	if (keyIsDown(80)){
 		var myJSON = JSON.stringify(server.world);
 		document.getElementById("bodydiv2").innerHTML = myJSON;
 	}
 	
-	if (81 in keysDown) { // q
+	if (keyIsDown(81)) { // q
 		cam_zoom += (cam_zoom / 25);
 		
-	}else if (69 in keysDown) { // e
+	}else if (keyIsDown(69)) { // e
 		cam_zoom -= (cam_zoom / 25);
 	}
-	
 }
-
-var render = function(){
-	var outerw  = window.innerWidth;
-	var outerh = window.innerHeight;
-	var window_aspect_ratio = outerh/outerw
-	
-	bodydiv = document.getElementById("bodydiv");
-	canvas.width = bodydiv.offsetWidth - 30;
-	canvas.height = canvas.width * (window_aspect_ratio)
-	
-	ctx.fillStyle = "rgb(13, 0, 13)"; // blank color for the canvas
-	ctx.fillRect(0,0,canvas.width,canvas.height);
-	ctx.lineWidth = 1;
-	
-	for ( var uuid in client.world.entities ){
-		var e = client.world.entities[uuid];
-		if (!(e instanceof EntityPlayer)){ renderEntity(e); }
-	}
-	
-	for ( var chunk of client.world.getLoadedChunks() ) {
-		ctx.strokeStyle = "rgb(128, 128, 128)";
-		var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
-		ctx.strokeRect( chunkx , chunky , CHUNK_DIM * cam_zoom, CHUNK_DIM * cam_zoom);
-		
-		for ( var uuid in chunk.bodies ){
-			var b = chunk.bodies[uuid];
-			
-			if (b instanceof BodyPlanet){
-				var orbitbody = new EntityBody(b.getStar().x, b.getStar().y, 0, b.getOrbitDistance());
-				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
-				renderEntity(orbitbody);
-			}
-			
-			renderEntity(b);
-		}
-	}
-	
-	for ( var uuid in client.world.entities ){
-		var e = client.world.entities[uuid];
-		if (e instanceof EntityPlayer){ renderEntity(e); }
-	}
-	var c = 1;
-	for (var force of client.world.player.forceVectors){
-		ctx.fillText("Mag: " + force.magnitude + " Dir: " + force.dir, 20, c*40);
-		c++;
-		var spx = client.world.player.x; var spy = client.world.player.y;
-		var dpx = spx + (20 * force.magnitude * Math.cos(force.dir));
-		var dpy = spy + (20 * force.magnitude * Math.sin(force.dir));
-		ctx.beginPath();
-		ctx.moveTo( tra_x( spx ), tra_y( spy ) );
-		ctx.lineTo( tra_x( dpx ), tra_y( dpy ) );
-		ctx.closePath();
-		ctx.stroke();
-	}
-	ctx.strokeStyle = "rgb(240, 0, 0)";
-	var spx = client.world.player.x; var spy = client.world.player.y;
-	var dpx = spx + (20 * Math.cos(avgDirection)); var dpy = spy + (20 * Math.sin(avgDirection));
-	ctx.beginPath();
-	ctx.moveTo( tra_x( spx ), tra_y( spy ) );
-	ctx.lineTo( tra_x( dpx ), tra_y( dpy ) );
-	ctx.closePath();
-	ctx.stroke();
-	
-	ctx.fillText("Player dir: " + client.world.player.dir, 20, 200)
-};
-
-var renderEntity = function(e){
-	if (e.filled){
-		ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
-	}else{
-		ctx.strokeStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
-	}
-	var pts = e.getAbsolutePoints();
-	
-	ctx.beginPath();
-	ctx.moveTo(tra_x(pts[0]), tra_y(pts[1]));
-	for (i = 0; i < pts.length; i += 2){
-		var px = pts[i]; var py = pts[i+1];
-		ctx.lineTo(tra_x(px), tra_y(py));
-		
-	}
-	ctx.closePath();
-	if (e.filled){ ctx.fill(); } else { ctx.stroke(); };
-}
-
-init();
