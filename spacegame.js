@@ -38,6 +38,9 @@ function draw(){
 		//ctx.strokeStyle = "rgb(128, 128, 128)";
 		//var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
 		//ctx.strokeRect( chunkx , chunky , CHUNK_DIM * cam_zoom, CHUNK_DIM * cam_zoom);
+		stroke(128);
+		noFill();
+		square(tra_x(chunk.x * CHUNK_DIM), tra_y(chunk.x * CHUNK_DIM), CHUNK_DIM * cam_zoom);
 		
 		for ( var uuid in chunk.bodies ){
 			var b = chunk.bodies[uuid];
@@ -53,13 +56,29 @@ function draw(){
 	}
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
-		if (e instanceof EntityPlayer){ drawEntity(e); }
+		if (e instanceof EntityPlayer){ 
+			
+			if (cam_zoom < 1.5){ var scale = 20/cam_zoom; } else { var scale = 1; }
+			var fx = e.x; var fy = e.y;
+			stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+			noFill();
+			beginShape();
+			for (var i = 0; i < e.futurePointsX.length; i++){
+				fx = e.futurePointsX[i]; fy = e.futurePointsY[i];
+				vertex(tra_x(fx),tra_y(fy));
+			}
+			endShape();
+			
+			drawEntity(e, scale); 
+		}
 	}
 	
 	//resetMatrix();
 }
 
-var drawEntity = function(e){
+var drawEntity = function(e, scale){
+	if (!scale){ scale = 1; }
+	
 	if (e.filled){
 		fill(e.color[0], e.color[1], e.color[2]);
 		//ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
@@ -72,6 +91,7 @@ var drawEntity = function(e){
 	beginShape();
 	for (i = 0; i < pts.length; i += 2){
 		var px = pts[i]; var py = pts[i+1];
+		px = ((px - e.x) * scale) + e.x;  py = ((py - e.y) * scale) + e.y; 
 		vertex(tra_x(px), tra_y(py));
 	}
 	endShape(CLOSE);

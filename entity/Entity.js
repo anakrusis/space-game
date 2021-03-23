@@ -74,15 +74,12 @@ class Entity {
 			this.dir = avgDirection;
 		}
 		
-		this.x += this.velocity * Math.cos(this.dir);
-        this.y += this.velocity * Math.sin(this.dir);
+		//this.x += this.velocity * Math.cos(this.dir);
+        //this.y += this.velocity * Math.sin(this.dir);
 		
 		this.forceVectors = []; // clears forces for the next tick
 		
 		//this.dir = this.dir % (2 * Math.PI);
-		
-		// THIS IS TEMPORARY, once we have more than one entity this should really be removed
-		cam_x = this.x; cam_y = this.y;
 		
 		// what to do if the entity is not found within a chunk
 		if (!this.getChunk()){
@@ -106,7 +103,7 @@ class Entity {
 
                         // Setting collision markers
                         if (this.velocity > 1.0 || body instanceof BodyStar ) {
-                            this.explode();
+                            this.onCrash();
                         } else {
                             this.grounded = true;
                             this.groundedBodyUUID = body.uuid;
@@ -158,7 +155,7 @@ class Entity {
             if (this.grounded && this.getGroundedBody() != null) {
 
 				this.velocity /= 1.01;
-				this.boostForce.magnitude /= 1.01; // friction coeff
+				//this.boostForce.magnitude /= 1.01; // friction coeff
 
                 // This moves the entity along with a planet by anticipating where it will be in the next tick
                 if (this.getGroundedBody() instanceof BodyPlanet) {
@@ -196,8 +193,17 @@ class Entity {
 	}
 	// this method is used when rendering objects
 	getAbsolutePoints() {
-		return [];
-	}
+        var point1x = rot_x(this.dir,-0.5,0.4) + this.x;
+        var point1y = rot_y(this.dir,-0.5,0.4) + this.y;
+
+        var point2x = rot_x(this.dir,0.8,0.0) + this.x;
+        var point2y = rot_y(this.dir,0.8,0.0) + this.y;
+
+        var point3x = rot_x(this.dir,-0.5,-0.4) + this.x;
+        var point3y = rot_y(this.dir,-0.5,-0.4) + this.y;
+
+        return [ point1x, point1y, point2x, point2y, point3x, point3y ];
+    }
 	
 	getX(){ return this.x; }
 	getY(){ return this.y; }
@@ -208,6 +214,10 @@ class Entity {
 			return this.getChunk().bodies[this.groundedBodyUUID];
 		}
 		return null;
+	}
+	
+	onCrash(){
+		
 	}
 	
 	explode(){
