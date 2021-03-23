@@ -12,7 +12,7 @@ class Chunk {
 		
 		       // Every star gets potentially up to 4 planets
         var planetcount = 0;
-        var orbitDistanceInterval = 240;
+        var orbitDistanceInterval = 960;
         var orbitVariance = 60;
 
         for (var uuid in this.bodies) {
@@ -42,7 +42,7 @@ class Chunk {
 		
 		if (body.canEntitiesCollide){
 			
-			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*5, body.uuid);
+			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*10, body.uuid);
 			this.spawnBody(bgr);
 		}
 	}

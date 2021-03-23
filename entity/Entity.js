@@ -1,4 +1,5 @@
 var avgDirection;
+var annulusPosition;
 
 class Entity {
 	constructor(x, y, dir){
@@ -63,9 +64,9 @@ class Entity {
 			var forcex = Math.cos(force.dir); var forcey = Math.sin(force.dir);
 			forcesXSum += forcex * magratio; forcesYSum += forcey * magratio;
 			
-			this.velocity += 0.001 * force.magnitude;
-			//this.x += force.magnitude * Math.cos(force.dir);
-			//this.y += force.magnitude * Math.sin(force.dir);
+			//this.velocity += 0.001 * force.magnitude;
+			this.x += force.magnitude * Math.cos(force.dir);
+			this.y += force.magnitude * Math.sin(force.dir);
 		}
 		//forcesXSum /= this.forceVectors.length; forcesYSum /= this.forceVectors.length;
 		avgDirection = Math.atan2(forcesYSum, forcesXSum);
@@ -126,22 +127,23 @@ class Entity {
 							
 							
                             // This function returns ~0 at the edge of the gravity radius, and ~1 at the surface of the body.
-                            var annulusPosition = (-1 / (bgr.getRadius() - dependentBody.getRadius())) * ( distance - dependentBody.getRadius() ) + 1;
+                            annulusPosition = (-1 / (bgr.getRadius() - dependentBody.getRadius())) * ( distance - dependentBody.getRadius() ) + 1;
                             var forceMagnitude;
 
                             // It is then mapped to a coefficient representing its "mass"
                             // which determines how much to pull in the entity every tick
                             if (dependentBody instanceof BodyStar){
-                                forceMagnitude = 1000 / ( distance * distance );
-								//forceMagnitude = 1 * annulusPosition;
+                                //forceMagnitude = 10 / ( distance );
+								forceMagnitude = 0.25 * annulusPosition;
                             }else{
-                                forceMagnitude = 500 / ( distance * distance );
-								//forceMagnitude = 0.5 * annulusPosition;
+                                //forceMagnitude = 500 / ( distance * distance );
+								forceMagnitude = 0.15 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
 
                             var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
-							
+							//this.x -= forceMagnitude * Math.cos(angleFromCenter);
+                            //this.y -= forceMagnitude * Math.sin(angleFromCenter);
 							this.forceVectors.push ( new ForceVector( 0 - forceMagnitude, angleFromCenter ) );
                         }
                     }
@@ -155,9 +157,6 @@ class Entity {
 
             if (this.grounded && this.getGroundedBody() != null) {
 
-                if (this.velocity > 0.5){ // maximum velocity cap
-                    this.velocity = 0.5;
-                }
 				this.velocity /= 1.01;
 				this.boostForce.magnitude /= 1.01; // friction coeff
 

@@ -7,7 +7,7 @@ class World {
 		this.loadedChunksY = [];
 		this.entities      = {};
 		
-		this.player = new EntityPlayer(1700, 2000, 0)
+		this.player = new EntityPlayer(7500, 8192, 0)
 		this.spawnEntity( this.player );
 		
 		this.worldTime = 0;
@@ -45,7 +45,7 @@ class World {
 		
 		if (this.worldTime - this.playerLastDeathTime == this.RESPAWN_INTERVAL){
 
-            this.player = new EntityPlayer(1700,2000,0);
+            this.player = new EntityPlayer(7500,8192,0);
             this.spawnEntity(this.player);
         }
 		

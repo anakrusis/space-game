@@ -10,12 +10,12 @@ var cam_destDir = 0;
 var cam_destTime = 0;
 
 var tra_x = function(x){ // translate x based on camera values
-	var originx = canvas.width / 2;
+	var originx = width / 2;
 	return ((x-cam_x)*cam_zoom)+originx
 }
 
 var tra_y = function(y){ // translate y based on camera values
-	var originy = canvas.height / 2;
+	var originy = height / 2;
 	return ((y-cam_y)*cam_zoom)+originy
 }
 

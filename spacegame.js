@@ -5,12 +5,77 @@ var keysDown = {};
 
 var framecount = 0;
 
-CHUNK_DIM = 4096; // both width and height of the chunks are equal. this could technically be very large.
+CHUNK_DIM = 16384; // both width and height of the chunks are equal. this could technically be very large.
 
 server = new Server();
 //server.world = new World();
 
 client = new Client();
+
+function setup(){
+	createCanvas(400, 400);
+}
+
+function draw(){
+	var outerw  = window.innerWidth;
+	var outerh = window.innerHeight;
+	var window_aspect_ratio = outerh/outerw
+	
+	bodydiv = document.getElementById("bodydiv");
+	var cw = bodydiv.offsetWidth - 30;
+	var ch = cw * (window_aspect_ratio)
+	resizeCanvas(cw, ch);
+	
+	background(13,0,13);
+	//applyMatrix(cam_zoom, 0, 0, cam_zoom, cam_x + width/2, cam_y + height/2);
+	
+	for ( var uuid in client.world.entities ){
+		var e = client.world.entities[uuid];
+		if (!(e instanceof EntityPlayer)){ drawEntity(e); }
+	}
+	
+	for ( var chunk of client.world.getLoadedChunks() ) {
+		//ctx.strokeStyle = "rgb(128, 128, 128)";
+		//var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
+		//ctx.strokeRect( chunkx , chunky , CHUNK_DIM * cam_zoom, CHUNK_DIM * cam_zoom);
+		
+		for ( var uuid in chunk.bodies ){
+			var b = chunk.bodies[uuid];
+			
+			if (b instanceof BodyPlanet){
+				var orbitbody = new EntityBody(b.getStar().x, b.getStar().y, 0, b.getOrbitDistance());
+				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
+				drawEntity(orbitbody);
+			}
+			
+			drawEntity(b);
+		}
+	}
+	for ( var uuid in client.world.entities ){
+		var e = client.world.entities[uuid];
+		if (e instanceof EntityPlayer){ drawEntity(e); }
+	}
+	
+	//resetMatrix();
+}
+
+var drawEntity = function(e){
+	if (e.filled){
+		fill(e.color[0], e.color[1], e.color[2]);
+		//ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
+	}else{
+		noFill();
+		//ctx.strokeStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
+	}
+	stroke(e.color[0], e.color[1], e.color[2]);
+	var pts = e.getAbsolutePoints();
+	beginShape();
+	for (i = 0; i < pts.length; i += 2){
+		var px = pts[i]; var py = pts[i+1];
+		vertex(tra_x(px), tra_y(py));
+	}
+	endShape(CLOSE);
+}
 
 var init = function(){
 	canvas = document.getElementById("Canvas");
@@ -53,7 +118,7 @@ var init = function(){
 		if (framecount % 1 == 0){
 			update(delta);
 		}
-		render();
+		//render();
 		
 		framecount++;
 		
@@ -73,7 +138,7 @@ var update = function(delta){
 	var player = client.world.getPlayer();
 	if (player){
 		if (87 in keysDown) { // up
-			if (player.boostForce.magnitude < 0.5) {
+			if (player.boostForce.magnitude < 5) {
 				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 			}
 		}

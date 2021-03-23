@@ -5,7 +5,7 @@ class BodyPlanet extends EntityBody {
 		this.starUUID = starUUID;
 		
 		this.orbitDistance = orbitDistance;
-        this.orbitPeriod = RandomUtil.fromRangeI(90000, 200000);
+        this.orbitPeriod = RandomUtil.fromRangeI(200000, 500000);
         this.rotSpeed = 0.0005;
 		
 		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
@@ -14,7 +14,7 @@ class BodyPlanet extends EntityBody {
 
         this.terrainSize = (this.radius * (40/16));
         this.terrain = [];
-        for (i = 0; i < this.terrainSize; i++){
+        for (var i = 0; i < this.terrainSize; i++){
             this.terrain.push ( RandomUtil.fromRangeF(-0.5,1.6) );
         }
 		
