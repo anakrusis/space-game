@@ -111,6 +111,7 @@ var predictFuturePoints = function(player){
 	var e = new Entity( player.x, player.y, player.dir );
 	for (var i = 0; i < 500; i++){
 		e.update();
+		if (e.isDead()){ break; };
 		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
 		e.forceVectors.push(e.boostForce);
 		futurePointsX.push(e.x); futurePointsY.push(e.y);

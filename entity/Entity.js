@@ -217,7 +217,7 @@ class Entity {
 	}
 	
 	onCrash(){
-		
+		this.dead = true;
 	}
 	
 	explode(){
@@ -228,5 +228,15 @@ class Entity {
 			var particle = new ParticleSmoke(this.x, this.y, randomdir); particle.color = [255, 128, 0]; particle.velocity = 1; particle.size = 0.1;
             server.world.spawnEntity(particle);
         }
+    }
+	
+	moveToIndexOnPlanet(index, planet){
+        var angle = (planet.getDir() + (2 * Math.PI * ((index + 0.5) / planet.terrainSize)));
+        var rad = planet.getRadius() + CollisionUtil.heightFromEntityAngle(this, planet) + 1;
+        this.x = rot_x(angle, rad, 0) + planet.getX();
+        this.y = rot_y(angle, rad, 0) + planet.getY();
+
+        var angleFromCenter = Math.atan2(this.y - planet.getY(), this.x - planet.getX());
+        this.dir = angleFromCenter;
     }
 }

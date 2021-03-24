@@ -3,10 +3,11 @@ class EntityPlayer extends Entity {
 		super(x,y,dir);
 		this.name = "Player";
 		this.color = [ 0, 255, 255 ];
-		
 		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
 		this.futurePointsX = [];
 		this.futurePointsY = [];
+		
+		this.nationUUID = null;
 	}
 	
 	getAbsolutePoints() {
@@ -26,6 +27,9 @@ class EntityPlayer extends Entity {
     }
 	
 	update(){
+		if (this.nationUUID){
+			this.color = server.world.nations[this.nationUUID].color;
+		}
 		
 		this.lastx = this.x; this.lasty = this.y; this.lastdir = this.dir;
 		this.boostForce.dir = this.dir;
