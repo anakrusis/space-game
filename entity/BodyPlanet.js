@@ -12,7 +12,7 @@ class BodyPlanet extends EntityBody {
 		
         this.canEntitiesCollide = true;
 
-        this.terrainSize = Math.round(this.radius * (40/16));
+        this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 4);
 		this.generateTerrain();
 		
 		this.orbitStart =  RandomUtil.fromRangeF(0, Math.PI * 2);
@@ -30,7 +30,15 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	generateTerrain(){
-		this.terrain = this.fillOctave(this.terrainSize, 8, 5);
+		this.terrain = [];
+		
+		var oct4 = this.fillOctave(this.terrainSize, 16, 20);
+		var oct2 = this.fillOctave(this.terrainSize, 2, 2);
+		var oct1 = this.fillOctave(this.terrainSize, 1, 1);
+		
+		for (var i = 0; i < this.terrainSize; i++){
+			this.terrain.push( oct4[i] + oct2[i] + oct1[i] ); 
+		}
 		
 		var noise2;
 		

@@ -119,6 +119,12 @@ var predictFuturePoints = function(player){
 	return [futurePointsX, futurePointsY];
 }
 
+function keyPressed() {
+	if (keyCode === 70){
+		fullscreen(!fullscreen());
+	}
+}
+
 var update = function(){
 	server.update();
 	
