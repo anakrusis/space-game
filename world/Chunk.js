@@ -12,7 +12,7 @@ class Chunk {
 		
 		       // Every star gets potentially up to 4 planets
         var planetcount = 0;
-        var orbitDistanceInterval = 960;
+        var orbitDistanceInterval = 1920;
         var orbitVariance = 60;
 
         for (var uuid in this.bodies) {

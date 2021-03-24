@@ -4,6 +4,7 @@ class EntityBody extends Entity {
 		this.name = "Body";
 		this.color = [255, 255, 255];
 		this.radius = radius;
+		this.terrainSize = 16;
 		this.terrain = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		this.canEntitiesCollide = false;
 	}
@@ -17,8 +18,8 @@ class EntityBody extends Entity {
 
         var absPoints = [];
 
-        for (var i = 0; i < this.terrain.length; i++){
-            var angle = this.dir + (i * (2 * Math.PI) / this.terrain.length);
+        for (var i = 0; i < this.terrainSize; i++){
+            var angle = this.dir + (i * (2 * Math.PI) / this.terrainSize);
 
             var pointx = rot_x(angle, this.radius + this.terrain[i], 0.0) + this.x;
             var pointy = rot_y(angle, this.radius + this.terrain[i], 0.0) + this.y;

@@ -5,7 +5,7 @@ var keysDown = {};
 
 var framecount = 0;
 
-CHUNK_DIM = 16384; // both width and height of the chunks are equal. this could technically be very large.
+CHUNK_DIM = 32768; // both width and height of the chunks are equal. this could technically be very large.
 
 server = new Server();
 //server.world = new World();

@@ -35,7 +35,7 @@ class CollisionUtil{
 	
 	static heightFromEntityAngle(entity, body){
         var terrain = body.terrain;
-        var terr_len = terrain.length;
+        var terrsize = body.terrainSize;
 
         // If the player is halfway between terrainPoints 3 and 4, then it will be 3.5,
         // (for example)
@@ -63,15 +63,15 @@ class CollisionUtil{
         angle -= Math.PI;
 
         if (angle < 0){
-            messyIndex = angle * ((0.5 * terr_len) / Math.PI) + terrain.length;
+            messyIndex = angle * ((0.5 * terrsize) / Math.PI) + terrsize;
         }else{
-            messyIndex = angle * ((0.5 * terr_len) / Math.PI);
+            messyIndex = angle * ((0.5 * terrsize) / Math.PI);
         }
         cleanIndex = Math.floor(messyIndex);
         messyDifference = messyIndex - cleanIndex;
 
         currentHeight = terrain[cleanIndex];
-        nextHeight = terrain[(cleanIndex + 1) % terrain.length];
+        nextHeight = terrain[(cleanIndex + 1) % terrsize];
 
         interpolatedHeight = (nextHeight * messyDifference) + (currentHeight * (1 - messyDifference));
         return interpolatedHeight;
