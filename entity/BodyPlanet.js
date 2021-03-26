@@ -1,11 +1,12 @@
 class BodyPlanet extends EntityBody {
 	constructor(x,y,dir,orbitDistance,starUUID){
-		super(x, y, dir, RandomUtil.fromRangeF(64,128));
+		super(x, y, dir, RandomUtil.fromRangeF(128,256));
 		
 		this.starUUID = starUUID;
+		this.buildingUUIDs = [];
 		
 		this.orbitDistance = orbitDistance;
-        this.orbitPeriod = RandomUtil.fromRangeI(200000, 500000);
+        this.orbitPeriod = RandomUtil.fromRangeI(1000000, 3000000);
         this.rotSpeed = 0.0005;
 		
 		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
@@ -74,6 +75,24 @@ class BodyPlanet extends EntityBody {
         }
 		
 		return out;
+	}
+	
+	// will try to find a position on the planet as such:
+	// randomly picks a center point. makes sure it has at least 5 consecutive tiles free in each direction.
+	spawnCity(nation){
+		
+	}
+	
+	spawnBuilding(building,index){
+		if (this.buildingUUIDs[index] == null){
+			this.buildingUUIDs[index] = building.uuid;
+			building.grounded = true;
+            building.groundedBodyUUID = this.uuid;
+
+            building.moveToIndexOnPlanet(index, this);
+			return true;
+		}
+		return false;
 	}
 	
 	// This is from the page https://en.wikipedia.org/wiki/Linear_interpolation

@@ -5,7 +5,7 @@ var keysDown = {};
 
 var framecount = 0;
 
-CHUNK_DIM = 32768; // both width and height of the chunks are equal. this could technically be very large.
+CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
 
 server = new Server();
 //server.world = new World();
@@ -32,7 +32,6 @@ function draw(){
 	resizeCanvas(cw, ch);
 	
 	background(13,0,13);
-	//applyMatrix(cam_zoom, 0, 0, cam_zoom, cam_x + width/2, cam_y + height/2);
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
@@ -63,7 +62,7 @@ function draw(){
 		var e = client.world.entities[uuid];
 		if (e instanceof EntityPlayer){ 
 			
-			if (cam_zoom < 1.5){ var scale = 20/cam_zoom; } else { var scale = 1; }
+			if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
 			var fx = e.x; var fy = e.y;
 			var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
 			
@@ -76,11 +75,10 @@ function draw(){
 			}
 			endShape();
 			
-			drawEntity(e, scale); 
+			drawEntity(e, escala); 
 		}
 	}
 	
-	//resetMatrix();
 }
 
 var drawEntity = function(e, scale){
@@ -132,12 +130,12 @@ var update = function(){
 	if (player){
 		if (keyIsDown(87)) { // up
 			if (player.boostForce.magnitude < 5) {
-				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+				server.onUpdateRequest( player.boostForce.magnitude + 0.001, "world", "getPlayer", "boostForce", "magnitude" );
 			}
 		}
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
-				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
+				server.onUpdateRequest( player.boostForce.magnitude - 0.001, "world", "player", "boostForce", "magnitude" );
 			}
 			
 		}else{

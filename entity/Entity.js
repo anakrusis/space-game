@@ -131,10 +131,10 @@ class Entity {
                             // which determines how much to pull in the entity every tick
                             if (dependentBody instanceof BodyStar){
                                 //forceMagnitude = 10 / ( distance );
-								forceMagnitude = 0.25 * annulusPosition;
+								forceMagnitude = 0.05 * annulusPosition;
                             }else{
                                 //forceMagnitude = 500 / ( distance * distance );
-								forceMagnitude = 0.15 * annulusPosition;
+								forceMagnitude = 0.01 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
 

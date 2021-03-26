@@ -12,13 +12,16 @@ class Chunk {
 		
 		       // Every star gets potentially up to 4 planets
         var planetcount = 0;
-        var orbitDistanceInterval = 1920;
+        var orbitDistanceInterval = 3000;
         var orbitVariance = 60;
 
         for (var uuid in this.bodies) {
 			var body = this.bodies[uuid];
             if (body instanceof BodyStar) {
-                var planetnum = orbitDistanceInterval * Math.floor(Math.random()*4 + 2) + orbitDistanceInterval;
+                //var planetnum = orbitDistanceInterval * Math.floor(Math.random()*4 + 2) + orbitDistanceInterval;
+				var planetnum = orbitDistanceInterval * 5 + orbitDistanceInterval;
+				console.log(planetnum);
+				//var planetnum = 4;
                 for (var planetdist = 2 * orbitDistanceInterval; planetdist < planetnum; planetdist += orbitDistanceInterval) {
 
                     //var orbitDistance = RandomUtil.fromRangeF(planetdist - orbitVariance, planetdist + orbitVariance);
