@@ -5,6 +5,9 @@ var path_to_data; var newfunc;
 class Server {
 	
 	constructor(){
+		
+	}
+	init(){
 		this.world = new World();
 	}
 	

@@ -134,7 +134,7 @@ class Entity {
 								forceMagnitude = 0.05 * annulusPosition;
                             }else{
                                 //forceMagnitude = 500 / ( distance * distance );
-								forceMagnitude = 0.01 * annulusPosition;
+								forceMagnitude = 0.03 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
 
@@ -154,7 +154,7 @@ class Entity {
 
             if (this.grounded && this.getGroundedBody() != null) {
 
-				this.velocity /= 1.01;
+				this.velocity /= 1.001;
 				//this.boostForce.magnitude /= 1.01; // friction coeff
 
                 // This moves the entity along with a planet by anticipating where it will be in the next tick

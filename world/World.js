@@ -11,7 +11,12 @@ class World {
 		this.entities      = {};
 		this.nations       = {};
 		
+		this.worldTime = 0;
+	}
+	
+	init(){
 		var homePlanet = this.findHomePlanet();
+		homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0 );
 		
 		var playerNation = new Nation(0, 0, homePlanet.uuid);
 		this.nations[playerNation.uuid] = playerNation;
@@ -19,8 +24,6 @@ class World {
 		this.player = new EntityPlayer(7500, 8192, 0)
 		this.player.nationUUID = playerNation.uuid;
 		this.spawnEntity( this.player );
-		
-		this.worldTime = 0;
 	}
 	
 	findHomePlanet(){

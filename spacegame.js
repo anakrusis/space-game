@@ -8,6 +8,7 @@ var framecount = 0;
 CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
 
 server = new Server();
+server.init(); server.world.init();
 //server.world = new World();
 
 client = new Client();

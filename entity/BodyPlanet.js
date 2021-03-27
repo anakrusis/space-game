@@ -6,8 +6,8 @@ class BodyPlanet extends EntityBody {
 		this.buildingUUIDs = [];
 		
 		this.orbitDistance = orbitDistance;
-        this.orbitPeriod = RandomUtil.fromRangeI(1000000, 3000000);
-        this.rotSpeed = 0.0005;
+        this.orbitPeriod = RandomUtil.fromRangeI(3000000, 5000000);
+        this.rotSpeed = 0.000005;
 		
 		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
 		
@@ -34,8 +34,8 @@ class BodyPlanet extends EntityBody {
 		this.terrain = [];
 		
 		var oct4 = this.fillOctave(this.terrainSize, 16, 20);
-		var oct2 = this.fillOctave(this.terrainSize, 2, 2);
-		var oct1 = this.fillOctave(this.terrainSize, 1, 1);
+		var oct2 = this.fillOctave(this.terrainSize, 4, 2);
+		var oct1 = this.fillOctave(this.terrainSize, 2, 1);
 		
 		for (var i = 0; i < this.terrainSize; i++){
 			this.terrain.push( oct4[i] + oct2[i] + oct1[i] ); 
@@ -88,8 +88,10 @@ class BodyPlanet extends EntityBody {
 			this.buildingUUIDs[index] = building.uuid;
 			building.grounded = true;
             building.groundedBodyUUID = this.uuid;
+			building.planetIndex = index;
 
             building.moveToIndexOnPlanet(index, this);
+			server.world.spawnEntity(building);
 			return true;
 		}
 		return false;
