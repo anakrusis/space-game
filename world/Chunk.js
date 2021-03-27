@@ -20,7 +20,7 @@ class Chunk {
             if (body instanceof BodyStar) {
                 //var planetnum = orbitDistanceInterval * Math.floor(Math.random()*4 + 2) + orbitDistanceInterval;
 				var planetnum = orbitDistanceInterval * 5 + orbitDistanceInterval;
-				console.log(planetnum);
+				//console.log(planetnum);
 				//var planetnum = 4;
                 for (var planetdist = 2 * orbitDistanceInterval; planetdist < planetnum; planetdist += orbitDistanceInterval) {
 

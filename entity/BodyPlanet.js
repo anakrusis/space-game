@@ -7,13 +7,14 @@ class BodyPlanet extends EntityBody {
 		
 		this.orbitDistance = orbitDistance;
         this.orbitPeriod = RandomUtil.fromRangeI(3000000, 5000000);
-        this.rotSpeed = 0.000005;
+        this.rotSpeed = 0.00005;
+		//this.rotSpeed = 2 * Math.PI / 60;
 		
 		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
 		
         this.canEntitiesCollide = true;
 
-        this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 4);
+        this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 16);
 		this.generateTerrain();
 		
 		this.orbitStart =  RandomUtil.fromRangeF(0, Math.PI * 2);

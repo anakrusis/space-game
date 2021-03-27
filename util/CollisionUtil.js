@@ -19,7 +19,7 @@ class CollisionUtil{
         var cx, cy;
 
 		// Step 1: get the point on the entity nearest to the center of the body
-		for (i = 0; i < entityAbsPoints.length; i += 2){
+		for (var i = 0; i < entityAbsPoints.length; i += 2){
 			cx = entityAbsPoints[i];
 			cy = entityAbsPoints[i + 1];
 			cd = this.euclideanDistance(cx, cy, body.x, body.y);

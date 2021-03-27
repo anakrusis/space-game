@@ -231,11 +231,19 @@ class Entity {
     }
 	
 	moveToIndexOnPlanet(index, planet){
+		// the first part gets an angle and moves the player to a fixed radius from the planets center
         var angle = (planet.getDir() + (2 * Math.PI * ((index + 0.5) / planet.terrainSize)));
+		this.x = rot_x(angle, 100, 0) + planet.getX();
+        this.y = rot_y(angle, 100, 0) + planet.getY();
+		
+		// from this position the radius is calculable reliably (1 is added so the buildings look good I think)
         var rad = planet.getRadius() + CollisionUtil.heightFromEntityAngle(this, planet) + 1;
+		
+		// now the position is modified to incorporate the calculated radius
         this.x = rot_x(angle, rad, 0) + planet.getX();
         this.y = rot_y(angle, rad, 0) + planet.getY();
 
+		// and the entitys position is adjusted as well
         var angleFromCenter = Math.atan2(this.y - planet.getY(), this.x - planet.getX());
         this.dir = angleFromCenter;
     }

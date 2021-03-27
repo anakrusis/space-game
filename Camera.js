@@ -20,11 +20,11 @@ var tra_y = function(y){ // translate y based on camera values
 }
 
 var untra_x = function(x){ // these two convert screen pos back to ingame pos (for cursor clicking and stuff)
-	var originx = canvas.width / 2;
+	var originx = width / 2;
 	return ((x - originx)/cam_zoom) + cam_x
 }
 var untra_y = function(y){
-	var originy = canvas.height / 2;
+	var originy = height / 2;
 	return ((y - originy)/cam_zoom) + cam_y
 }
 

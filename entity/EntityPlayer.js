@@ -42,7 +42,7 @@ class EntityPlayer extends Entity {
 		
 		this.forceVectors.push(this.boostForce);
 		
-		if (this.velocity > 0.1 && this.ticksExisted % 10 == 0){
+		if (this.boostForce.magnitude > 0.01 && this.ticksExisted % 10 == 0){
             var dir = (this.dir - Math.PI + (Math.random() * 0.5));
             var smoke = new ParticleSmoke(this.x, this.y, dir);
             server.world.spawnEntity(smoke);

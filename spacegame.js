@@ -1,9 +1,5 @@
-var canvas;
-var ctx;
-
-var keysDown = {};
-
 var framecount = 0;
+var selectedEntity = null;
 
 CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
 
@@ -13,11 +9,34 @@ server.init(); server.world.init();
 
 client = new Client();
 
+var mainelement = document.getElementById("main");
+
 function setup(){
 	createCanvas(400, 400);
+
+	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-27", mainelement);
+	settings.addHTML("planet", "goes the weasal"); 
+	settings.hideTitle("planet");
+	
+	
 }
 
 function draw(){
+	settings.setWidth(width/4);
+	
+	if (selectedEntity){
+		var infostring = "<b>" + selectedEntity.name + "</b><br>"
+		var daylen = 2 * Math.PI / selectedEntity.rotSpeed / 60 / 60;
+		infostring += "Day length: " + Math.round(daylen) + " Earth minutes<br>"
+		var yearlen = selectedEntity.orbitPeriod / 60 / 60;
+		infostring += "Year length: " + Math.round(yearlen) + " Earth minutes<br>"
+		
+		settings.setValue("planet", infostring);	
+		settings.showControl("planet");
+	}else{
+		settings.hideControl("planet");
+	}
+	
 	if (framecount % 1 == 0){
 		update();
 	}
@@ -30,7 +49,7 @@ function draw(){
 	bodydiv = document.getElementById("bodydiv");
 	var cw = bodydiv.offsetWidth - 30;
 	var ch = cw * (window_aspect_ratio)
-	resizeCanvas(cw, ch);
+	resizeCanvas(windowWidth, windowHeight);
 	
 	background(13,0,13);
 	
@@ -131,12 +150,12 @@ var update = function(){
 	if (player){
 		if (keyIsDown(87)) { // up
 			if (player.boostForce.magnitude < 5) {
-				server.onUpdateRequest( player.boostForce.magnitude + 0.001, "world", "getPlayer", "boostForce", "magnitude" );
+				server.onUpdateRequest( player.boostForce.magnitude + 0.0025, "world", "getPlayer", "boostForce", "magnitude" );
 			}
 		}
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
-				server.onUpdateRequest( player.boostForce.magnitude - 0.001, "world", "player", "boostForce", "magnitude" );
+				server.onUpdateRequest( player.boostForce.magnitude - 0.0025, "world", "player", "boostForce", "magnitude" );
 			}
 			
 		}else{
@@ -165,5 +184,20 @@ var update = function(){
 		
 	}else if (keyIsDown(69)) { // e
 		cam_zoom -= (cam_zoom / 25);
+	}
+	
+	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
+	selectedEntity = null;
+	cursorChunkX = Math.floor(cursorAbsX / CHUNK_DIM); cursorChunkY = Math.floor(cursorAbsY / CHUNK_DIM); 
+	cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
+	
+	var cc = client.world.getChunk(cursorChunkX,cursorChunkY);
+	if (cc){
+		for (var uuid in cc.bodies) {
+			var body = cc.bodies[uuid];
+			if (CollisionUtil.isColliding(cursorEntity, body) && body.canEntitiesCollide){
+				selectedEntity = body; break;
+			}
+		}
 	}
 }

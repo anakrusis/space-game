@@ -99,10 +99,13 @@ class World {
 		return null;
 	}
 	
-	copyPlayer(op,np){
-		for (var attr in op){
-			np[attr] = op[attr];
+	getChunk(x,y){
+		if (this.chunks[x]){
+			if (this.chunks[x][y]){
+				return this.chunks[x][y];
+			}
 		}
+		return false;
 	}
 	
 	getLoadedChunks(){
