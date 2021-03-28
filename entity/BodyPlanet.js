@@ -7,7 +7,9 @@ class BodyPlanet extends EntityBody {
 		
 		this.orbitDistance = orbitDistance;
         this.orbitPeriod = RandomUtil.fromRangeI(3000000, 5000000);
-        this.rotSpeed = 0.00005;
+		
+		this.rotSpeed = RandomUtil.fromRangeF(0.00004,0.00010)
+        //this.rotSpeed = 0.000082;
 		//this.rotSpeed = 2 * Math.PI / 60;
 		
 		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
@@ -81,9 +83,34 @@ class BodyPlanet extends EntityBody {
 	// will try to find a position on the planet as such:
 	// randomly picks a center point. makes sure it has at least 5 consecutive tiles free in each direction.
 	spawnCity(nation){
+		var cityPlaceAttempts = 30;
 		var city = new City(nation.uuid, this.getChunk().x, this.getChunk().y, this.uuid );
-		server.world.cities[city.uuid] = city;
-		return city;
+		
+		for (var a = 0; a < cityPlaceAttempts; a++){
+			
+			var cityCenterIndex = RandomUtil.fromRangeI(0, this.terrainSize);
+			
+			var cityCenterValid = true;
+			for (var i = -2; i <= 2; i++){
+				
+				var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
+				if (this.terrain[relIndex] <= 0){
+					cityCenterValid = false;
+					break;
+				}
+			}
+			if (cityCenterValid){
+				
+				for (var i = -2; i <= 2; i++){
+					
+					var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
+					this.spawnBuilding( new EntityBuilding( this.x, this.y, 0), relIndex, city );
+				}
+				city.centerIndex = cityCenterIndex;
+				server.world.cities[city.uuid] = city;
+				return city;
+			}
+		}
 	}
 	
 	spawnBuilding(building,index, city){

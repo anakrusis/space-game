@@ -21,8 +21,10 @@ class World {
 		var playerNation = new Nation(0, 0, homePlanet.uuid);
 		this.nations[playerNation.uuid] = playerNation;
 		
-		var capitalCity = homePlanet.spawnCity( playerNation, homePlanet.getChunk().x, homePlanet.getChunk().y, homePlanet.uuid );
-		homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0, capitalCity );
+		var capitalCity = homePlanet.spawnCity( playerNation );
+		playerNation.cityUUIDs.push(capitalCity.uuid);
+		playerNation.capitalCityUUID = capitalCity.uuid;
+		//homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0, capitalCity );
 		
 		this.player = new EntityPlayer(7500, 8192, 0)
 		this.player.nationUUID = playerNation.uuid;
@@ -83,7 +85,9 @@ class World {
 			var homeplanid = homenation.homePlanetUUID;
 			var homechunkx = homenation.homeChunkX; var homechunky = homenation.homeChunkY;
 			var homeplanet = this.chunks[homechunkx][homechunky].bodies[homeplanid];
-			this.player.moveToIndexOnPlanet(0, homeplanet);
+			
+			var homecity   = homenation.getCapitalCity(); var homeindex = homecity.centerIndex;
+			this.player.moveToIndexOnPlanet(homeindex, homeplanet);
         }
 		
 		this.worldTime++;

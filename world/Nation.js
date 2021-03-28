@@ -6,5 +6,12 @@ class Nation {
 		this.homeChunkX = homeChunkX;
 		this.homeChunkY = homeChunkY;
 		this.homePlanetUUID = homePlanetUUID;
+		
+		this.cityUUIDs = [];
+		this.capitalCityUUID = [];
+	}
+	
+	getCapitalCity(){
+		return server.world.cities[this.capitalCityUUID];
 	}
 }

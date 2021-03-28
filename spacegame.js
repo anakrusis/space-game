@@ -11,18 +11,27 @@ client = new Client();
 
 var mainelement = document.getElementById("main");
 
+function loopyMod(x, m) {
+	return (x % m + m) % m;
+}
+
 function setup(){
 	createCanvas(400, 400);
 
-	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-27", mainelement);
+	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-28", mainelement);
+	
+	settings.addHTML("fps", "b");
+	
 	settings.addHTML("planet", "goes the weasal"); 
 	settings.hideTitle("planet");
-	
+	settings.hideTitle("fps");
 	
 }
 
 function draw(){
 	settings.setWidth(width/4);
+	
+	settings.setValue("fps", "FPS: " + Math.round(frameRate()));
 	
 	if (selectedEntity){
 		var infostring = "<b>" + selectedEntity.name + "</b><br>"
@@ -89,7 +98,7 @@ function draw(){
 			stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
 			noFill();
 			beginShape();
-			for (var i = 0; i < futurePointsX.length; i++){
+			for (var i = 0; i < futurePointsX.length; i+=10){
 				fx = futurePointsX[i]; fy = futurePointsY[i];
 				vertex(tra_x(fx),tra_y(fy));
 			}
@@ -127,9 +136,15 @@ var predictFuturePoints = function(player){
 	var futurePointsY = [];
 
 	var e = new Entity( player.x, player.y, player.dir );
+	var markedDead = false;
 	for (var i = 0; i < 500; i++){
 		e.update();
-		if (e.isDead()){ break; };
+		if (e.isDead() || e.grounded){ 
+			if (markedDead){
+				break;
+			}
+			markedDead = true;
+		};
 		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
 		e.forceVectors.push(e.boostForce);
 		futurePointsX.push(e.x); futurePointsY.push(e.y);
@@ -171,12 +186,12 @@ var update = function(){
 		}
 		
 		if (keyIsDown(82)) {
-			server.onUpdateRequest( 0, "world", "player", "boostForce", "magnitude" );
+			//server.onUpdateRequest( 0, "world", "player", "boostForce", "magnitude" );
 		}
 	}
 	if (keyIsDown(80)){
-		var myJSON = JSON.stringify(server.world);
-		document.getElementById("bodydiv2").innerHTML = myJSON;
+		//var myJSON = JSON.stringify(server.world);
+		//document.getElementById("bodydiv2").innerHTML = myJSON;
 	}
 	
 	if (keyIsDown(81)) { // q

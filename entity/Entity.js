@@ -29,28 +29,6 @@ class Entity {
 	
 	update() {
 		
-/* 		var forcesSum = 0;
-		for (var force of this.forceVectors){
-			forcesSum += Math.abs(force.magnitude);
-		}
-		if (forcesSum != 0){
-			//avgDirection = 0;
-			for (var i = 0; i < this.forceVectors.length; i++){
-				var force = this.forceVectors[i];
-				
-				console.log(force.magnitude/forcesSum);
-				
-				//avgDirection += (force.magnitude/forcesSum) * force.dir;
-				
-				this.x += force.magnitude * Math.cos(force.dir);
-				this.y += force.magnitude * Math.sin(force.dir);
-				//this.velocity += force.magnitude;
-			}
-			//avgDirection /= this.forceVectors.length;
-			
-			//console.log(avgDirection);
-			//this.dir += avgDirection;
-		} */
 		var magnitudeSum = 0;
 		for (var force of this.forceVectors){
 			magnitudeSum += Math.abs(force.magnitude);
@@ -192,17 +170,8 @@ class Entity {
 		return null;
 	}
 	// this method is used when rendering objects
+	// defaults to a single point for generic entitys, can be given a specific hitbox shape if desired
 	getAbsolutePoints() {
-/*         var point1x = rot_x(this.dir,-0.5,0.4) + this.x;
-        var point1y = rot_y(this.dir,-0.5,0.4) + this.y;
-
-        var point2x = rot_x(this.dir,0.8,0.0) + this.x;
-        var point2y = rot_y(this.dir,0.8,0.0) + this.y;
-
-        var point3x = rot_x(this.dir,-0.5,-0.4) + this.x;
-        var point3y = rot_y(this.dir,-0.5,-0.4) + this.y;
-
-        return [ point1x, point1y, point2x, point2y, point3x, point3y ]; */
 		return [this.x, this.y];
     }
 	

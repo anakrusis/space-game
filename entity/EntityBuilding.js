@@ -27,6 +27,7 @@ class EntityBuilding extends Entity {
 		if (this.cityUUID){
 			var city = server.world.cities[this.cityUUID];
 			var nation = server.world.nations[city.nationUUID];
+			this.color = nation.color;
 		}
 		
 		if (this.planetIndex > -1 && this.getGroundedBody() != null){

@@ -12,6 +12,8 @@ class City {
 		
 		this.buildingUUIDs      = [];
 		this.claimedTileIndexes = [];
+		
+		this.centerIndex = -1;
 	}
 	
 	update(){
@@ -21,6 +23,7 @@ class City {
 	registerBuilding(building, index){
 		this.buildingUUIDs.push(building.uuid);
 		this.claimedTileIndexes.push(index);
+		building.cityUUID = this.uuid;
 	}
 	
 	getBuildings(){
