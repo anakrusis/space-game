@@ -39,9 +39,7 @@ class Chunk {
 	}
 	
 	spawnBody(body){
-		var uuid = Math.round(Math.random() * 10000000);
-		body.uuid = uuid;
-		this.bodies[uuid] = body;
+		this.bodies[body.uuid] = body;
 		
 		if (body.canEntitiesCollide){
 			

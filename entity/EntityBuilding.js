@@ -4,6 +4,8 @@ class EntityBuilding extends Entity {
 		this.name = "Building";
 		this.filled = true;
 		this.planetIndex = -1;
+		this.planetUUID = null;
+		this.cityUUID   = null;
 	}
 	
 	getAbsolutePoints() {
@@ -22,6 +24,11 @@ class EntityBuilding extends Entity {
     }
 	
 	update(){
+		if (this.cityUUID){
+			var city = server.world.cities[this.cityUUID];
+			var nation = server.world.nations[city.nationUUID];
+		}
+		
 		if (this.planetIndex > -1 && this.getGroundedBody() != null){
             this.moveToIndexOnPlanet(this.planetIndex, this.getGroundedBody());
         }

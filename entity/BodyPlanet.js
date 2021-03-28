@@ -3,7 +3,7 @@ class BodyPlanet extends EntityBody {
 		super(x, y, dir, RandomUtil.fromRangeF(128,256));
 		
 		this.starUUID = starUUID;
-		this.buildingUUIDs = [];
+		this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		
 		this.orbitDistance = orbitDistance;
         this.orbitPeriod = RandomUtil.fromRangeI(3000000, 5000000);
@@ -81,10 +81,12 @@ class BodyPlanet extends EntityBody {
 	// will try to find a position on the planet as such:
 	// randomly picks a center point. makes sure it has at least 5 consecutive tiles free in each direction.
 	spawnCity(nation){
-		
+		var city = new City(nation.uuid, this.getChunk().x, this.getChunk().y, this.uuid );
+		server.world.cities[city.uuid] = city;
+		return city;
 	}
 	
-	spawnBuilding(building,index){
+	spawnBuilding(building,index, city){
 		if (this.buildingUUIDs[index] == null){
 			this.buildingUUIDs[index] = building.uuid;
 			building.grounded = true;
@@ -93,6 +95,10 @@ class BodyPlanet extends EntityBody {
 
             building.moveToIndexOnPlanet(index, this);
 			server.world.spawnEntity(building);
+			
+			if (city){
+				city.registerBuilding(building,index);
+			}
 			return true;
 		}
 		return false;

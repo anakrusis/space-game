@@ -15,7 +15,7 @@ class Entity {
         this.name = "Entity";
         this.color = [ 255, 255, 255 ];
 		this.filled = true;
-        this.uuid = Math.round(Math.random() * 10000000);
+        this.uuid = Math.round(Math.random() * 10000000000);
         this.rotSpeed = 0;
 		
 		this.dead = false;
@@ -134,7 +134,7 @@ class Entity {
 								forceMagnitude = 0.05 * annulusPosition;
                             }else{
                                 //forceMagnitude = 500 / ( distance * distance );
-								forceMagnitude = 0.03 * annulusPosition;
+								forceMagnitude = 0.05 * annulusPosition;
                             }
                             this.gravityAttraction = forceMagnitude;
 
@@ -193,7 +193,7 @@ class Entity {
 	}
 	// this method is used when rendering objects
 	getAbsolutePoints() {
-        var point1x = rot_x(this.dir,-0.5,0.4) + this.x;
+/*         var point1x = rot_x(this.dir,-0.5,0.4) + this.x;
         var point1y = rot_y(this.dir,-0.5,0.4) + this.y;
 
         var point2x = rot_x(this.dir,0.8,0.0) + this.x;
@@ -202,7 +202,8 @@ class Entity {
         var point3x = rot_x(this.dir,-0.5,-0.4) + this.x;
         var point3y = rot_y(this.dir,-0.5,-0.4) + this.y;
 
-        return [ point1x, point1y, point2x, point2y, point3x, point3y ];
+        return [ point1x, point1y, point2x, point2y, point3x, point3y ]; */
+		return [this.x, this.y];
     }
 	
 	getX(){ return this.x; }

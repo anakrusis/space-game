@@ -10,16 +10,19 @@ class World {
 		this.loadedChunksY = [];
 		this.entities      = {};
 		this.nations       = {};
+		this.cities        = {};
 		
 		this.worldTime = 0;
 	}
 	
 	init(){
 		var homePlanet = this.findHomePlanet();
-		homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0 );
 		
 		var playerNation = new Nation(0, 0, homePlanet.uuid);
 		this.nations[playerNation.uuid] = playerNation;
+		
+		var capitalCity = homePlanet.spawnCity( playerNation, homePlanet.getChunk().x, homePlanet.getChunk().y, homePlanet.uuid );
+		homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0, capitalCity );
 		
 		this.player = new EntityPlayer(7500, 8192, 0)
 		this.player.nationUUID = playerNation.uuid;
@@ -41,9 +44,7 @@ class World {
 	}
 	
 	spawnEntity(entity){
-		var uuid = Math.round(Math.random() * 10000000);
-		entity.uuid = uuid;
-		this.entities[uuid] = entity;
+		this.entities[entity.uuid] = entity;
 	}
 	
 	update(){
