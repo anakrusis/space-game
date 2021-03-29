@@ -91,6 +91,54 @@ class CollisionUtil{
         }
         entity.x = newx; entity.y = newy;
     }
+	
+	static isEntityCollidingWithEntity(entity, body){
+        var isColliding;
+
+        var abspoints = body.getAbsolutePoints();
+        var entityAbsPoints = entity.getAbsolutePoints();
+
+        var bodyX, bodyY;
+        var bodyXNext, bodyYNext;
+        var entityX, entityY;
+
+        var between;
+        var intersecting;
+
+        for (var j = 0; j < entityAbsPoints.length; j += 2){
+
+            isColliding = false;
+
+            entityX = entityAbsPoints[j];
+            entityY = entityAbsPoints[j + 1];
+
+            for (var i = 0; i < abspoints.length; i += 2){
+                bodyX = abspoints[i];
+                bodyY = abspoints[i+1];
+
+                if ((i + 3) > abspoints.length){
+                    bodyXNext = abspoints[0];
+                    bodyYNext = abspoints[1];
+                }else {
+                    bodyXNext = abspoints[i + 2];
+                    bodyYNext = abspoints[i + 3];
+                }
+                between = (bodyY > entityY) != (bodyYNext > entityY);
+                intersecting = entityX < (bodyXNext - bodyX) * (entityY - bodyY) / (bodyYNext - bodyY) + bodyX;
+
+                if (between && intersecting){
+                    isColliding = !isColliding;
+                }
+            }
+
+            // If any of the points on Entity are colliding, then yes it is colliding.
+            if (isColliding){
+                return isColliding;
+            }
+        }
+
+        return false;
+    }
 }
 
 class ForceVector {

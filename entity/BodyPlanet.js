@@ -22,7 +22,7 @@ class BodyPlanet extends EntityBody {
 		this.orbitStart =  RandomUtil.fromRangeF(0, Math.PI * 2);
         this.orbitAngle = this.orbitStart;
 		
-		this.name = "Planet";
+		this.name = Nymgen.newName();
 	}
 	
 	update(){

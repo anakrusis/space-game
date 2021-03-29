@@ -1,5 +1,6 @@
 var framecount = 0;
-var selectedEntity = null;
+var hoverEntity    = null; // entity that the mouse is hovering over
+var selectedEntity = null; // entity which the mouse has clicked on
 
 CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
 
@@ -32,13 +33,19 @@ function draw(){
 	settings.setWidth(width/4);
 	
 	settings.setValue("fps", "FPS: " + Math.round(frameRate()));
-	
+	var e = null;
 	if (selectedEntity){
-		var infostring = "<b>" + selectedEntity.name + "</b><br>"
-		var daylen = 2 * Math.PI / selectedEntity.rotSpeed / 60 / 60;
-		infostring += "Day length: " + Math.round(daylen) + " Earth minutes<br>"
-		var yearlen = selectedEntity.orbitPeriod / 60 / 60;
-		infostring += "Year length: " + Math.round(yearlen) + " Earth minutes<br>"
+		e = selectedEntity;
+	}else if (hoverEntity){
+		e = hoverEntity;
+	}
+	
+	if (e){
+		var infostring = "<b>" + e.name + "</b><br>"
+		var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
+		infostring += "• Day length: " + Math.round(daylen) + " Earth minutes<br>"
+		var yearlen = e.orbitPeriod / 60 / 60;
+		infostring += "• Year length: " + Math.round(yearlen) + " Earth minutes<br>"
 		
 		settings.setValue("planet", infostring);	
 		settings.showControl("planet");
@@ -87,6 +94,15 @@ function draw(){
 			drawEntity(b);
 		}
 	}
+	if (selectedEntity){
+		var oldcolor = selectedEntity.color; var oldfilled = selectedEntity.filled;
+		selectedEntity.color = [ 255, 255 * Math.sin(framecount / 25), 0 ]; selectedEntity.filled = false;
+		strokeWeight(5);
+		drawEntity(selectedEntity);
+		strokeWeight(1);
+		selectedEntity.color = oldcolor, selectedEntity.filled = oldfilled;
+	}
+	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
 		if (e instanceof EntityPlayer){ 
@@ -157,6 +173,18 @@ function keyPressed() {
 		fullscreen(!fullscreen());
 	}
 }
+function mouseClicked() {
+	if (hoverEntity){
+		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
+		if (CollisionUtil.isColliding(cursorEntity, hoverEntity) && hoverEntity.canEntitiesCollide){
+			selectedEntity = hoverEntity;
+		}else{
+			selectedEntity = null;
+		}
+	}else{
+		selectedEntity = null;
+	}
+}
 
 var update = function(){
 	server.update();
@@ -202,7 +230,7 @@ var update = function(){
 	}
 	
 	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
-	selectedEntity = null;
+	hoverEntity = null;
 	cursorChunkX = Math.floor(cursorAbsX / CHUNK_DIM); cursorChunkY = Math.floor(cursorAbsY / CHUNK_DIM); 
 	cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
 	
@@ -211,7 +239,7 @@ var update = function(){
 		for (var uuid in cc.bodies) {
 			var body = cc.bodies[uuid];
 			if (CollisionUtil.isColliding(cursorEntity, body) && body.canEntitiesCollide){
-				selectedEntity = body; break;
+				hoverEntity = body; break;
 			}
 		}
 	}
