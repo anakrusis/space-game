@@ -78,7 +78,8 @@ class World {
 		
 		if (this.worldTime - this.playerLastDeathTime == this.RESPAWN_INTERVAL){
 			
-			this.player.dead = false;
+			selectedEntity = null;
+			this.player.dead = false; 
 			this.player.boostForce = new ForceVector(0,0);
 			
 			var homenation = this.nations[this.player.nationUUID];

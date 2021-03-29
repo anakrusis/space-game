@@ -3,6 +3,8 @@ var hoverEntity    = null; // entity that the mouse is hovering over
 var selectedEntity = null; // entity which the mouse has clicked on
 
 CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
+MAX_ZOOM  = 100;
+MIN_ZOOM  = 0.001;
 
 server = new Server();
 server.init(); server.world.init();
@@ -32,7 +34,14 @@ function setup(){
 function draw(){
 	settings.setWidth(width/4);
 	
-	settings.setValue("fps", "FPS: " + Math.round(frameRate()));
+	var fpsString = "FPS: " + Math.round(frameRate());
+	if (server.world.getPlayer()){
+		var p = server.world.getPlayer();
+		//fpsString += "<br>" + p.ticksExisted;
+	}
+	settings.setValue("fps", fpsString);
+	
+	
 	var e = null;
 	if (selectedEntity){
 		e = selectedEntity;
@@ -41,11 +50,15 @@ function draw(){
 	}
 	
 	if (e){
-		var infostring = "<b>" + e.name + "</b><br>"
-		var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
-		infostring += "• Day length: " + Math.round(daylen) + " Earth minutes<br>"
-		var yearlen = e.orbitPeriod / 60 / 60;
-		infostring += "• Year length: " + Math.round(yearlen) + " Earth minutes<br>"
+		var infostring = "<b>" + e.name + "</b><br>";
+		if (e instanceof BodyPlanet){
+			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system<br><br>";
+			
+			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
+			infostring += "• Day length: " + Math.round(daylen) + " Earth minutes<br>"
+			var yearlen = e.orbitPeriod / 60 / 60;
+			infostring += "• Year length: " + Math.round(yearlen) + " Earth minutes<br>"
+		}
 		
 		settings.setValue("planet", infostring);	
 		settings.showControl("planet");
@@ -75,9 +88,7 @@ function draw(){
 	}
 	
 	for ( var chunk of client.world.getLoadedChunks() ) {
-		//ctx.strokeStyle = "rgb(128, 128, 128)";
 		var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
-		//ctx.strokeRect( chunkx , chunky , CHUNK_DIM * cam_zoom, CHUNK_DIM * cam_zoom);
 		stroke(128);
 		noFill();
 		square(chunkx, chunky, CHUNK_DIM * cam_zoom);
@@ -127,14 +138,13 @@ function draw(){
 }
 
 var drawEntity = function(e, scale){
+	if (e.dead){ return; };
 	if (!scale){ scale = 1; }
 	
 	if (e.filled){
 		fill(e.color[0], e.color[1], e.color[2]);
-		//ctx.fillStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
 	}else{
 		noFill();
-		//ctx.strokeStyle = "rgb(" + e.color[0] + ", " + e.color[1] + ", " + e.color[2] + ")";
 	}
 	stroke(e.color[0], e.color[1], e.color[2]);
 	var pts = e.getAbsolutePoints();
@@ -155,15 +165,17 @@ var predictFuturePoints = function(player){
 	var markedDead = false;
 	for (var i = 0; i < 500; i++){
 		e.update();
+
+		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
+		e.forceVectors.push(e.boostForce);
+		futurePointsX.push(e.x); futurePointsY.push(e.y);
+		
 		if (e.isDead() || e.grounded){ 
 			if (markedDead){
 				break;
 			}
 			markedDead = true;
 		};
-		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
-		e.forceVectors.push(e.boostForce);
-		futurePointsX.push(e.x); futurePointsY.push(e.y);
 	}
 	return [futurePointsX, futurePointsY];
 }
@@ -176,13 +188,31 @@ function keyPressed() {
 function mouseClicked() {
 	if (hoverEntity){
 		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
-		if (CollisionUtil.isColliding(cursorEntity, hoverEntity) && hoverEntity.canEntitiesCollide){
+		if (CollisionUtil.isEntityCollidingWithEntity(cursorEntity, hoverEntity)){
 			selectedEntity = hoverEntity;
 		}else{
 			selectedEntity = null;
 		}
 	}else{
 		selectedEntity = null;
+	}
+}
+
+function mouseWheel(e) {
+	
+	//console.log(e.delta);
+	//cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
+	if (e.delta < 0){
+		if (cam_zoom < MAX_ZOOM){
+			
+			cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
+		}
+	// Zooming out
+	}else{
+		if (cam_zoom > MIN_ZOOM){
+			
+			cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
+		}
 	}
 }
 
@@ -241,6 +271,12 @@ var update = function(){
 			if (CollisionUtil.isColliding(cursorEntity, body) && body.canEntitiesCollide){
 				hoverEntity = body; break;
 			}
+		}
+	}
+	for (var uuid in client.world.entities){
+		entity = client.world.entities[uuid];
+		if (entity instanceof EntityBuilding && CollisionUtil.isEntityCollidingWithEntity(cursorEntity, entity)){
+			hoverEntity = entity;
 		}
 	}
 }

@@ -30,7 +30,7 @@ class Nymgen {
 			}
 		}
 		
-		console.log( "original: " + nombreFinal );
+		//console.log( "original: " + nombreFinal );
 		
 		// reemplazando cada AFI caracter con su equivalente en ortografia española 
 		for (var i = 0; i < nombreFinal.length; i++){
@@ -90,7 +90,7 @@ class Nymgen {
 			}
 		}
 		
-		console.log( "despues: " + nombreFinal );
+		//console.log( "despues: " + nombreFinal );
 		
 		nombreFinal = this.replacechar(nombreFinal,0, nombreFinal.substr(0,1).toUpperCase());
 		

@@ -29,6 +29,10 @@ class Entity {
 	
 	update() {
 		
+		var lastvel = this.velocity;
+		
+		var lastx = this.x; var lasty = this.y;
+		
 		var magnitudeSum = 0;
 		for (var force of this.forceVectors){
 			magnitudeSum += Math.abs(force.magnitude);
@@ -80,7 +84,7 @@ class Entity {
 					if (CollisionUtil.isColliding(this, body)) {
 
                         // Setting collision markers
-                        if (this.velocity > 1.0 || body instanceof BodyStar ) {
+                        if ( body instanceof BodyStar ) {
                             this.onCrash();
                         } else {
                             this.grounded = true;
@@ -132,7 +136,7 @@ class Entity {
 
             if (this.grounded && this.getGroundedBody() != null) {
 
-				this.velocity /= 1.001;
+				//this.velocity /= 1.001;
 				//this.boostForce.magnitude /= 1.01; // friction coeff
 
                 // This moves the entity along with a planet by anticipating where it will be in the next tick
@@ -153,6 +157,14 @@ class Entity {
                 this.x = rot_x(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getX();
                 this.y = rot_y(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getY();
             }
+		}
+		
+		this.velocity = CollisionUtil.euclideanDistance(lastx, lasty, this.x, this.y);
+		
+		var veldiff = Math.abs( lastvel - this.velocity );
+		
+		if (veldiff > 0.5 && this.ticksExisted > 10 && !this.dead){
+			this.onCrash();
 		}
 		
 		this.ticksExisted++;
@@ -188,6 +200,8 @@ class Entity {
 	
 	onCrash(){
 		this.dead = true;
+		this.ticksExisted = 0; 
+		this.velocity = 0;
 	}
 	
 	explode(){

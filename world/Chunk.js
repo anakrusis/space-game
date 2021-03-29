@@ -38,6 +38,10 @@ class Chunk {
         }
 	}
 	
+	getBody(uuid){
+		return this.bodies[uuid];
+	}
+	
 	spawnBody(body){
 		this.bodies[body.uuid] = body;
 		

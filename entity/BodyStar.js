@@ -5,6 +5,6 @@ class BodyStar extends EntityBody {
 		
 		this.rotSpeed = 0.01;
 		this.canEntitiesCollide = true;
-		this.name = "Star";
+		this.name = Nymgen.newName();
 	}
 }

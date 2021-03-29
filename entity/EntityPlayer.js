@@ -56,6 +56,7 @@ class EntityPlayer extends Entity {
 	}
 	
 	onCrash(){
+		super.onCrash();
 		this.explode();
 	}
 }
