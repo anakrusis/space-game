@@ -4,6 +4,10 @@ var selectedEntity = null; // entity which the mouse has clicked on
 
 CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
+
+MAX_INTERPLANETARY_ZOOM = 1; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
+MAX_INTERSTELLAR_ZOOM   = 0.01; // anything larger than this will only render stars (no planets)
+
 MIN_ZOOM  = 0.001;
 
 server = new Server();
@@ -87,12 +91,21 @@ function draw(){
 		if (!(e instanceof EntityPlayer)){ drawEntity(e); }
 	}
 	
-	for ( var chunk of client.world.getLoadedChunks() ) {
+	// Optimized version that only renders the nearest body when above a certain zoom level
+	
+	if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
+		
+		b = client.world.getPlayer().getNearestBody();
+		drawEntity(b);
+			
+	}else if (cam_zoom > MAX_INTERSTELLAR_ZOOM){
+		
+		var chunk = client.world.getPlayer().getChunk();
 		var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
 		stroke(128);
 		noFill();
 		square(chunkx, chunky, CHUNK_DIM * cam_zoom);
-		
+	
 		for ( var uuid in chunk.bodies ){
 			var b = chunk.bodies[uuid];
 			
@@ -104,7 +117,27 @@ function draw(){
 			
 			drawEntity(b);
 		}
+		
+	// Full version that renders all loaded chunks fully (not very optimized, needs work)
+	}else{
+		
+		for ( var chunk of client.world.getLoadedChunks() ) {
+			
+			var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
+			stroke(128);
+			noFill();
+			square(chunkx, chunky, CHUNK_DIM * cam_zoom);
+			
+			for ( var uuid in chunk.bodies ){
+				var b = chunk.bodies[uuid];
+				
+				if (b instanceof BodyStar){
+					drawEntity(b);
+				}
+			}
+		}
 	}
+	
 	if (selectedEntity){
 		var oldcolor = selectedEntity.color; var oldfilled = selectedEntity.filled;
 		selectedEntity.color = [ 255, 255 * Math.sin(framecount / 25), 0 ]; selectedEntity.filled = false;
@@ -202,18 +235,12 @@ function mouseWheel(e) {
 	
 	//console.log(e.delta);
 	//cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
-	if (e.delta < 0){
-		if (cam_zoom < MAX_ZOOM){
-			
-			cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
-		}
-	// Zooming out
-	}else{
-		if (cam_zoom > MIN_ZOOM){
-			
-			cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
-		}
-	}
+	
+	cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
+	cam_zoom = Math.min(cam_zoom, MAX_ZOOM);
+	cam_zoom = Math.max(cam_zoom, MIN_ZOOM);
+
+	return false;
 }
 
 var update = function(){

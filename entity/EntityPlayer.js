@@ -59,4 +59,21 @@ class EntityPlayer extends Entity {
 		super.onCrash();
 		this.explode();
 	}
+	
+	getNearestBody(){
+		var dist = 10000000000;
+		var nearestplanet = null;
+		for (var uuid in this.getChunk().bodies){
+			var body = this.getChunk().getBody(uuid);
+			
+			if (CollisionUtil.euclideanDistance(this.x, this.y, body.x, body.y) < dist){
+				dist = CollisionUtil.euclideanDistance(this.x, this.y, body.x, body.y);
+				
+				if (body.canEntitiesCollide){
+					nearestplanet = body;
+				}
+			}
+		}
+		return nearestplanet;
+	}
 }
