@@ -94,9 +94,12 @@ class Entity {
                         }
                     }
 					
-				// examples of bodies that do not collide are GravityRadius and Atmosphere
+				// examples of bodies that do not collide are GravityRadius, Ocean and Atmosphere
 				}else{
+					
 					if (CollisionUtil.isColliding(this, body)){
+						
+						// GravityRadius acts a force of gravity on entities
                         if (body instanceof BodyGravityRadius) {
                             var bgr = body;
                             var dependentBody = bgr.getDependentBody();
@@ -124,7 +127,14 @@ class Entity {
 							//this.x -= forceMagnitude * Math.cos(angleFromCenter);
                             //this.y -= forceMagnitude * Math.sin(angleFromCenter);
 							this.forceVectors.push ( new ForceVector( 0 - forceMagnitude, angleFromCenter ) );
-                        }
+						
+						// BodyOcean enacts a buoyant force slightly stronger than gravity to slowly push entities up
+                        }else if (body instanceof BodyOcean){
+							
+							forceMagnitude = 0.07;
+							var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
+							this.forceVectors.push ( new ForceVector( forceMagnitude, angleFromCenter ) );
+						}
                     }
 				}
 			}
@@ -181,11 +191,15 @@ class Entity {
 		}
 		return null;
 	}
-	// this method is used when rendering objects
+	// this method is used when doing object collision.
 	// defaults to a single point for generic entitys, can be given a specific hitbox shape if desired
 	getAbsolutePoints() {
 		return [this.x, this.y];
     }
+	
+	getRenderPoints(){
+		return this.getAbsolutePoints();
+	}
 	
 	getX(){ return this.x; }
 	getY(){ return this.y; }

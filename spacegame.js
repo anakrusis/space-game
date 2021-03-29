@@ -6,7 +6,8 @@ CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could 
 MAX_ZOOM  = 100;
 
 MAX_INTERPLANETARY_ZOOM = 1; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
-MAX_INTERSTELLAR_ZOOM   = 0.01; // anything larger than this will only render stars (no planets)
+MAX_INTERSTELLAR_ZOOM   = 0.01; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
+// anything smaller than this will only render stars (no planets)
 
 MIN_ZOOM  = 0.001;
 
@@ -25,7 +26,7 @@ function loopyMod(x, m) {
 function setup(){
 	createCanvas(400, 400);
 
-	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-28", mainelement);
+	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-29", mainelement);
 	
 	settings.addHTML("fps", "b");
 	
@@ -96,6 +97,11 @@ function draw(){
 	if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
 		
 		b = client.world.getPlayer().getNearestBody();
+		
+		if (b.oceanUUID){
+			var ocean = b.getChunk().getBody(b.oceanUUID);
+			drawEntity(ocean);
+		}
 		drawEntity(b);
 			
 	}else if (cam_zoom > MAX_INTERSTELLAR_ZOOM){
@@ -114,8 +120,9 @@ function draw(){
 				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
 				drawEntity(orbitbody);
 			}
-			
-			drawEntity(b);
+			if (!(b instanceof BodyOcean)){
+				drawEntity(b);
+			}
 		}
 		
 	// Full version that renders all loaded chunks fully (not very optimized, needs work)
@@ -140,7 +147,7 @@ function draw(){
 	
 	if (selectedEntity){
 		var oldcolor = selectedEntity.color; var oldfilled = selectedEntity.filled;
-		selectedEntity.color = [ 255, 255 * Math.sin(framecount / 25), 0 ]; selectedEntity.filled = false;
+		selectedEntity.color = [ 255, 255 * (1 + Math.sin(framecount / 15)), 0 ]; selectedEntity.filled = false;
 		strokeWeight(5);
 		drawEntity(selectedEntity);
 		strokeWeight(1);
@@ -152,18 +159,21 @@ function draw(){
 		if (e instanceof EntityPlayer){ 
 			
 			if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
-			var fx = e.x; var fy = e.y;
-			var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
-			
-			stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
-			noFill();
-			beginShape();
-			for (var i = 0; i < futurePointsX.length; i+=10){
-				fx = futurePointsX[i]; fy = futurePointsY[i];
-				vertex(tra_x(fx),tra_y(fy));
+	
+			// This renders the trail in front of the player predicting where it will be in the next 500 ticks
+			if (!e.isDead()){
+				var fx = e.x; var fy = e.y;
+				var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
+				
+				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+				noFill();
+				beginShape();
+				for (var i = 0; i < futurePointsX.length; i+=10){
+					fx = futurePointsX[i]; fy = futurePointsY[i];
+					vertex(tra_x(fx),tra_y(fy));
+				}
+				endShape();
 			}
-			endShape();
-			
 			drawEntity(e, escala); 
 		}
 	}
@@ -171,7 +181,8 @@ function draw(){
 }
 
 var drawEntity = function(e, scale){
-	if (e.dead){ return; };
+	if (!e){ return; };
+	if (e.isDead()){ return; };
 	if (!scale){ scale = 1; }
 	
 	if (e.filled){
@@ -180,7 +191,7 @@ var drawEntity = function(e, scale){
 		noFill();
 	}
 	stroke(e.color[0], e.color[1], e.color[2]);
-	var pts = e.getAbsolutePoints();
+	var pts = e.getRenderPoints();
 	beginShape();
 	for (i = 0; i < pts.length; i += 2){
 		var px = pts[i]; var py = pts[i+1];

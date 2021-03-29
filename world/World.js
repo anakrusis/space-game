@@ -17,6 +17,9 @@ class World {
 	
 	init(){
 		var homePlanet = this.findHomePlanet();
+		var ocean = new BodyOcean(homePlanet.x,homePlanet.y,0,homePlanet.radius,homePlanet.uuid);
+		homePlanet.hasOcean = true; homePlanet.oceanUUID = ocean.uuid;
+		homePlanet.getChunk().spawnBody(ocean);
 		
 		var playerNation = new Nation(0, 0, homePlanet.uuid);
 		this.nations[playerNation.uuid] = playerNation;
@@ -79,7 +82,7 @@ class World {
 		if (this.worldTime - this.playerLastDeathTime == this.RESPAWN_INTERVAL){
 			
 			selectedEntity = null;
-			this.player.dead = false; 
+			this.player.dead = false; this.player.velocity = 0; 
 			this.player.boostForce = new ForceVector(0,0);
 			
 			var homenation = this.nations[this.player.nationUUID];

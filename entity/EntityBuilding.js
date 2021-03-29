@@ -2,10 +2,30 @@ class EntityBuilding extends Entity {
 	constructor(x,y,dir){
 		super(x,y,dir);
 		this.name = "Building";
-		this.filled = true;
+		this.filled = false;
 		this.planetIndex = -1;
 		this.planetUUID = null;
 		this.cityUUID   = null;
+	}
+	
+	getRelRenderPoints(){
+		return [
+				-1, -1,
+				1.5, -1,
+				1.5, 1,
+				-1, 1
+		]
+	}
+	
+	getRenderPoints() {
+		var relpoints = this.getRelRenderPoints();
+		
+		var abspoints = [];
+        for (var i = 0; i < relpoints.length; i += 2){
+            abspoints.push(rot_x(this.dir,relpoints[i],relpoints[ i + 1 ]) + this.x);
+            abspoints.push(rot_y(this.dir,relpoints[i],relpoints[ i + 1 ]) + this.y);
+        }
+        return abspoints;
 	}
 	
 	getAbsolutePoints() {

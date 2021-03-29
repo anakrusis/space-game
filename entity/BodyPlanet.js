@@ -23,6 +23,9 @@ class BodyPlanet extends EntityBody {
         this.orbitAngle = this.orbitStart;
 		
 		this.name = Nymgen.newName();
+		
+		this.hasOcean  = false;
+		this.oceanUUID = null;
 	}
 	
 	update(){
@@ -104,7 +107,13 @@ class BodyPlanet extends EntityBody {
 				for (var i = -2; i <= 2; i++){
 					
 					var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
-					this.spawnBuilding( new EntityBuilding( this.x, this.y, 0), relIndex, city );
+					var newbuilding;
+					if (i == 0){
+						newbuilding = new BuildingSpaceport( this.x, this.y, 0);
+					}else{
+						newbuilding = new EntityBuilding( this.x, this.y, 0);
+					}
+					this.spawnBuilding( newbuilding, relIndex, city );
 				}
 				city.centerIndex = cityCenterIndex;
 				server.world.cities[city.uuid] = city;
