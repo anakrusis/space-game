@@ -1,12 +1,12 @@
 class BodyPlanet extends EntityBody {
 	constructor(x,y,dir,orbitDistance,starUUID){
-		super(x, y, dir, RandomUtil.fromRangeF(128,256));
+		super(x, y, dir, RandomUtil.fromRangeF(256,1024));
 		
 		this.starUUID = starUUID;
 		this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		
 		this.orbitDistance = orbitDistance;
-        this.orbitPeriod = RandomUtil.fromRangeI(3000000, 5000000);
+        this.orbitPeriod = 300 * orbitDistance; //RandomUtil.fromRangeI(7000000, 20000000);
 		
 		this.rotSpeed = RandomUtil.fromRangeF(0.00004,0.00010)
         //this.rotSpeed = 0.000082;
@@ -16,7 +16,7 @@ class BodyPlanet extends EntityBody {
 		
         this.canEntitiesCollide = true;
 
-        this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 16);
+        this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
 		this.generateTerrain();
 		
 		this.orbitStart =  RandomUtil.fromRangeF(0, Math.PI * 2);
@@ -38,13 +38,23 @@ class BodyPlanet extends EntityBody {
 	
 	generateTerrain(){
 		this.terrain = [];
+		var octaves = [];
 		
-		var oct4 = this.fillOctave(this.terrainSize, 16, 20);
-		var oct2 = this.fillOctave(this.terrainSize, 4, 2);
-		var oct1 = this.fillOctave(this.terrainSize, 2, 1);
+		octaves.push( this.fillOctave( this.terrainSize, 64, 64 ) );
+		octaves.push( this.fillOctave( this.terrainSize, 32, 32 ) );
+		octaves.push( this.fillOctave( this.terrainSize, 16, 8 ) );
+		octaves.push( this.fillOctave( this.terrainSize, 8,  4 ) );
+		octaves.push( this.fillOctave( this.terrainSize, 4,  2 ) );
+		octaves.push( this.fillOctave( this.terrainSize, 2,  1 ) );
 		
 		for (var i = 0; i < this.terrainSize; i++){
-			this.terrain.push( oct4[i] + oct2[i] + oct1[i] ); 
+			var octsum = 0;
+			for (var j = 0; j < octaves.length; j++){
+			
+				octsum += octaves[j][i];
+			
+			}
+			this.terrain.push( octsum ); 
 		}
 		
 		var noise2;

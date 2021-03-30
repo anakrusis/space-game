@@ -1,12 +1,13 @@
 var framecount = 0;
 var hoverEntity    = null; // entity that the mouse is hovering over
 var selectedEntity = null; // entity which the mouse has clicked on
+var singletouchtimer = 0;
 
-CHUNK_DIM = 65536; // both width and height of the chunks are equal. this could technically be very large.
+CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
-MAX_INTERPLANETARY_ZOOM = 1; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
-MAX_INTERSTELLAR_ZOOM   = 0.01; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
+MAX_INTERPLANETARY_ZOOM = 0.333; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
+MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
 // anything smaller than this will only render stars (no planets)
 
 MIN_ZOOM  = 0.001;
@@ -26,7 +27,7 @@ function loopyMod(x, m) {
 function setup(){
 	createCanvas(400, 400);
 
-	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-29", mainelement);
+	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-30", mainelement);
 	
 	settings.addHTML("fps", "b");
 	
@@ -207,7 +208,7 @@ var predictFuturePoints = function(player){
 
 	var e = new Entity( player.x, player.y, player.dir );
 	var markedDead = false;
-	for (var i = 0; i < 500; i++){
+	for (var i = 0; i < 1000; i++){
 		e.update();
 
 		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
@@ -224,11 +225,21 @@ var predictFuturePoints = function(player){
 	return [futurePointsX, futurePointsY];
 }
 
+function touchStarted() {
+	
+	return false;
+}
+
 function keyPressed() {
 	if (keyCode === 70){
 		fullscreen(!fullscreen());
 	}
 }
+
+function mouseMoved() {
+	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
+}
+
 function mouseClicked() {
 	if (hoverEntity){
 		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
@@ -258,15 +269,18 @@ var update = function(){
 	server.update();
 	
 	var player = client.world.getPlayer();
+	
+	// KEYBOARD HANDLING
+	
 	if (player){
 		if (keyIsDown(87)) { // up
-			if (player.boostForce.magnitude < 5) {
-				server.onUpdateRequest( player.boostForce.magnitude + 0.0025, "world", "getPlayer", "boostForce", "magnitude" );
+			if (player.boostForce.magnitude < 10) {
+				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 			}
 		}
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
-				server.onUpdateRequest( player.boostForce.magnitude - 0.0025, "world", "player", "boostForce", "magnitude" );
+				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
 			}
 			
 		}else{
@@ -297,7 +311,43 @@ var update = function(){
 		cam_zoom -= (cam_zoom / 25);
 	}
 	
-	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
+	// TOUCHSCREEN HANDLING
+	
+	if (touches.length == 1){
+		// This is both random accidental screen tap protection, and, also allows double touch events to not
+		// accidentally trigger single touch events (you know, both fingers dont touch the screen on the same tick hardly ever)
+		// so there is a 20-tick window for a single touch event to add on more touches, before it's registered as a single touch
+		
+		if (lasttouches.length==0){ singletouchtimer = 0;}else{ singletouchtimer++; }
+		
+		if (singletouchtimer > 20){
+			
+			cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y ); mouseClicked();
+			
+			var angle = Math.atan2(touches[0].y - tra_y(player.y) , touches[0].x - tra_x(player.x));
+			console.log(angle);
+			server.onUpdateRequest( angle, "world", "player", "dir" );
+			server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+		}
+	}
+	
+	if (touches.length == 2 && lasttouches.length == 2){
+		
+		var thistickdist = CollisionUtil.euclideanDistance( touches[0].x, touches[0].y, touches[1].x, touches[1].y);
+		var lasttickdist = CollisionUtil.euclideanDistance( lasttouches[0].x, lasttouches[0].y, lasttouches[1].x, lasttouches[1].y);
+		
+		var diff = thistickdist - lasttickdist;
+		console.log(diff);
+		cam_zoom += ((cam_zoom / 25) * (diff / 7.5 ))
+	}
+	// deep copy of last tick's touch events
+	lasttouches = [];
+	for (var i = 0; i < touches.length; i++){
+		lasttouches[i] = touches[i];
+	}
+	
+	// MOUSE HANDLING
+	
 	hoverEntity = null;
 	cursorChunkX = Math.floor(cursorAbsX / CHUNK_DIM); cursorChunkY = Math.floor(cursorAbsY / CHUNK_DIM); 
 	cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
@@ -317,4 +367,7 @@ var update = function(){
 			hoverEntity = entity;
 		}
 	}
+	
+	cam_zoom = Math.min(cam_zoom, MAX_ZOOM);
+	cam_zoom = Math.max(cam_zoom, MIN_ZOOM);
 }
