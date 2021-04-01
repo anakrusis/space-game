@@ -19,6 +19,7 @@ class Entity {
         this.rotSpeed = 0;
 		
 		this.dead = false;
+		this.hidden = false;
 		
 		this.forceVectors = [];
 	}
@@ -245,4 +246,9 @@ class Entity {
         var angleFromCenter = Math.atan2(this.y - planet.getY(), this.x - planet.getX());
         this.dir = angleFromCenter;
     }
+	
+	isOnScreen(){
+		var tx = tra_x(this.x); var ty = tra_y(this.y); 
+		return ((tx > -(100*cam_zoom) && tx < width+(100*cam_zoom)) && (ty > -(100*cam_zoom) && ty < height+(100*cam_zoom)));
+	}
 }

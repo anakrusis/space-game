@@ -21,6 +21,8 @@ class World {
 		homePlanet.hasOcean = true; homePlanet.oceanUUID = ocean.uuid;
 		homePlanet.getChunk().spawnBody(ocean);
 		
+		//this.spawnEntity( new EntityOreVein(homePlanet.x, homePlanet.y, homePlanet.uuid, 24, 27) );
+		
 		var playerNation = new Nation(0, 0, homePlanet.uuid);
 		this.nations[playerNation.uuid] = playerNation;
 		
@@ -32,6 +34,7 @@ class World {
 		this.player = new EntityPlayer(7500, 8192, 0)
 		this.player.nationUUID = playerNation.uuid;
 		this.spawnEntity( this.player );
+		
 	}
 	
 	findHomePlanet(){
@@ -75,7 +78,9 @@ class World {
 			
 			for ( var uuid in chunk.bodies ){
 				var b = chunk.bodies[uuid];
+				//if (b == this.getPlayer().getNearestBody()){
 				b.update();
+				//}
 			}
 		}
 		

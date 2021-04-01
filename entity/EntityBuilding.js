@@ -55,4 +55,8 @@ class EntityBuilding extends Entity {
         }
 		this.ticksExisted++;
 	}
+	
+	isOnScreen(){
+		return super.isOnScreen() && cam_zoom > MAX_INTERPLANETARY_ZOOM;
+	}
 }

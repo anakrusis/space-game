@@ -26,6 +26,13 @@ class BodyPlanet extends EntityBody {
 		
 		this.hasOcean  = false;
 		this.oceanUUID = null;
+		
+		var oreveinscount = RandomUtil.fromRangeI(0,10);
+		for (var i = 0; i < 10; i++){
+			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
+			var e = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
+			server.world.spawnEntity( e );
+		}
 	}
 	
 	update(){

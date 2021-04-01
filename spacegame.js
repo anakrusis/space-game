@@ -2,6 +2,7 @@ var framecount = 0;
 var hoverEntity    = null; // entity that the mouse is hovering over
 var selectedEntity = null; // entity which the mouse has clicked on
 var singletouchtimer = 0;
+var cursorAbsX; var cursorAbsY;
 
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
@@ -27,7 +28,7 @@ function loopyMod(x, m) {
 function setup(){
 	createCanvas(400, 400);
 
-	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-03-30", mainelement);
+	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-01", mainelement);
 	
 	settings.addHTML("fps", "b");
 	
@@ -90,7 +91,7 @@ function draw(){
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
-		if (!(e instanceof EntityPlayer)){ drawEntity(e); }
+		if (!(e instanceof EntityPlayer || e instanceof EntityOreVein)){ drawEntity(e); }
 	}
 	
 	// Optimized version that only renders the nearest body when above a certain zoom level
@@ -157,25 +158,30 @@ function draw(){
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
-		if (e instanceof EntityPlayer){ 
-			
-			if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
-	
-			// This renders the trail in front of the player predicting where it will be in the next 500 ticks
-			if (!e.isDead()){
-				var fx = e.x; var fy = e.y;
-				var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
-				
-				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
-				noFill();
-				beginShape();
-				for (var i = 0; i < futurePointsX.length; i+=10){
-					fx = futurePointsX[i]; fy = futurePointsY[i];
-					vertex(tra_x(fx),tra_y(fy));
-				}
-				endShape();
+		if (e.isOnScreen()){
+			if (e instanceof EntityOreVein && cam_zoom > MAX_INTERPLANETARY_ZOOM){
+				drawEntity(e);
 			}
-			drawEntity(e, escala); 
+			if (e instanceof EntityPlayer){ 
+				
+				if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
+		
+				// This renders the trail in front of the player predicting where it will be in the next 500 ticks
+				if (!e.isDead()){
+					var fx = e.x; var fy = e.y;
+					var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
+					
+					stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+					noFill();
+					beginShape();
+					for (var i = 0; i < futurePointsX.length; i+=10){
+						fx = futurePointsX[i]; fy = futurePointsY[i];
+						vertex(tra_x(fx),tra_y(fy));
+					}
+					endShape();
+				}
+				drawEntity(e, escala); 
+			}
 		}
 	}
 	
@@ -325,7 +331,7 @@ var update = function(){
 			cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y ); mouseClicked();
 			
 			var angle = Math.atan2(touches[0].y - tra_y(player.y) , touches[0].x - tra_x(player.x));
-			console.log(angle);
+			//console.log(angle);
 			server.onUpdateRequest( angle, "world", "player", "dir" );
 			server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 		}
@@ -338,7 +344,7 @@ var update = function(){
 		
 		var diff = thistickdist - lasttickdist;
 		console.log(diff);
-		cam_zoom += ((cam_zoom / 25) * (diff / 7.5 ))
+		cam_zoom += ((cam_zoom / 25) * (diff / 11 ))
 	}
 	// deep copy of last tick's touch events
 	lasttouches = [];
@@ -363,8 +369,10 @@ var update = function(){
 	}
 	for (var uuid in client.world.entities){
 		entity = client.world.entities[uuid];
-		if (entity instanceof EntityBuilding && CollisionUtil.isEntityCollidingWithEntity(cursorEntity, entity)){
-			hoverEntity = entity;
+		if (entity.isOnScreen()){
+			if ((entity instanceof EntityBuilding || entity instanceof EntityOreVein) && CollisionUtil.isEntityCollidingWithEntity(cursorEntity, entity)){
+				hoverEntity = entity;
+			}
 		}
 	}
 	
