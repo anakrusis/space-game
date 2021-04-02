@@ -21,65 +21,11 @@ server.init(); server.world.init();
 
 client = new Client();
 
-var mainelement = document.getElementById("main");
-
 function loopyMod(x, m) {
 	return (x % m + m) % m;
 }
 
-function setup(){
-	createCanvas(400, 400);
-
-	settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-01", mainelement);
-	
-	settings.addHTML("fps", "b");
-	
-	settings.addHTML("planet", "goes the weasal"); 
-	settings.hideTitle("planet");
-	settings.hideTitle("fps");
-	
-}
-
-function draw(){
-	settings.setWidth(width/4);
-	
-	var fpsString = "FPS: " + Math.round(frameRate());
-	if (server.world.getPlayer()){
-		var p = server.world.getPlayer();
-		//fpsString += "<br>" + p.ticksExisted;
-	}
-	settings.setValue("fps", fpsString);
-	
-	
-	var e = null;
-	if (selectedEntity){
-		e = selectedEntity;
-	}else if (hoverEntity){
-		e = hoverEntity;
-	}
-	
-	if (e){
-		var infostring = "<b>" + e.name + "</b><br>";
-		if (e instanceof BodyPlanet){
-			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system<br><br>";
-			
-			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
-			infostring += "• Day length: " + Math.round(daylen) + " Earth minutes<br>"
-			var yearlen = e.orbitPeriod / 60 / 60;
-			infostring += "• Year length: " + Math.round(yearlen) + " Earth minutes<br>"
-		}
-		
-		settings.setValue("planet", infostring);	
-		settings.showControl("planet");
-	}else{
-		settings.hideControl("planet");
-	}
-	
-	if (framecount % 1 == 0){
-		update();
-	}
-	framecount++;
-	
+function windowResized() {
 	var outerw  = window.innerWidth;
 	var outerh = window.innerHeight;
 	var window_aspect_ratio = outerh/outerw
@@ -88,6 +34,28 @@ function draw(){
 	var cw = bodydiv.offsetWidth - 30;
 	var ch = cw * (window_aspect_ratio)
 	resizeCanvas(windowWidth, windowHeight);
+
+}
+
+function setup(){
+
+	document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+    document.body.scroll = "no"; // ie only
+	
+	createCanvas(windowWidth, windowHeight);
+	frameRate(60);
+
+	//settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-02", mainelement);	
+}
+
+function draw(){
+
+	GuiHandler.update();
+	
+	if (framecount % 1 == 0){
+		update();
+	}
+	framecount++;
 	
 	background(13,0,13);
 	
@@ -187,6 +155,10 @@ function draw(){
 		}
 	}
 	
+	stroke(255); fill(255);
+	textSize(16);
+	textFont("Courier");
+	text("FPS: " + Math.round(frameRate()), width - 75, 16);
 }
 
 var drawEntity = function(e, scale){

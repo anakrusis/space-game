@@ -46,11 +46,7 @@ class EntityBody extends Entity {
             var pointx = rot_x(angle, this.radius + this.terrain[i], 0.0) + this.x;
             var pointy = rot_y(angle, this.radius + this.terrain[i], 0.0) + this.y;
 			
-			//console.log(pointx + "," + pointy);
-			
 			absPoints.push(pointx); absPoints.push(pointy);
-            //absPoints[2 * i] = pointx;
-            //absPoints[(2 * i) + 1] = pointy;
         }
 
         return absPoints;
