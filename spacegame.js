@@ -4,6 +4,8 @@ var selectedEntity = null; // entity which the mouse has clicked on
 var singletouchtimer = 0;
 var cursorAbsX; var cursorAbsY;
 
+var pathPredictEnabled = true;
+
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
@@ -209,6 +211,8 @@ var drawEntity = function(e, scale){
 }
 
 var predictFuturePoints = function(player){
+	if (!pathPredictEnabled){ return [[],[]]; }
+	
 	var futurePointsX = [];
 	var futurePointsY = [];
 
@@ -239,6 +243,8 @@ function touchStarted() {
 function keyPressed() {
 	if (keyCode === 70){
 		fullscreen(!fullscreen());
+	}else if (keyCode === 80){
+		pathPredictEnabled = !pathPredictEnabled;
 	}
 }
 

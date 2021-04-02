@@ -16,28 +16,22 @@ class EntityOreVein extends Entity {
 	
 	getAbsolutePoints(){
 		
-		// This is because of the boundary like (on a 127-size planet) 125, 126, 0, 1, 2...
-		// becomes 125, 126, 127, 128, 129... and iterates smoothely
 		var ende = this.endindex;
 		if (this.endindex < this.startindex){
-			ende += this.getPlanet().terrainSize;
+			ende += this.terrainSize;
 		}
 		
-		var points = [];
-		for (var i = this.startindex; i <= ende; i++){
-			
-			var index = loopyMod(i, this.getPlanet().terrainSize);
-			
-			var px = this.getPlanet().getAbsolutePoints()[2 * index];
-            var py = this.getPlanet().getAbsolutePoints()[(2 * index) + 1];
-			
-			points.push(px); points.push(py);
-		}
+		// This is because of the boundary like (on a 127-size planet) 125, 126, 0, 1, 2...
+		// becomes 125, 126, 127, 128, 129... and iterates smoothely
+		var points = this.getPlanet().getAbsPointsSlice(this.startindex, this.endindex);
 		
 		var middleindex = Math.round( (ende + this.startindex) / 2 ); //console.log(middleindex);
 		middleindex = loopyMod(middleindex, this.getPlanet().terrainSize);
-		var terrx = this.getPlanet().getAbsolutePoints()[2 * middleindex];
-		var terry = this.getPlanet().getAbsolutePoints()[(2 * middleindex) + 1];
+		
+		var terr = this.getPlanet().getAbsPointsSlice(middleindex, middleindex);
+		
+		var terrx = terr[0]
+		var terry = terr[1]
 		
 		var dist = CollisionUtil.euclideanDistance(this.getPlanet().x, this.getPlanet().y, terrx, terry);
 		//var angle = Math.atan2(terry - this.getPlanet().y, terrx - this.getPlanet().x);

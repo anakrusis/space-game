@@ -14,6 +14,28 @@ class EntityBody extends Entity {
 		this.ticksExisted++;
 	}
 	
+	// returns a "pizza slice" of points on the body, for optimization
+	// (nowadays planets and other bodies are so big, that getAbsolutePoints() is really slow to iterate through, and can have up to thousands of elements)
+	getAbsPointsSlice(startindex, endindex){
+		var ende = endindex;
+		if (endindex < startindex){
+			ende += this.terrainSize;
+		}
+		
+		var points = [];
+		for (var i = startindex; i <= ende; i++){
+			
+			var index = loopyMod(i, this.terrainSize);
+			
+			var angle = this.dir + (index * (2 * Math.PI) / this.terrainSize)
+            var pointx = rot_x(angle, this.radius + this.terrain[index], 0.0) + this.x;
+            var pointy = rot_y(angle, this.radius + this.terrain[index], 0.0) + this.y;
+			
+			points.push(pointx); points.push(pointy);
+		}
+		return points;
+	}
+	
 	getAbsolutePoints(){
 
         var absPoints = [];
