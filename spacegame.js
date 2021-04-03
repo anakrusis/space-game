@@ -1,3 +1,5 @@
+BYPASS_P5_CLICK = false;
+
 var framecount = 0;
 var hoverEntity    = null; // entity that the mouse is hovering over
 var selectedEntity = null; // entity which the mouse has clicked on
@@ -225,6 +227,11 @@ function mouseMoved() {
 }
 
 function mouseClicked() {
+	
+	if (BYPASS_P5_CLICK){ BYPASS_P5_CLICK = false; return; }
+	
+	if (GuiHandler.activeGroup != GROUP_INFOBAR){ return; };
+	
 	if (hoverEntity){
 		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
 		if (CollisionUtil.isEntityCollidingWithEntity(cursorEntity, hoverEntity)){

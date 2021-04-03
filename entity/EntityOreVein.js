@@ -36,7 +36,7 @@ class EntityOreVein extends Entity {
 		var dist = CollisionUtil.euclideanDistance(this.getPlanet().x, this.getPlanet().y, terrx, terry);
 		//var angle = Math.atan2(terry - this.getPlanet().y, terrx - this.getPlanet().x);
 		var angle = this.getPlanet().dir + (middleindex * (2 * Math.PI) / this.getPlanet().terrainSize);
-		dist -= 10;
+		dist -= (2 * (ende - this.startindex));
 		var bottompointx = this.getPlanet().x + rot_x( angle, dist, 0 )
 		var bottompointy = this.getPlanet().y + rot_y( angle, dist, 0 )
 		points.push(bottompointx); points.push(bottompointy);
