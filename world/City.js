@@ -16,6 +16,13 @@ class City {
 		this.centerIndex = -1;
 	}
 	
+	getAvailableMissions(){
+		
+		var n = new Mission(this.uuid, this.uuid);
+		
+		return [ n ]
+	}
+	
 	update(){
 		
 	}

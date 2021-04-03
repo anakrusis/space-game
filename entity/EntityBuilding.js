@@ -8,6 +8,10 @@ class EntityBuilding extends Entity {
 		this.cityUUID   = null;
 	}
 	
+	getCity(){
+		return server.world.cities[this.cityUUID];
+	}
+	
 	getRelRenderPoints(){
 		return [
 				-1, -1,

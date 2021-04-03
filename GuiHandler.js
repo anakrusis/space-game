@@ -32,15 +32,18 @@ class GuiGroup {
 		this.panel.hideTitle(key);
 	}
 	addButton(key,c){
+		
 		// Buttons are made to only work on the active group
 		var callback = function() {
+			
 			if (GuiHandler.activeGroup == this){
 				c();
 			}
 			BYPASS_P5_CLICK = true;
 		}
+		var newc = callback.bind(this);
 		
-		this.panel.addButton(key,callback);
+		this.panel.addButton(key,newc);
 	}
 	
 	update(){
@@ -64,7 +67,29 @@ class GuiGroup {
 var GROUP_MISSIONS = new GuiGroup(0,0,"Missions"); GROUP_MISSIONS.hide();
 GROUP_MISSIONS.update = function(){
 	
+}
+GROUP_MISSIONS.show = function(){
+	this.panel.show();
+	this.visible = true;
+	
+	if (!(selectedEntity instanceof BuildingSpaceport)){ return; }
+	
+	for (key in this.panel._controls){
+		var control = this.panel._controls[key];
+		if (control){
+			this.panel.removeControl(key);
+		}
+	}
+	
 	this.panel.setPosition(width/2, height/2);
+	
+	var selectedCity = selectedEntity.getCity();
+	var missions = selectedCity.getAvailableMissions();
+	
+	for (mission of missions){
+		this.addButton("mission", function(){});
+	}		
+	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; 	console.log("poobve"); });
 }
 
 // INFOBAR: Left hand bar with the information on various things
@@ -107,7 +132,7 @@ GROUP_INFOBAR.update = function(){
 var c = function(){
 	
 	GROUP_MISSIONS.show(); GuiHandler.activeGroup = GROUP_MISSIONS;
-	//console.log("butt");
+	console.log("butt");
 	//GROUP_INFOBAR.hide();
 	//return false;
 }
