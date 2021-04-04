@@ -157,6 +157,9 @@ function draw(){
 		}
 	}
 	
+	fill(255,0,0);
+	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);
+	
 	stroke(255); fill(255);
 	textSize(16);
 	textFont("Courier");
@@ -223,7 +226,7 @@ function keyPressed() {
 }
 
 function mouseMoved() {
-	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
+	
 }
 
 function mouseClicked() {
@@ -233,12 +236,13 @@ function mouseClicked() {
 	if (GuiHandler.activeGroup != GROUP_INFOBAR){ return; };
 	
 	if (hoverEntity){
-		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
+/* 		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
 		if (CollisionUtil.isEntityCollidingWithEntity(cursorEntity, hoverEntity)){
 			selectedEntity = hoverEntity;
 		}else{
 			selectedEntity = null;
-		}
+		} */
+		selectedEntity = hoverEntity;
 	}else{
 		selectedEntity = null;
 	}
@@ -301,6 +305,8 @@ var update = function(){
 	}else if (keyIsDown(69)) { // e
 		cam_zoom -= (cam_zoom / 25);
 	}
+	
+	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
 	
 	// TOUCHSCREEN HANDLING
 	

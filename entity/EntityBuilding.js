@@ -55,7 +55,7 @@ class EntityBuilding extends Entity {
 		}
 		
 		if (this.planetIndex > -1 && this.getGroundedBody() != null){
-            this.moveToIndexOnPlanet(this.planetIndex, this.getGroundedBody());
+            this.moveToIndexOnPlanet(this.planetIndex, this.getGroundedBody(), 1);
         }
 		this.ticksExisted++;
 	}

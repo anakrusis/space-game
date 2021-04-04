@@ -2,7 +2,7 @@ class BodyOcean extends EntityBody {
 	constructor(x,y,dir,radius,dependentBodyUUID){
 		super(x,y,dir,radius);
 		this.dependentBodyUUID = dependentBodyUUID;
-		this.rotSpeed = 0.01;
+		this.rotSpeed = 0.001;
 		this.filled = true;
 		this.name = "Ocean";
 		this.color = [0, 30, 80];

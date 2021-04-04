@@ -96,7 +96,7 @@ class World {
 			var homeplanet = this.chunks[homechunkx][homechunky].bodies[homeplanid];
 			
 			var homecity   = homenation.getCapitalCity(); var homeindex = homecity.centerIndex;
-			this.player.moveToIndexOnPlanet(homeindex, homeplanet);
+			this.player.moveToIndexOnPlanet(homeindex, homeplanet, 0);
         }
 		
 		this.worldTime++;

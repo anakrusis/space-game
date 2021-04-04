@@ -146,7 +146,7 @@ class BodyPlanet extends EntityBody {
             building.groundedBodyUUID = this.uuid;
 			building.planetIndex = index;
 
-            building.moveToIndexOnPlanet(index, this);
+            building.moveToIndexOnPlanet(index, this, 1);
 			server.world.spawnEntity(building);
 			
 			if (city){

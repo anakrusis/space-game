@@ -89,7 +89,7 @@ GROUP_MISSIONS.show = function(){
 	for (mission of missions){
 		this.addButton("mission", function(){});
 	}		
-	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; 	console.log("poobve"); });
+	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; });
 }
 
 // INFOBAR: Left hand bar with the information on various things
@@ -132,7 +132,7 @@ GROUP_INFOBAR.update = function(){
 var c = function(){
 	
 	GROUP_MISSIONS.show(); GuiHandler.activeGroup = GROUP_MISSIONS;
-	console.log("butt");
+
 	//GROUP_INFOBAR.hide();
 	//return false;
 }
