@@ -1,11 +1,25 @@
 class EntityBuilding extends Entity {
-	constructor(x,y,dir){
-		super(x,y,dir);
+	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
+		super(x,y,0);
 		this.name = "Building";
 		this.filled = false;
-		this.planetIndex = -1;
-		this.planetUUID = null;
+		this.startindex = startindex;
+		this.endindex   = endindex;
+		this.planetUUID = planetuuid;
 		this.cityUUID   = null;
+	}
+	
+	// Number of tiles between start and end tile indexes (accounts for wrap-around)
+	getSize(){
+		var ende = this.endindex;
+		if (this.endindex < this.startindex){
+			ende += this.getPlanet().terrainSize;
+		}
+		return 1 + (ende - this.startindex);
+	}
+	
+	getPlanet(){
+		return this.getChunk().getBody(this.planetUUID);
 	}
 	
 	getCity(){
@@ -33,11 +47,12 @@ class EntityBuilding extends Entity {
 	}
 	
 	getAbsolutePoints() {
+		
         var relpoints = [
-                -1, -1,
-                1.5, -1,
-                1.5, 1,
-                -1, 1
+                -1, -1 * this.getSize(),
+                1.5, -1 * this.getSize(),
+                1.5, 1 * this.getSize(),
+                -1, 1 * this.getSize()
         ]
         var abspoints = [];
         for (var i = 0; i < relpoints.length; i += 2){
@@ -54,8 +69,15 @@ class EntityBuilding extends Entity {
 			this.color = nation.color;
 		}
 		
-		if (this.planetIndex > -1 && this.getGroundedBody() != null){
-            this.moveToIndexOnPlanet(this.planetIndex, this.getGroundedBody(), 1);
+		var ende = this.endindex;
+		if (this.endindex < this.startindex){
+			ende += this.getPlanet().terrainSize;
+		}
+		var middleindex = ( (ende + this.startindex) / 2 ); 
+		middleindex = loopyMod(middleindex, this.getPlanet().terrainSize);
+		
+		if (this.startindex > -1 && this.getGroundedBody() != null){
+            this.moveToIndexOnPlanet(middleindex, this.getGroundedBody(), 1);
         }
 		this.ticksExisted++;
 	}

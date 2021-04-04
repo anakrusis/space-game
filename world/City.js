@@ -27,9 +27,12 @@ class City {
 		
 	}
 	
-	registerBuilding(building, index){
+	registerBuilding(building){
 		this.buildingUUIDs.push(building.uuid);
-		this.claimedTileIndexes.push(index);
+		
+		for (var i = building.startindex; i <= building.endindex; i++){
+			this.claimedTileIndexes.push(i);
+		}
 		building.cityUUID = this.uuid;
 	}
 	

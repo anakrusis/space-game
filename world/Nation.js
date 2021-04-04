@@ -1,7 +1,7 @@
 class Nation {
 	constructor(homeChunkX, homeChunkY, homePlanetUUID){
 		this.name = "Nation";
-		this.color = [ 0, 255, 255 ];
+		this.color = RandomUtil.randomNationColor();
 		this.uuid = Math.round(Math.random() * 10000000000);
 		this.homeChunkX = homeChunkX;
 		this.homeChunkY = homeChunkY;

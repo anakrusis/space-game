@@ -2,29 +2,25 @@ class BodyPlanet extends EntityBody {
 	constructor(x,y,dir,orbitDistance,starUUID){
 		super(x, y, dir, RandomUtil.fromRangeF(256,1024));
 		
-		this.starUUID = starUUID;
-		this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
+		// Core properties
+		this.name = Nymgen.newName();
+		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
+		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
+		this.tiles = [];
+		this.generateTerrain();
+		this.hasOcean  = false;
 		
+		// Physics properties
+		this.canEntitiesCollide = true;
+		this.rotSpeed = RandomUtil.fromRangeF(0.00004,0.00010);
 		this.orbitDistance = orbitDistance;
         this.orbitPeriod = 300 * orbitDistance; //RandomUtil.fromRangeI(7000000, 20000000);
-		
-		this.rotSpeed = RandomUtil.fromRangeF(0.00004,0.00010)
-        //this.rotSpeed = 0.000082;
-		//this.rotSpeed = 2 * Math.PI / 60;
-		
-		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
-		
-        this.canEntitiesCollide = true;
-
-        this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
-		this.generateTerrain();
-		
 		this.orbitStart =  RandomUtil.fromRangeF(0, Math.PI * 2);
         this.orbitAngle = this.orbitStart;
 		
-		this.name = Nymgen.newName();
-		
-		this.hasOcean  = false;
+		// Referential properties
+		this.starUUID = starUUID;
+		//this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		this.oceanUUID = null;
 		
 		var oreveinscount = RandomUtil.fromRangeI(0,10);
@@ -62,6 +58,10 @@ class BodyPlanet extends EntityBody {
 			
 			}
 			this.terrain.push( octsum ); 
+			
+			// now creating the tile for the planet
+			var tile = new Tile( i, octsum );
+			this.tiles.push(tile);
 		}
 		
 		var noise2;
@@ -124,13 +124,21 @@ class BodyPlanet extends EntityBody {
 				for (var i = -2; i <= 2; i++){
 					
 					var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
+					
 					var newbuilding;
 					if (i == 0){
-						newbuilding = new BuildingSpaceport( this.x, this.y, 0);
+						newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+						
+					}else if (i == 1){
+						var ei = loopyMod(relIndex + 1, this.terrainSize);
+						newbuilding = new BuildingBigTest( this.x, this.y, this.uuid, city.uuid, relIndex, ei);
+						
 					}else{
-						newbuilding = new EntityBuilding( this.x, this.y, 0);
+						newbuilding = new EntityBuilding( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
 					}
-					this.spawnBuilding( newbuilding, relIndex, city );
+					this.spawnBuilding( newbuilding, city );
+					
+					this.tiles[relIndex].hasRoad = true;
 				}
 				city.centerIndex = cityCenterIndex;
 				server.world.cities[city.uuid] = city;
@@ -139,18 +147,28 @@ class BodyPlanet extends EntityBody {
 		}
 	}
 	
-	spawnBuilding(building,index, city){
-		if (this.buildingUUIDs[index] == null){
-			this.buildingUUIDs[index] = building.uuid;
+	spawnBuilding(building, city){
+		if (this.tiles[building.startindex].buildingUUID == null){
+			
+			var ende = building.endindex;
+			if (building.endindex < building.startindex){
+				ende += this.terrainSize;
+			}
+			
+			for (var i = building.startindex; i <= ende; i++){
+				
+				var index = loopyMod(i, this.terrainSize);
+				
+				this.tiles[index].buildingUUID = building.uuid;
+			}
 			building.grounded = true;
             building.groundedBodyUUID = this.uuid;
-			building.planetIndex = index;
 
-            building.moveToIndexOnPlanet(index, this, 1);
+            building.moveToIndexOnPlanet(building.startindex, this, 1);
 			server.world.spawnEntity(building);
 			
 			if (city){
-				city.registerBuilding(building,index);
+				city.registerBuilding(building);
 			}
 			return true;
 		}

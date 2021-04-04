@@ -94,7 +94,7 @@ GROUP_MISSIONS.show = function(){
 
 // INFOBAR: Left hand bar with the information on various things
 
-var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-03"); GROUP_INFOBAR.addHTML("entityinfo");
+var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-04"); GROUP_INFOBAR.addHTML("entityinfo");
 GROUP_INFOBAR.update = function(){
 	
 	this.panel.setWidth(width/4);

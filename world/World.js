@@ -29,6 +29,18 @@ class World {
 		var capitalCity = homePlanet.spawnCity( playerNation );
 		playerNation.cityUUIDs.push(capitalCity.uuid);
 		playerNation.capitalCityUUID = capitalCity.uuid;
+		
+		// Other nations
+		for (var i = 0; i < 4; i++){
+			
+			var nat = new Nation(0, 0, homePlanet.uuid);
+			this.nations[nat.uuid] = nat;
+		
+			var natcap = homePlanet.spawnCity( nat );
+			nat.cityUUIDs.push(natcap.uuid);
+			nat.capitalCityUUID = natcap.uuid;
+		}
+		
 		//homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0, capitalCity );
 		
 		this.player = new EntityPlayer(7500, 8192, 0)
@@ -88,7 +100,7 @@ class World {
 			
 			selectedEntity = null;
 			this.player.dead = false; this.player.velocity = 0; 
-			this.player.boostForce = new ForceVector(0,0);
+			this.player.boostForce = new ForceVector(0,0); this.player.forceVectors = [];
 			
 			var homenation = this.nations[this.player.nationUUID];
 			var homeplanid = homenation.homePlanetUUID;
