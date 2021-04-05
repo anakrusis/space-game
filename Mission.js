@@ -4,6 +4,12 @@ class Mission {
 			
 		this.sourceCityUUID = sourceCityUUID;
 		this.destinationCityUUID = destinationCityUUID;
+		this.reward = 500;
+		this.timeRemaining = 600;
+		
+		var dest = server.world.cities[ this.destinationCityUUID ];
+		// temporarily baked in for now
+		this.desc = "The city of " + dest.name + " is awaiting a delivery of items."
 	}
 	
 	getSourceCity(){
@@ -15,5 +21,9 @@ class Mission {
 
 		return server.world.cities[ this.destinationCityUUID ];
 	
+	}
+	
+	update(){
+		this.timeRemaining--;
 	}
 }

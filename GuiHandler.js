@@ -8,7 +8,10 @@ class GuiHandler {
 	static update(){
 		
 		for (var i = 0; i < this.groups.length; i++){
-			this.groups[i].update();
+			var group = this.groups[i];
+			if (this.activeGroup == group){
+				group.update();
+			}
 		}
 	}
 	
@@ -59,14 +62,54 @@ class GuiGroup {
 		this.panel.show();
 		this.visible = true;
 	}
+	
+	clearAllElements(){
+		this.elements = {};
+		
+		for (key in this.panel._controls){
+			var control = this.panel._controls[key];
+			if (control){
+				this.panel.removeControl(key);
+			}
+		}
+	}
 }
 
+// MISSION INFO: Screen giving info on the particular mission selected
 
-// MISSIONS: Menu with the missions available
+var GROUP_MISSION_INFO = new GuiGroup(0,0,"Mission Info"); GROUP_MISSION_INFO.hide(); GROUP_MISSION_INFO.panel.setWidth(500);
 
-var GROUP_MISSIONS = new GuiGroup(0,0,"Missions"); GROUP_MISSIONS.hide();
-GROUP_MISSIONS.update = function(){
+GROUP_MISSION_INFO.show = function(){
+		
+	this.panel.show();
+	this.visible = true;
+	this.panel.setPosition(width/2, height/2);	
+	this.clearAllElements();
 	
+	var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name + "<br><br>";
+	infostring += "$" + mission.reward;
+	this.addHTML("text"); this.panel.setValue("text", infostring);	
+	
+	this.addButton("Accept", function(){
+			
+		//selectedMission = mission;
+		GROUP_MISSION_INFO.hide(); GuiHandler.activeGroup = GROUP_INFOBAR;
+		server.world.getPlayer().currentMission = selectedMission;
+			
+	});
+	this.addButton("Back", function(){
+			
+		//selectedMission = mission;
+		//GROUP_MISSIONS.hide(); GROUP_MISSION_INFO.show();
+		GROUP_MISSIONS.show(); GROUP_MISSION_INFO.hide(); GuiHandler.activeGroup = GROUP_MISSIONS;
+	});
+}
+
+// MISSIONS: Menu with the list of missions available
+
+var GROUP_MISSIONS = new GuiGroup(0,0,"Missions"); GROUP_MISSIONS.hide(); GROUP_MISSIONS.panel.setWidth(500);
+GROUP_MISSIONS.update = function(){
+	//this.panel.setPosition(width/2 - , height/2);
 }
 GROUP_MISSIONS.show = function(){
 	this.panel.show();
@@ -74,13 +117,7 @@ GROUP_MISSIONS.show = function(){
 	
 	if (!(selectedEntity instanceof BuildingSpaceport)){ return; }
 	
-	for (key in this.panel._controls){
-		var control = this.panel._controls[key];
-		if (control){
-			this.panel.removeControl(key);
-		}
-	}
-	
+	this.clearAllElements();
 	this.panel.setPosition(width/2, height/2);
 	
 	var selectedCity = selectedEntity.getCity();
@@ -88,19 +125,45 @@ GROUP_MISSIONS.show = function(){
 	
 	for (mission of missions){
 		
-		var missionname = mission.getSourceCity().name + " to " + mission.getDestinationCity().name
+		var missionname = mission.getSourceCity().name + " to " + mission.getDestinationCity().name + "...";
 		
-		this.addButton(missionname, function(){});
+		this.addButton(missionname, function(){
+			
+			selectedMission = mission;
+			GROUP_MISSIONS.hide(); GROUP_MISSION_INFO.show(); GuiHandler.activeGroup = GROUP_MISSION_INFO;
+			
+		});
 	}		
 	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; });
 }
 
 // INFOBAR: Left hand bar with the information on various things
 
-var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-04"); GROUP_INFOBAR.addHTML("entityinfo");
+var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-05"); 
+GROUP_INFOBAR.addHTML("missioninfo"); GROUP_INFOBAR.addHTML("entityinfo");
 GROUP_INFOBAR.update = function(){
 	
 	this.panel.setWidth(width/4);
+	
+	var mission = server.world.getPlayer().currentMission;
+	if (mission){
+		var infostring = "<b>" + mission.getSourceCity().name + " to " + mission.getDestinationCity().name;
+		var missiontime_min = ~~(mission.timeRemaining / 60) ;
+		var missiontime_sec = ~~(mission.timeRemaining % 60 );
+		
+		var outtime = ""
+		outtime += "" + missiontime_min + ":" + (missiontime_sec < 10 ? "0" : "");
+		outtime += "" + missiontime_sec;
+		
+		infostring += " (" + outtime + ")" + "</b><br>";
+		
+		infostring += mission.desc;
+		
+		this.panel.setValue("missioninfo", infostring);
+		this.panel.showControl("missioninfo");
+	}else{
+		this.panel.hideControl("missioninfo");
+	}
 	
 	var e = null;
 	if (selectedEntity){

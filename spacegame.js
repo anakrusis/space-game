@@ -3,6 +3,7 @@ BYPASS_P5_CLICK = false;
 var framecount = 0;
 var hoverEntity    = null; // entity that the mouse is hovering over
 var selectedEntity = null; // entity which the mouse has clicked on
+var selectedMission = null; // mission selected in the menus
 var singletouchtimer = 0;
 var cursorAbsX; var cursorAbsY;
 
@@ -11,7 +12,7 @@ var pathPredictEnabled = true;
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
-MAX_CITY_TEXT_ZOOM = 1; // anything smaller than this will not render city label names
+MIN_CITY_TEXT_ZOOM = 0.04; // anything smaller than this will not render city label names
 
 MAX_INTERPLANETARY_ZOOM = 0.333; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
 MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
@@ -153,6 +154,8 @@ function draw(){
 	}
 	
 	for (key in client.world.cities){
+		
+		if (cam_zoom < MIN_CITY_TEXT_ZOOM){ break; };
 		
 		var city = client.world.cities[key]; var nation = city.getNation();
 		var centerslice = city.getPlanet().getAbsPointsSlice( city.centerIndex, city.centerIndex );
