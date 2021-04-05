@@ -11,6 +11,8 @@ var pathPredictEnabled = true;
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
+MAX_CITY_TEXT_ZOOM = 1; // anything smaller than this will not render city label names
+
 MAX_INTERPLANETARY_ZOOM = 0.333; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
 MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
 // anything smaller than this will only render stars (no planets)
@@ -63,7 +65,9 @@ function draw(){
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
-		if (!(e instanceof EntityPlayer || e instanceof EntityOreVein)){ drawEntity(e); }
+		if (e.isOnScreen()){
+			if (!(e instanceof EntityPlayer || e instanceof EntityOreVein)){ drawEntity(e); }
+		}
 	}
 	
 	// Optimized version that only renders the nearest body when above a certain zoom level
@@ -119,15 +123,6 @@ function draw(){
 		}
 	}
 	
-	if (selectedEntity){
-		var oldcolor = selectedEntity.color; var oldfilled = selectedEntity.filled;
-		selectedEntity.color = [ 255, 255 * (1 + Math.sin(framecount / 15)), 0 ]; selectedEntity.filled = false;
-		strokeWeight(5);
-		drawEntity(selectedEntity);
-		strokeWeight(1);
-		selectedEntity.color = oldcolor, selectedEntity.filled = oldfilled;
-	}
-	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
 		if (e.isOnScreen()){
@@ -157,6 +152,47 @@ function draw(){
 		}
 	}
 	
+	for (key in client.world.cities){
+		
+		var city = client.world.cities[key]; var nation = city.getNation();
+		var centerslice = city.getPlanet().getAbsPointsSlice( city.centerIndex, city.centerIndex );
+		var centerx = centerslice[0]; var centery = centerslice[1];
+		
+		var angle = city.getPlanet().dir + ( 2 * Math.PI ) * ( city.centerIndex / city.getPlanet().terrainSize );
+		//angle += Math.PI/4
+		angle = loopyMod( angle, Math.PI*2 );
+		
+		var radius = 20 + (16 * cam_zoom);
+		centerx += ( radius * Math.cos(angle)); centery += ( radius * Math.sin(angle));
+		
+		stroke( nation.color[0], nation.color[1], nation.color[2] ); 
+		fill  ( nation.color[0], nation.color[1], nation.color[2] );
+		
+		push();
+		translate(tra_x(centerx), tra_y(centery));
+		
+		//angle += Math.PI/2
+		var citystring;
+		
+		if (angle > Math.PI / 2 && angle < (3 * Math.PI)/2){
+			angle -= Math.PI ;
+			angle = loopyMod( angle, Math.PI*2 );
+			textAlign(RIGHT);
+			citystring = city.name + "🠖 ";
+		}else{
+			textAlign(LEFT);
+			citystring = "🠔 " + city.name;
+		}
+		
+		rotate(angle);
+		
+		textSize(24);
+		text(citystring, 0, 0);
+		
+		pop();
+		textAlign(LEFT);
+	}
+	
 	fill(255,0,0);
 	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);
 	
@@ -176,7 +212,13 @@ var drawEntity = function(e, scale){
 	}else{
 		noFill();
 	}
-	stroke(e.color[0], e.color[1], e.color[2]);
+	if (selectedEntity == e){
+		stroke(255, 255 * (1 + Math.sin(framecount / 15)), 0);
+		strokeWeight(5);
+	}else{
+		stroke(e.color[0], e.color[1], e.color[2]);
+		strokeWeight(1);
+	}
 	var pts = e.getRenderPoints();
 	beginShape();
 	for (i = 0; i < pts.length; i += 2){
@@ -185,6 +227,22 @@ var drawEntity = function(e, scale){
 		vertex(tra_x(px), tra_y(py));
 	}
 	endShape(CLOSE);
+	
+	if (e instanceof BodyPlanet){
+		stroke(128);
+		strokeWeight(0.5 * cam_zoom);
+		for (var i = 0; i < e.terrainSize; i++){
+			if (e.tiles[ i ].hasRoad){
+				beginShape();
+				//console.log("e");
+				var slice = e.getAbsPointsSlice( i, i );
+				vertex(tra_x(slice[0]), tra_y(slice[1])); vertex(tra_x(slice[2]), tra_y(slice[3]));
+				endShape(CLOSE);
+			}
+		}
+		strokeWeight(1);
+	}
+	strokeWeight(1);
 }
 
 var predictFuturePoints = function(player){

@@ -87,7 +87,10 @@ GROUP_MISSIONS.show = function(){
 	var missions = selectedCity.getAvailableMissions();
 	
 	for (mission of missions){
-		this.addButton("mission", function(){});
+		
+		var missionname = mission.getSourceCity().name + " to " + mission.getDestinationCity().name
+		
+		this.addButton(missionname, function(){});
 	}		
 	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; });
 }

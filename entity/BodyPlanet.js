@@ -100,51 +100,68 @@ class BodyPlanet extends EntityBody {
 		return out;
 	}
 	
-	// will try to find a position on the planet as such:
-	// randomly picks a center point. makes sure it has at least 5 consecutive tiles free in each direction.
+	// returns the city if it can do it, else returns false.
 	spawnCity(nation){
 		var cityPlaceAttempts = 30;
 		var city = new City(nation.uuid, this.getChunk().x, this.getChunk().y, this.uuid );
-		
+
+		var cityRadius;
+
+		// The first part tries to reserve the neccessary amount of space to place the city
+		// based from a center point outwards in a certain number of tiles
 		for (var a = 0; a < cityPlaceAttempts; a++){
 			
 			var cityCenterIndex = RandomUtil.fromRangeI(0, this.terrainSize);
+			cityRadius = 8;
 			
 			var cityCenterValid = true;
-			for (var i = -2; i <= 2; i++){
+			for (var i = -cityRadius; i <= cityRadius; i++){
 				
 				var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
-				if (this.terrain[relIndex] <= 0){
-					cityCenterValid = false;
-					break;
+				var tile = this.tiles[relIndex];
+				
+				// Tiles under sea level ( or very close to sea level ) cannot be part of a city. 
+				if (tile.height <= 0.1){
+					cityCenterValid = false; break;
+				}
+				
+				// Tiles which already have buildings on them cannot be part of a city
+				if (tile.buildingUUID != null){
+					cityCenterValid = false; break;
 				}
 			}
+			
 			if (cityCenterValid){
-				
-				for (var i = -2; i <= 2; i++){
-					
-					var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
-					
-					var newbuilding;
-					if (i == 0){
-						newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
-						
-					}else if (i == 1){
-						var ei = loopyMod(relIndex + 1, this.terrainSize);
-						newbuilding = new BuildingBigTest( this.x, this.y, this.uuid, city.uuid, relIndex, ei);
-						
-					}else{
-						newbuilding = new EntityBuilding( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
-					}
-					this.spawnBuilding( newbuilding, city );
-					
-					this.tiles[relIndex].hasRoad = true;
-				}
-				city.centerIndex = cityCenterIndex;
-				server.world.cities[city.uuid] = city;
-				return city;
+				break;
 			}
 		}
+		// This is what happens if all the tries fail and no city could be placed..
+		if (!cityCenterValid){
+			return false;
+		}
+		
+		for (var i = -cityRadius; i <= cityRadius; i++){
+			
+			var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
+			
+			var newbuilding;
+			if (i == 0){
+				newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+				
+			}else if (i == 1){
+				var ei = loopyMod(relIndex + 1, this.terrainSize);
+				newbuilding = new BuildingBigTest( this.x, this.y, this.uuid, city.uuid, relIndex, ei);
+				
+			}else{
+				newbuilding = new EntityBuilding( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+			}
+			this.spawnBuilding( newbuilding, city );
+			
+			this.tiles[relIndex].hasRoad = true;
+		}
+		city.centerIndex = cityCenterIndex;
+		server.world.cities[city.uuid] = city;
+		return city;
 	}
 	
 	spawnBuilding(building, city){

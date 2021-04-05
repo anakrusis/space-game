@@ -23,7 +23,7 @@ class EntityBody extends Entity {
 		}
 		
 		var points = [];
-		for (var i = startindex; i <= ende; i++){
+		for (var i = startindex; i <= (ende+1); i++){
 			
 			var index = loopyMod(i, this.terrainSize);
 			

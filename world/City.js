@@ -1,6 +1,6 @@
 class City {
 	constructor(nationuuid, chunkx, chunky, planetuuid){
-		this.name = "City";
+		this.name = Nymgen.newName();
 		this.uuid = Math.round(Math.random() * 10000000000);
 		
 		this.planetUUID = planetuuid;
@@ -16,9 +16,20 @@ class City {
 		this.centerIndex = -1;
 	}
 	
+	getPlanet(){
+		return server.world.getChunk( this.chunkx, this.chunky ).getBody( this.planetUUID )
+	}
+	
+	getNation(){
+		return server.world.nations[ this.nationUUID ] ;
+	}
+	
 	getAvailableMissions(){
 		
-		var n = new Mission(this.uuid, this.uuid);
+		var keys = Object.keys( server.world.cities );
+		var randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+		
+		var n = new Mission(this.uuid, randomcity.uuid);
 		
 		return [ n ]
 	}
