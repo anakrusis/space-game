@@ -9,7 +9,7 @@ class GuiHandler {
 		
 		for (var i = 0; i < this.groups.length; i++){
 			var group = this.groups[i];
-			if (this.activeGroup == group){
+			if (group.active){
 				group.update();
 			}
 		}
@@ -101,8 +101,13 @@ class GuiGroup {
 	}
 	
 	render(){
-		for (var element in this.elements){
-			console.log(element);
+		for (var i = 0; i < this.elements.length; i++){
+			var e  = this.elements[i];
+			
+			fill(0);
+			stroke(255);
+			
+			rect( e.x, e.y, e.width, e.height );
 		}
 	}
 	
@@ -126,7 +131,10 @@ class GuiGroup {
 	}
 	
 	update(){
-			
+		for (var i = 0; i < this.elements.length; i++){
+			var e  = this.elements[i];
+			e.update();
+		}
 	}
 	
 	hide(){
@@ -149,6 +157,25 @@ class GuiGroup {
 			}
 		}
 	}
+}
+
+var GROUP_HOTBAR = new GuiGroup(50,50,"hotbar");
+for (var i = 0; i < 9; i++){
+	
+	var he = new GuiElement( 0, 0, 64, 64 ); he.index = i;
+	
+	he.update = function(){
+		
+		// 0  1  2  3  4  5  6  7  8  
+		// -4 -3 -2 -1 0  1  2  3  4  
+		
+		var mid = width/2;
+		this.x = mid + (this.index - 4.5) * this.width;
+		this.y = height - this.height - 16;
+		
+	}
+	
+	GROUP_HOTBAR.addElement( he )
 }
 
 // MISSION INFO: Screen giving info on the particular mission selected

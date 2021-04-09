@@ -5,6 +5,7 @@ class EntityPlayer extends Entity {
 		// Core Properties
 		this.name = "Player";
 		this.color = [ 0, 255, 255 ];
+		this.cargo = [];
 		
 		// Physical properties
 		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
