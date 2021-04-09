@@ -153,48 +153,9 @@ function draw(){
 		}
 	}
 	
-	for (key in client.world.cities){
-		
-		if (cam_zoom < MIN_CITY_TEXT_ZOOM){ break; };
-		
-		var city = client.world.cities[key]; var nation = city.getNation();
-		var centerslice = city.getPlanet().getAbsPointsSlice( city.centerIndex, city.centerIndex );
-		var centerx = centerslice[0]; var centery = centerslice[1];
-		
-		var angle = city.getPlanet().dir + ( 2 * Math.PI ) * ( city.centerIndex / city.getPlanet().terrainSize );
-		//angle += Math.PI/4
-		angle = loopyMod( angle, Math.PI*2 );
-		
-		var radius = 20 + (16 * cam_zoom);
-		centerx += ( radius * Math.cos(angle)); centery += ( radius * Math.sin(angle));
-		
-		stroke( nation.color[0], nation.color[1], nation.color[2] ); 
-		fill  ( nation.color[0], nation.color[1], nation.color[2] );
-		
-		push();
-		translate(tra_x(centerx), tra_y(centery));
-		
-		//angle += Math.PI/2
-		var citystring;
-		
-		if (angle > Math.PI / 2 && angle < (3 * Math.PI)/2){
-			angle -= Math.PI ;
-			angle = loopyMod( angle, Math.PI*2 );
-			textAlign(RIGHT);
-			citystring = city.name + "🠖 ";
-		}else{
-			textAlign(LEFT);
-			citystring = "🠔 " + city.name;
-		}
-		
-		rotate(angle);
-		
-		textSize(24);
-		text(citystring, 0, 0);
-		
-		pop();
-		textAlign(LEFT);
-	}
+	GuiHandler.drawCityLabels();
+	
+	GuiHandler.render();
 	
 	fill(255,0,0);
 	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);

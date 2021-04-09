@@ -15,19 +15,95 @@ class GuiHandler {
 		}
 	}
 	
+	static render(){
+		for (var i = 0; i < this.groups.length; i++){
+			var group = this.groups[i];
+			group.render();
+		}
+	}
+	
+	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.
+	static drawCityLabels(){
+		for (key in client.world.cities){
+			
+			if (cam_zoom < MIN_CITY_TEXT_ZOOM){ break; };
+			
+			var city = client.world.cities[key]; var nation = city.getNation();
+			var centerslice = city.getPlanet().getAbsPointsSlice( city.centerIndex, city.centerIndex );
+			var centerx = centerslice[0]; var centery = centerslice[1];
+			
+			var angle = city.getPlanet().dir + ( 2 * Math.PI ) * ( city.centerIndex / city.getPlanet().terrainSize );
+			angle = loopyMod( angle, Math.PI*2 );
+			
+			var radius = 20 + (16 * cam_zoom);
+			centerx += ( radius * Math.cos(angle)); centery += ( radius * Math.sin(angle));
+			
+			stroke( nation.color[0], nation.color[1], nation.color[2] ); 
+			fill  ( nation.color[0], nation.color[1], nation.color[2] );
+			
+			push();
+			translate(tra_x(centerx), tra_y(centery));
+			
+			var citystring;
+			
+			// This part here decides whether the text is facing up or down and adjusts the angle accordingly
+			if (angle > Math.PI / 2 && angle < (3 * Math.PI)/2){
+				angle -= Math.PI ;
+				angle = loopyMod( angle, Math.PI*2 );
+				textAlign(RIGHT);
+				citystring = city.name + "🠖 ";
+			}else{
+				textAlign(LEFT);
+				citystring = "🠔 " + city.name;
+			}
+			
+			rotate(angle);
+			
+			textSize(24);
+			text(citystring, 0, 0);
+			
+			pop();
+			textAlign(LEFT);
+		}
+	}
+}
+
+class GuiElement {
+	constructor(x,y,width,height){
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+	
+	update(){
+		
+	}
 }
 
 // A group of GUI elements put together such as a menu, or a sidebar, or loquesea
-// It's like a wrapper for the quicksettings panel but with some special behavior regarding p5js
+// Used to be a wrapper for the quicksettings panel but with some special behavior regarding p5js
+// now its gonna be its own thing
 class GuiGroup {
 	
 	constructor(x, y, title){
 		
 		this.panel = QuickSettings.create(x, y, title, mainelement);
-		this.elements = {};
-		this.visible = true;
+		this.elements = [];
+		this.visible = true; // rendered to screen
+		this.active = true; // can be interacted with
 		
 		GuiHandler.groups.push(this);
+	}
+	
+	addElement(e){
+		this.elements.push(e);
+	}
+	
+	render(){
+		for (var element in this.elements){
+			console.log(element);
+		}
 	}
 	
 	addHTML(key){
@@ -64,7 +140,7 @@ class GuiGroup {
 	}
 	
 	clearAllElements(){
-		this.elements = {};
+		this.elements = [];
 		
 		for (key in this.panel._controls){
 			var control = this.panel._controls[key];
@@ -139,7 +215,7 @@ GROUP_MISSIONS.show = function(){
 
 // INFOBAR: Left hand bar with the information on various things
 
-var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-05"); 
+var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-08"); 
 GROUP_INFOBAR.addHTML("missioninfo"); GROUP_INFOBAR.addHTML("entityinfo");
 GROUP_INFOBAR.update = function(){
 	
