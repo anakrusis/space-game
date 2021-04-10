@@ -5,20 +5,22 @@ class GuiHandler {
 	static activeGroup = null;
 	static groups      = [];
 	
+	static elements    = []; // parent elements here, child elements contained within..
+	
 	static update(){
 		
-		for (var i = 0; i < this.groups.length; i++){
-			var group = this.groups[i];
-			if (group.active){
-				group.update();
+		for (var i = 0; i < this.elements.length; i++){
+			var e = this.elements[i];
+			if (e.active){
+				e.update();
 			}
 		}
 	}
 	
 	static render(){
-		for (var i = 0; i < this.groups.length; i++){
-			var group = this.groups[i];
-			group.render();
+		for (var i = 0; i < this.elements.length; i++){
+			var e = this.elements[i];
+			e.render();
 		}
 	}
 	
@@ -70,14 +72,155 @@ class GuiHandler {
 
 class GuiElement {
 	constructor(x,y,width,height){
+		
+		// core properties
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.padding = 5;
+		
+		this.dispx = this.x + this.padding;
+		this.dispy = this.y + this.padding;
+		this.dispwidth = 100;
+		this.dispheight = 100;
+		
+		this.active = true;
+		this.visible = true;
+		
+		this.autopos = "left";
+		this.autosize = false;
+		
+		// referential properties
+		this.parent = null;
+		this.children = [];
+		
+		GuiHandler.elements.push(this);
 	}
 	
 	update(){
 		
+		if (this.behavior){
+			this.behavior();
+		}
+		
+/* 		var xsum = this.dispx + this.padding;
+		var ysum = this.dispy + this.padding;
+		
+		if (this.autopos != "pee"){
+			
+			for (var i = 0; i < this.children.length; i++){
+				
+				var c = this.children[i];
+				
+				c.dispx = this.dispx + this.padding;
+				c.dispy = this.dispy + this.padding;
+				
+				xsum += c.dispwidth + this.padding;
+				
+			}
+			
+		} */
+		
+		var p = this.parent;
+		if (p){
+		
+			if (p.autopos == "left"){
+				
+				this.dispx = p.dispx + p.padding;
+				this.dispy = p.dispy + p.padding;
+				
+				for (var i = 0; i < p.children.length; i++){
+					
+					if (p.children[i] == this){
+						break;
+					}else{
+						this.dispx += p.children[i].dispwidth + p.padding;
+					}
+				}
+				
+			} 
+		}else {
+			this.dispx = this.x + this.padding; this.dispy = this.y + this.padding;
+		}
+		
+		if (this.autosize){
+			var minx = 100000; var miny = 100000;
+			var maxx = 0; var maxy = 0;
+			for (var i = 0; i < this.children.length; i++){
+				
+				var c = this.children[i];
+				if (c.dispx + c.dispwidth > maxx){
+					maxx = c.dispx + c.dispwidth;
+				}
+				if (c.dispx < minx){
+					minx = c.dispx;
+				}
+				if (c.dispy + c.dispheight > maxy){
+					maxy = c.dispy + c.dispheight;
+				}
+				if (c.dispy < miny){
+					miny = c.dispy;
+				}
+			}
+			console.log("maxx " + maxx + " minx " + minx)
+			
+			this.width = maxx - minx + (this.padding*4);
+			this.height = maxy - miny + (this.padding*4);
+		}
+		
+		this.dispwidth = this.width - (this.padding*2);
+		this.dispheight = this.height - (this.padding*2);
+		
+		
+		
+/* 		// auto positioning setting. Floats left 
+		if (this.x == -1 and this.y == -1) {
+			
+			var p = this.parent;
+			
+			this.dispx = p.dispx + p.padding;
+			this.dispy = p.dispy + p.padding;
+			
+			for i = 1, #p.children do
+				
+				if p.children[i] == self then
+					break;
+				else
+					self.dispx = self.dispx + p.children[i].dispwidth + (p.padding)
+				end
+			end
+			
+		// Manual positioning setting
+		}else{
+			self.dispx = self.x + self.padding; self.dispy = self.y + self.padding;
+		}
+		
+		self.dispwidth = self.width - (self.padding*2); self.dispheight = self.height - (self.padding*2);
+		
+		// Auto height(if set to -1 then it fills up to the height of the parent div)
+		if (self.height == -1) then
+		
+			self.dispheight = self.parent.dispheight - self.parent.padding * 2
+		
+		end */
+	}
+	
+	appendElement(e){
+		e.parent = this;
+		this.children.push(e);
+	}
+	
+	render(){
+		fill(0);
+		stroke(255);
+			
+		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
+		
+		for (var i = 0; i < this.children.length; i++){
+			var e  = this.children[i];
+			e.render();
+		}
 	}
 }
 
@@ -100,16 +243,7 @@ class GuiGroup {
 		this.elements.push(e);
 	}
 	
-	render(){
-		for (var i = 0; i < this.elements.length; i++){
-			var e  = this.elements[i];
-			
-			fill(0);
-			stroke(255);
-			
-			rect( e.x, e.y, e.width, e.height );
-		}
-	}
+	render(){}
 	
 	addHTML(key){
 		this.panel.addHTML(key, ""); 
@@ -159,12 +293,20 @@ class GuiGroup {
 	}
 }
 
-var GROUP_HOTBAR = new GuiGroup(50,50,"hotbar");
+var GROUP_HOTBAR = new GuiElement(0,0,500,500);
+GROUP_HOTBAR.autosize = true;
+
+GROUP_HOTBAR.behavior = function(){
+	var mid = width/2;
+	this.y = height - this.height;
+	this.x = mid + (-0.5) * this.width;
+}
+
 for (var i = 0; i < 9; i++){
 	
 	var he = new GuiElement( 0, 0, 64, 64 ); he.index = i;
 	
-	he.update = function(){
+/* 	he.update = function(){
 		
 		// 0  1  2  3  4  5  6  7  8  
 		// -4 -3 -2 -1 0  1  2  3  4  
@@ -173,9 +315,9 @@ for (var i = 0; i < 9; i++){
 		this.x = mid + (this.index - 4.5) * this.width;
 		this.y = height - this.height - 16;
 		
-	}
+	} */
 	
-	GROUP_HOTBAR.addElement( he )
+	GROUP_HOTBAR.appendElement( he )
 }
 
 // MISSION INFO: Screen giving info on the particular mission selected
