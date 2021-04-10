@@ -1,11 +1,10 @@
-BYPASS_P5_CLICK = false;
-
 var framecount = 0;
 var hoverEntity    = null; // entity that the mouse is hovering over
 var selectedEntity = null; // entity which the mouse has clicked on
 var selectedMission = null; // mission selected in the menus
 var singletouchtimer = 0;
 var cursorAbsX; var cursorAbsY;
+var bypassGameClick = false; // gui boolean for when a gui element is clicked, not to trigger anything in game world
 
 var pathPredictEnabled = true;
 
@@ -253,15 +252,13 @@ function mouseMoved() {
 
 function mouseClicked() {
 	
+	GuiHandler.onClick();
+	
+	if (bypassGameClick){ bypassGameClick = false; return; }
+	
 	if (!GROUP_INFOBAR.active){ return; };
 	
 	if (hoverEntity){
-/* 		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);
-		if (CollisionUtil.isEntityCollidingWithEntity(cursorEntity, hoverEntity)){
-			selectedEntity = hoverEntity;
-		}else{
-			selectedEntity = null;
-		} */
 		selectedEntity = hoverEntity;
 	}else{
 		selectedEntity = null;

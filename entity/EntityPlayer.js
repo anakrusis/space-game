@@ -15,6 +15,10 @@ class EntityPlayer extends Entity {
 		this.currentMission = null;
 	}
 	
+	getNation(){
+		return server.world.nations[this.nationUUID];
+	}
+	
 	getAbsolutePoints() {
 		//if (cam_zoom < 1.5){ scale = 20 / cam_zoom; } else { scale = 1; }
 		var scale = 1;
@@ -33,7 +37,7 @@ class EntityPlayer extends Entity {
 	
 	update(){
 		if (this.nationUUID){
-			this.color = server.world.nations[this.nationUUID].color;
+			this.color = this.getNation().color;
 		}
 		
 		this.lastx = this.x; this.lasty = this.y; this.lastdir = this.dir;
@@ -42,7 +46,19 @@ class EntityPlayer extends Entity {
 		cam_x = this.x; cam_y = this.y;
 		
 		if (this.grounded && this.getGroundedBody() != null) {
-			this.boostForce.magnitude /= 1.01;
+			
+			var gb = this.getGroundedBody();
+			if (gb instanceof BodyPlanet){
+				
+				var tile = CollisionUtil.tileFromEntityAngle(this, gb);
+				if (tile){
+					if (tile.hasRoad){
+						this.boostForce.magnitude /= 1.01;
+					}else{
+						this.boostForce.magnitude /= 1.05;
+					}
+				}
+			}
 		}
 		
 		this.forceVectors.push(this.boostForce);

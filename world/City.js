@@ -1,37 +1,51 @@
 class City {
 	constructor(nationuuid, chunkx, chunky, planetuuid){
-		this.name = Nymgen.newName();
-		this.uuid = Math.round(Math.random() * 10000000000);
 		
-		this.planetUUID = planetuuid;
-		this.nationUUID = nationuuid;
-	
+		// core properties
+		this.name = Nymgen.newName();
+		
+		this.uuid = Math.round(Math.random() * 10000000000);
 		this.chunkx = chunkx;
 		this.chunky = chunky;
 		this.population = 0;
 		
-		this.buildingUUIDs      = [];
 		this.claimedTileIndexes = [];
 		
 		this.centerIndex = -1;
+		
+		// referential properties
+		this.buildingUUIDs      = [];
+		this.planetUUID = planetuuid;
+		this.nationUUID = nationuuid;
+		
+		this.availableMissions = [];
 	}
 	
 	getPlanet(){
-		return server.world.getChunk( this.chunkx, this.chunky ).getBody( this.planetUUID )
+		return server.world.getChunk( this.chunkx, this.chunky ).getBody( this.planetUUID );
 	}
 	
 	getNation(){
 		return server.world.nations[ this.nationUUID ] ;
 	}
 	
+	generateMissions(){
+		this.availableMissions = [];
+		var missioncount = 3;
+		for (var i = 0; i < missioncount; i++){
+			
+			var keys = Object.keys( server.world.cities );
+			var randomcity = this;
+			while (randomcity == this){
+				randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+			}
+			var m = new Mission(this.uuid, randomcity.uuid);
+			this.availableMissions.push(m);
+		}
+	}
+	
 	getAvailableMissions(){
-		
-		var keys = Object.keys( server.world.cities );
-		var randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
-		
-		var n = new Mission(this.uuid, randomcity.uuid);
-		
-		return [ n ]
+		return this.availableMissions;
 	}
 	
 	update(){

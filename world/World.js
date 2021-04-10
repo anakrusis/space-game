@@ -41,8 +41,13 @@ class World {
 			nat.capitalCityUUID = natcap.uuid;
 		}
 		
-		//homePlanet.spawnBuilding( new EntityBuilding( homePlanet.x, homePlanet.y, 0), 0, capitalCity );
+		// Generates missions between cities now that all the cities are spawned in
+		for (var cityuuid in this.cities){
+			var city = this.cities[cityuuid];
+			city.generateMissions();
+		}
 		
+		// Generates player now
 		this.player = new EntityPlayer(7500, 8192, 0)
 		this.player.nationUUID = playerNation.uuid;
 		this.spawnEntity( this.player );
