@@ -146,14 +146,15 @@ class BodyPlanet extends EntityBody {
 			
 			var newbuilding;
 			if (i == 0){
-				newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+				newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 4);
 				
 			}else if (i == 1){
 				var ei = loopyMod(relIndex + 1, this.terrainSize);
 				newbuilding = new BuildingBigTest( this.x, this.y, this.uuid, city.uuid, relIndex, ei);
 				
 			}else{
-				newbuilding = new EntityBuilding( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+				
+				newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 1);
 			}
 			this.spawnBuilding( newbuilding, city );
 			

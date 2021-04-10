@@ -112,7 +112,7 @@ class World {
 			var homechunkx = homenation.homeChunkX; var homechunky = homenation.homeChunkY;
 			var homeplanet = this.chunks[homechunkx][homechunky].bodies[homeplanid];
 			
-			var homecity   = homenation.getCapitalCity(); var homeindex = homecity.centerIndex;
+			var homecity   = homenation.getCapitalCity(); var homeindex = homecity.getPlayerSpawnIndex();
 			this.player.moveToIndexOnPlanet(homeindex, homeplanet, 0);
         }
 		

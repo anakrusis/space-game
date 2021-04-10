@@ -206,7 +206,6 @@ var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
 var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-10"
 
 var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
-
 entityinfo.onUpdate = function(){
 	var e = null;
 	if (selectedEntity){
@@ -227,6 +226,19 @@ entityinfo.onUpdate = function(){
 		}
 		
 		this.text = infostring;	
+		this.show();
+	}else{
+		this.hide();
+	}
+}
+
+//var info2 = new GuiElement(0,0,300,40,GROUP_INFOBAR);
+var p = function(){
+	if (selectedEntity instanceof EntityBuilding){
+		var city = selectedEntity.getCity();
+		var infostring = city.name + "\nCity of the " + city.getNation().name + " nation";
+		
+		this.text = infostring;
 		this.show();
 	}else{
 		this.hide();

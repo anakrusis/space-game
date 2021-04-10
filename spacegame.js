@@ -205,6 +205,17 @@ var drawEntity = function(e, scale){
 		}
 		strokeWeight(1);
 	}
+	if (e instanceof EntityBuilding){
+		var pts = e.getAbsolutePoints();
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = pts[i]; var py = pts[i+1];
+			px = ((px - e.x) * scale) + e.x;  py = ((py - e.y) * scale) + e.y; 
+			//vertex(tra_x(px), tra_y(py));
+		}
+		endShape(CLOSE);
+	}
+	
 	strokeWeight(1);
 }
 

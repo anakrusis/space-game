@@ -18,7 +18,22 @@ class City {
 		this.planetUUID = planetuuid;
 		this.nationUUID = nationuuid;
 		
+		this.resources = []; // like a citywide collective inventory of goods..
+		// I guess every city is like a centralized command economy because its simpler to program lmao
+		
 		this.availableMissions = [];
+	}
+	
+	getPlayerSpawnIndex(){
+		return this.centerIndex + 2;
+	}
+	
+	getBuilding(index){
+		//return this.getTile(
+	}
+	
+	getTile(index){
+		return this.getPlanet().tiles[index];
 	}
 	
 	getPlanet(){

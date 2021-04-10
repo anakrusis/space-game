@@ -49,10 +49,10 @@ class EntityBuilding extends Entity {
 	getAbsolutePoints() {
 		
         var relpoints = [
-                -1, -1 * this.getSize(),
-                1.5, -1 * this.getSize(),
-                1.5, 1 * this.getSize(),
-                -1, 1 * this.getSize()
+                -1 * this.getSize(), -1 * this.getSize(),
+                1.5 * this.getSize(), -1 * this.getSize(),
+                1.5 *  this.getSize(), 1 * this.getSize(),
+                -1 *  this.getSize(), 1 * this.getSize()
         ]
         var abspoints = [];
         for (var i = 0; i < relpoints.length; i += 2){
