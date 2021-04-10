@@ -253,9 +253,7 @@ function mouseMoved() {
 
 function mouseClicked() {
 	
-	if (BYPASS_P5_CLICK){ BYPASS_P5_CLICK = false; return; }
-	
-	if (GuiHandler.activeGroup != GROUP_INFOBAR){ return; };
+	if (!GROUP_INFOBAR.active){ return; };
 	
 	if (hoverEntity){
 /* 		cursorEntity = new Entity(cursorAbsX, cursorAbsY, 0);

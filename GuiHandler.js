@@ -88,8 +88,10 @@ class GuiElement {
 		this.active = true;
 		this.visible = true;
 		
-		this.autopos = "left";
-		this.autosize = false;
+		this.autopos = "top"; // float property
+		this.autosize = false; // will fill up to the size of its children elements
+		
+		this.text = "";
 		
 		// referential properties
 		this.parent = null;
@@ -100,8 +102,8 @@ class GuiElement {
 	
 	update(){
 		
-		if (this.behavior){
-			this.behavior();
+		if (this.onUpdate){
+			this.onUpdate();
 		}
 		
 /* 		var xsum = this.dispx + this.padding;
@@ -125,6 +127,7 @@ class GuiElement {
 		var p = this.parent;
 		if (p){
 		
+			// Float left, each element after is right of the one before it
 			if (p.autopos == "left"){
 				
 				this.dispx = p.dispx + p.padding;
@@ -132,78 +135,71 @@ class GuiElement {
 				
 				for (var i = 0; i < p.children.length; i++){
 					
-					if (p.children[i] == this){
-						break;
-					}else{
-						this.dispx += p.children[i].dispwidth + p.padding;
+					if (p.children[i].visible){
+						if (p.children[i] == this){
+							break;
+						}else{
+							this.dispx += p.children[i].dispwidth + p.padding;
+						}
 					}
 				}
+			} 
+			if (p.autopos == "top"){
 				
+				this.dispx = p.dispx + p.padding;
+				this.dispy = p.dispy + p.padding;
+				
+				for (var i = 0; i < p.children.length; i++){
+					
+					if (p.children[i].visible){
+						if (p.children[i] == this){
+							break;
+						}else{
+							this.dispy += p.children[i].dispheight + p.padding;
+						}
+					}
+				}
 			} 
 		}else {
 			this.dispx = this.x + this.padding; this.dispy = this.y + this.padding;
 		}
 		
+		// This fills up an element based on the size of the children elements inside it:
+		// it gets the extremes for X and Y and then pads them out afterwards
 		if (this.autosize){
 			var minx = 100000; var miny = 100000;
 			var maxx = 0; var maxy = 0;
 			for (var i = 0; i < this.children.length; i++){
 				
 				var c = this.children[i];
-				if (c.dispx + c.dispwidth > maxx){
-					maxx = c.dispx + c.dispwidth;
-				}
-				if (c.dispx < minx){
-					minx = c.dispx;
-				}
-				if (c.dispy + c.dispheight > maxy){
-					maxy = c.dispy + c.dispheight;
-				}
-				if (c.dispy < miny){
-					miny = c.dispy;
+				if (c.visible){
+					if (c.dispx + c.dispwidth > maxx){
+						maxx = c.dispx + c.dispwidth;
+					}
+					if (c.dispx < minx){
+						minx = c.dispx;
+					}
+					if (c.dispy + c.dispheight > maxy){
+						maxy = c.dispy + c.dispheight;
+					}
+					if (c.dispy < miny){
+						miny = c.dispy;
+					}
 				}
 			}
-			console.log("maxx " + maxx + " minx " + minx)
-			
+			// This padding is compensating for the two lines immediately after
 			this.width = maxx - minx + (this.padding*4);
 			this.height = maxy - miny + (this.padding*4);
+			
+			//
 		}
 		
 		this.dispwidth = this.width - (this.padding*2);
 		this.dispheight = this.height - (this.padding*2);
 		
-		
-		
-/* 		// auto positioning setting. Floats left 
-		if (this.x == -1 and this.y == -1) {
-			
-			var p = this.parent;
-			
-			this.dispx = p.dispx + p.padding;
-			this.dispy = p.dispy + p.padding;
-			
-			for i = 1, #p.children do
-				
-				if p.children[i] == self then
-					break;
-				else
-					self.dispx = self.dispx + p.children[i].dispwidth + (p.padding)
-				end
-			end
-			
-		// Manual positioning setting
-		}else{
-			self.dispx = self.x + self.padding; self.dispy = self.y + self.padding;
-		}
-		
-		self.dispwidth = self.width - (self.padding*2); self.dispheight = self.height - (self.padding*2);
-		
-		// Auto height(if set to -1 then it fills up to the height of the parent div)
-		if (self.height == -1) then
-		
-			self.dispheight = self.parent.dispheight - self.parent.padding * 2
-		
-		end */
+		var lines = (this.text.match(/\n/g) || '').length + 1
+		var h = 20 * lines;
+		this.dispheight = Math.max(this.dispheight, h);
 	}
 	
 	appendElement(e){
@@ -211,15 +207,40 @@ class GuiElement {
 		this.children.push(e);
 	}
 	
+	// This is recursive, and it goes from a top parent element through all the children of the tree
 	render(){
+		if (!this.visible) { return; }
+		
 		fill(0);
 		stroke(255);
 			
 		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
+		fill(255);
+		if (this.text != ""){
+			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+		}
+		
 		for (var i = 0; i < this.children.length; i++){
 			var e  = this.children[i];
 			e.render();
+		}
+	}
+	
+	// Likewise for the following methods
+	show(){
+		this.visible = true;
+		for (var i = 0; i < this.children.length; i++){
+			var e  = this.children[i];
+			e.show();
+		}
+	}
+	
+	hide(){
+		this.visible = false;
+		for (var i = 0; i < this.children.length; i++){
+			var e  = this.children[i];
+			e.hide();
 		}
 	}
 }
@@ -293,10 +314,12 @@ class GuiGroup {
 	}
 }
 
-var GROUP_HOTBAR = new GuiElement(0,0,500,500);
-GROUP_HOTBAR.autosize = true;
+// HOTBAR: Shows the cargo hold of items (nine in total for now)
 
-GROUP_HOTBAR.behavior = function(){
+var GROUP_HOTBAR = new GuiElement(0,0,500,500);
+GROUP_HOTBAR.autosize = true; GROUP_HOTBAR.autopos = "left";
+
+GROUP_HOTBAR.onUpdate = function(){
 	var mid = width/2;
 	this.y = height - this.height;
 	this.x = mid + (-0.5) * this.width;
@@ -305,24 +328,12 @@ GROUP_HOTBAR.behavior = function(){
 for (var i = 0; i < 9; i++){
 	
 	var he = new GuiElement( 0, 0, 64, 64 ); he.index = i;
-	
-/* 	he.update = function(){
-		
-		// 0  1  2  3  4  5  6  7  8  
-		// -4 -3 -2 -1 0  1  2  3  4  
-		
-		var mid = width/2;
-		this.x = mid + (this.index - 4.5) * this.width;
-		this.y = height - this.height - 16;
-		
-	} */
-	
 	GROUP_HOTBAR.appendElement( he )
 }
 
 // MISSION INFO: Screen giving info on the particular mission selected
 
-var GROUP_MISSION_INFO = new GuiGroup(0,0,"Mission Info"); GROUP_MISSION_INFO.hide(); GROUP_MISSION_INFO.panel.setWidth(500);
+/* var GROUP_MISSION_INFO = new GuiGroup(0,0,"Mission Info"); GROUP_MISSION_INFO.hide(); GROUP_MISSION_INFO.panel.setWidth(500);
 
 GROUP_MISSION_INFO.show = function(){
 		
@@ -348,11 +359,11 @@ GROUP_MISSION_INFO.show = function(){
 		//GROUP_MISSIONS.hide(); GROUP_MISSION_INFO.show();
 		GROUP_MISSIONS.show(); GROUP_MISSION_INFO.hide(); GuiHandler.activeGroup = GROUP_MISSIONS;
 	});
-}
+} */
 
 // MISSIONS: Menu with the list of missions available
 
-var GROUP_MISSIONS = new GuiGroup(0,0,"Missions"); GROUP_MISSIONS.hide(); GROUP_MISSIONS.panel.setWidth(500);
+/* var GROUP_MISSIONS = new GuiGroup(0,0,"Missions"); GROUP_MISSIONS.hide(); GROUP_MISSIONS.panel.setWidth(500);
 GROUP_MISSIONS.update = function(){
 	//this.panel.setPosition(width/2 - , height/2);
 }
@@ -380,11 +391,44 @@ GROUP_MISSIONS.show = function(){
 		});
 	}		
 	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; });
-}
+} */
 
 // INFOBAR: Left hand bar with the information on various things
 
-var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-08"); 
+var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
+var tittle = new GuiElement(0,0,300,40); tittle.text = "Space Game 0.0.1 2021-04-10"
+GROUP_INFOBAR.appendElement(tittle);
+
+var planetinfo = new GuiElement(0,0,300,40);
+
+planetinfo.onUpdate = function(){
+	var e = null;
+	if (selectedEntity){
+		e = selectedEntity;
+	}else if (hoverEntity){
+		e = hoverEntity;
+	}
+	
+	if (e){
+		var infostring = "" + e.name + "\n";
+		if (e instanceof BodyPlanet){
+			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
+			
+			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
+			infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
+			var yearlen = e.orbitPeriod / 60 / 60;
+			infostring += "• Year length: " + Math.round(yearlen) + " Earth min\n"
+		}
+		
+		this.text = infostring;	
+		this.show();
+	}else{
+		this.hide();
+	}
+}
+
+GROUP_INFOBAR.appendElement(planetinfo);
+/* var GROUP_INFOBAR = new GuiGroup(0,0,"Space Game 0.0.1 2021-04-08"); 
 GROUP_INFOBAR.addHTML("missioninfo"); GROUP_INFOBAR.addHTML("entityinfo");
 GROUP_INFOBAR.update = function(){
 	
@@ -449,4 +493,4 @@ var c = function(){
 }
 GROUP_INFOBAR.addButton("Missions...", c);
 
-GuiHandler.activeGroup = GROUP_INFOBAR;
+GuiHandler.activeGroup = GROUP_INFOBAR; */
