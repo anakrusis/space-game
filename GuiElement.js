@@ -20,6 +20,7 @@ class GuiElement {
 		this.autosize = false; // will fill up to the size of its children elements
 		
 		this.text = "";
+		this.disptext = "";
 		
 		// referential properties
 		this.parent = parent;
@@ -131,8 +132,60 @@ class GuiElement {
 		this.dispwidth = this.width - (this.padding*2);
 		this.dispheight = this.height - (this.padding*2);
 		
-		var lines = (this.text.match(/\n/g) || '').length + 1
-		var h = 22 * lines;
+		//this.disptext = this.text;
+		
+		// Homemade word-wrap lol... The reasoning behind this is because the built-in one is a little feisty, it doesn't technically add any new lines
+/* 		var linecount = 0;
+		for (var i = 0; i < this.text.length; i++){
+			
+			if (this.text.slice(i, i+2) == "\n"){
+				linecount = 0;
+			}
+			
+			if ((linecount+1) >= 30 && this.text.slice(i, i+1) == " "){
+				
+				this.disptext = this.text.slice(0,i) + "\n" + this.text.slice(i+1);
+				linecount = 0;
+				//var txt2 = txt1.slice(0, 3) + "\n" + txt1.slice(3);
+			}
+			linecount++;
+		} */
+		
+/* 		this.lines1 = (this.text.match(/\n/g) || '').length
+		
+		var length_without_newlines = this.text.length;
+		for (var i = 0; i < this.text.length; i++){
+			if (this.text.slice(i, i+2) == "\n"){
+				length_without_newlines -= 2;
+			}
+		}
+		
+		this.lwn = length_without_newlines;
+		
+		this.lines2 = Math.floor(length_without_newlines / 30) + 1 */
+		
+		var lines = 1;
+		var linepos = 0;
+		for (var i = 0; i < this.text.length; i++){
+			
+			//console.log(this.text.slice(i,i+2));
+			if (this.text.slice(i, i+1) == "\n"){
+				lines++;
+				linepos = 0;
+			}
+			
+			if ((linepos+1) % (this.dispwidth/10) == 0){
+				
+				lines++;
+				linepos = 0;
+				//var txt2 = txt1.slice(0, 3) + "\n" + txt1.slice(3);
+			}
+			linepos++;
+		}
+		
+		this.lines = lines;
+		
+		var h = 22 * this.lines;
 		this.dispheight = Math.max(this.dispheight, h);
 		
 		for (var i = 0; i < this.children.length; i++){
@@ -207,6 +260,7 @@ class GuiElement {
 			var e  = this.children[i];
 			e.show();
 		}
+		//this.onUpdate();
 		this.onShow();
 	}
 	

@@ -23,6 +23,12 @@ class GuiHandler {
 			}
 		}
 		
+		// Special case where these two are inseperable, TODO maybe put these into a bigger super-group
+		if (element == GROUP_INFOBAR){
+			GROUP_HOTBAR.active = true;
+			GROUP_HOTBAR.show();
+		}
+		
 		element.active = true;
 		element.show();
 		
@@ -122,6 +128,10 @@ for (var i = 0; i < 9; i++){
 			}
 			endShape(CLOSE);
 			
+			textAlign(RIGHT);
+			text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
+			textAlign(LEFT);
+			
 			//this.text = itemstk.item.name;
 			
 		}else{
@@ -129,42 +139,47 @@ for (var i = 0; i < 9; i++){
 	}
 }
 
-// MISSION INFO: Screen giving info on the particular mission selected
+// MISSION CONFIRM: Menu giving mission details and asking you if your sure or not
 
-/* var GROUP_MISSION_INFO = new GuiGroup(0,0,"Mission Info"); GROUP_MISSION_INFO.hide(); GROUP_MISSION_INFO.panel.setWidth(500);
+var GROUP_MISSION_CONFIRM = new GuiElement(0,0,0,0); GROUP_MISSION_CONFIRM.hide(); GROUP_MISSION_CONFIRM.autosize = true;
+GROUP_MISSION_CONFIRM.onUpdate = function(){
+	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
+}
+GROUP_MISSION_CONFIRM.onShow = function(){
+	
+	this.children = []; // For dynamic button arrangements, it has to reset each time or else they will just KEEP STACKING LOL
+	
+	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); tittle.text = "Mission Confirmation";
+	
+	var missionname = selectedMission.item.name + " (" + selectedMission.quantity + ")\n" 
+	missionname += selectedMission.getSourceCity().name + " ➔ " + selectedMission.getDestinationCity().name;
+	missionname += "\n$" + selectedMission.reward;
+	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = missionname;
+	
+	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to do this mission?";
 
-GROUP_MISSION_INFO.show = function(){
-		
-	this.panel.show();
-	this.visible = true;
-	this.panel.setPosition(width/2, height/2);	
-	this.clearAllElements();
-	
-	var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name + "<br><br>";
-	infostring += "$" + mission.reward;
-	this.addHTML("text"); this.panel.setValue("text", infostring);	
-	
-	this.addButton("Accept", function(){
-			
-		//selectedMission = mission;
-		GROUP_MISSION_INFO.hide(); GuiHandler.activeGroup = GROUP_INFOBAR;
+	var yesbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); yesbtn.text = "Yea";
+	yesbtn.onClick = function(){
+		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 		server.world.getPlayer().currentMission = selectedMission;
-			
-	});
-	this.addButton("Back", function(){
-			
-		//selectedMission = mission;
-		//GROUP_MISSIONS.hide(); GROUP_MISSION_INFO.show();
-		GROUP_MISSIONS.show(); GROUP_MISSION_INFO.hide(); GuiHandler.activeGroup = GROUP_MISSIONS;
-	});
-} */
+		
+		var scm = selectedMission.getSourceCity().availableMissions;
+		scm.splice( scm.indexOf( selectedMission ) );
+	}
+	
+	var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); backbtn.text = "Nah";
+	backbtn.onClick = function(){
+		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_MISSION_SELECT);
+	}
+	
+}
 
-// MISSIONS: Menu with the list of missions available
+// MISSION SELECT: Menu with the list of missions available
 
 var GROUP_MISSION_SELECT = new GuiElement(0, 0, 0, 0); GROUP_MISSION_SELECT.hide(); GROUP_MISSION_SELECT.autosize = true;
 
 GROUP_MISSION_SELECT.onUpdate = function(){
-	this.x = width/2; this.y = height/2;
+	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
 }
 
 GROUP_MISSION_SELECT.onShow = function(){
@@ -176,14 +191,20 @@ GROUP_MISSION_SELECT.onShow = function(){
 	var selectedCity = selectedEntity.getCity();
 	var missions = selectedCity.getAvailableMissions();
 	
+	if (missions.length == 0){
+		var errtext = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); errtext.text = "Sorry, no missions available! You can check back some time soon.";
+	}
+	
 	for (mission of missions){
 		
-		var missionname = mission.getSourceCity().name + " ➔ " + mission.getDestinationCity().name;
+		var missionname = mission.item.name + " (" + mission.quantity + ")\n" 
+		missionname += mission.getSourceCity().name + " ➔ " + mission.getDestinationCity().name;
 		missionname += "\n$" + mission.reward;
 		
 		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = missionname; button.mission = mission;
 		button.onClick = function(){
 			selectedMission = this.mission;
+			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
 		}
 	}
 	
@@ -193,40 +214,33 @@ GROUP_MISSION_SELECT.onShow = function(){
 	}
 }
 
-/* var GROUP_MISSIONS = new GuiGroup(0,0,"Missions"); GROUP_MISSIONS.hide(); GROUP_MISSIONS.panel.setWidth(500);
-GROUP_MISSIONS.update = function(){
-	//this.panel.setPosition(width/2 - , height/2);
-}
-GROUP_MISSIONS.show = function(){
-	this.panel.show();
-	this.visible = true;
-	
-	if (!(selectedEntity instanceof BuildingSpaceport)){ return; }
-	
-	this.clearAllElements();
-	this.panel.setPosition(width/2, height/2);
-	
-	var selectedCity = selectedEntity.getCity();
-	var missions = selectedCity.getAvailableMissions();
-	
-	for (mission of missions){
-		
-		var missionname = mission.getSourceCity().name + " to " + mission.getDestinationCity().name + "...";
-		
-		this.addButton(missionname, function(){
-			
-			selectedMission = mission;
-			GROUP_MISSIONS.hide(); GROUP_MISSION_INFO.show(); GuiHandler.activeGroup = GROUP_MISSION_INFO;
-			
-		});
-	}		
-	this.addButton("Back", function(){ GROUP_MISSIONS.hide(); GuiHandler.activeGroup = GROUP_INFOBAR; });
-} */
-
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
 var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-11"
+
+var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+missioninfo.onUpdate = function(){
+	var mission = client.world.player.currentMission;
+	if (mission){
+		var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name;
+		var missiontime_min = ~~(mission.timeRemaining / 60) ;
+		var missiontime_sec = ~~(mission.timeRemaining % 60 );
+		
+		var outtime = ""
+		outtime += "" + missiontime_min + ":" + (missiontime_sec < 10 ? "0" : "");
+		outtime += "" + missiontime_sec;
+		
+		infostring += " (" + outtime + ")" + "\n";
+		
+		infostring += "\n" + mission.desc;
+		
+		this.text = infostring;
+		this.show();
+	}else{
+		this.hide();
+	}
+}
 
 var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
 entityinfo.onUpdate = function(){
@@ -247,7 +261,7 @@ entityinfo.onUpdate = function(){
 			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
 			infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
 			var yearlen = e.orbitPeriod / 60 / 60;
-			infostring += "• Year length: " + Math.round(yearlen) + " Earth min\n"
+			infostring += "• Year length: " + Math.round(yearlen) + " Earth min"
 			
 		}else if (e instanceof EntityBuilding){
 			

@@ -23,7 +23,7 @@ class Inventory {
 		this.stacks.push( new ItemStack(itemstack.item, itemstack.amount) );
 	}
 	
-	amountOf(itemtype){
+	totalAmount(itemtype){
 		var sum = 0;
 		for (var i = 0; i < this.stacks.length; i++){
             if (this.stacks[i] != null){

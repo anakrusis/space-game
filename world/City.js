@@ -24,6 +24,10 @@ class City {
 		this.availableMissions = [];
 	}
 	
+	getChunk(){
+		return server.world.chunks[this.chunkx][this.chunky];
+	}
+	
 	getPlayerSpawnIndex(){
 		return this.centerIndex + 2;
 	}
@@ -47,7 +51,12 @@ class City {
 	generateMissions(){
 		this.availableMissions = [];
 		var missioncount = 3;
-		for (var i = 0; i < missioncount; i++){
+		
+		for (var i = 0; i < this.resources.length; i++){
+			
+		}
+		
+/* 		for (var i = 0; i < missioncount; i++){
 			
 			var keys = Object.keys( server.world.cities );
 			var randomcity = this;
@@ -56,7 +65,7 @@ class City {
 			}
 			var m = new Mission(this.uuid, randomcity.uuid);
 			this.availableMissions.push(m);
-		}
+		} */
 	}
 	
 	getAvailableMissions(){
@@ -64,7 +73,41 @@ class City {
 	}
 	
 	update(){
+		for (var i = 0; i < this.availableMissions.length; i++){
+			var mission = this.availableMissions[i];
+			
+			// Removes delivery missions if the item to be delivered is not present in the citys inventory
+			if (this.resources.totalAmount( mission.item ) <= 0){
+				
+				this.availableMissions.splice(i,1);
+			}
+		}
 		
+		// Adds delivery missions if there is a surplus of certain items in the citys inventory, 
+		// and no existing missions that already plan on delivering it
+		
+		var food_amt = this.resources.totalAmount( Items.ITEM_FOOD );
+		if (food_amt > 0){
+			
+			var food_mission_present = false;
+			for (var i = 0; i < this.availableMissions.length; i++){
+				var mission = this.availableMissions[i];
+				if (mission.item == Items.ITEM_FOOD){
+					food_mission_present = true;
+				}
+			}
+			
+			if (!food_mission_present){
+				var keys = Object.keys( server.world.cities );
+				var randomcity = this;
+				while (randomcity == this){
+					randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+				}
+				var m = new Mission(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
+				this.availableMissions.push(m);
+			}
+		
+		}
 	}
 	
 	registerBuilding(building){

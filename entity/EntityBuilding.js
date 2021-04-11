@@ -13,6 +13,10 @@ class EntityBuilding extends Entity {
 		this.productionItem = null;
 	}
 	
+	getChunk(){
+		return this.getCity().getChunk();
+	}
+	
 	// Number of tiles between start and end tile indexes (accounts for wrap-around)
 	getSize(){
 		var ende = this.endindex;

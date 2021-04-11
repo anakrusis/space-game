@@ -13,7 +13,7 @@ class Mission {
 		
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		// temporarily baked in for now
-		this.desc = "The city of " + dest.name + " is awaiting a delivery of items."
+		this.desc = "The city of " + dest.name + " is awaiting a delivery of " + item.name + ".\n";
 	}
 	
 	getSourceCity(){

@@ -53,8 +53,6 @@ function setup(){
 }
 
 function draw(){
-
-	GuiHandler.update();
 	
 	if (framecount % 1 == 0){
 		update();
@@ -151,6 +149,8 @@ function draw(){
 			}
 		}
 	}
+	
+	GuiHandler.update();
 	
 	GuiHandler.drawCityLabels();
 	
