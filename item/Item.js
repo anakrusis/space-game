@@ -12,7 +12,7 @@ class Item {
 		Items.items.push(this);
 	}
 	
-	getRenderPoints(){
+	getRelRenderPoints(){
 		return [
 				-1, -1,
 				1.5, -1,
@@ -31,7 +31,8 @@ class ItemStack {
 }
 
 class ItemIron extends Item {
-	
+	getRelRenderPoints(){
+	return [-0.75,-1,-0.75,0,-0.25,0,-0.25,-1,-0.75,-1,-0.75,0,0.75,1,1.25,1,1.25,0,0.75,0,0.75,1,0.75,0,1.25,0,-0.25,-1,-0.75,-1,0.75,0,0.75,1,1.25,1,-0.25,0,-0.75,0,]};
 }
 
 class ItemFood extends Item{

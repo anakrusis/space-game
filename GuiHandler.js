@@ -104,6 +104,29 @@ GROUP_HOTBAR.onUpdate = function(){
 for (var i = 0; i < 9; i++){
 	
 	var he = new GuiElement( 0, 0, 64, 64, GROUP_HOTBAR ); he.index = i;
+	
+	he.onRender = function(){
+		
+		var plyr = client.world.player; var itemstk = client.world.player.inventory.get(this.index);
+		if (itemstk){
+			
+			
+			var scale = 18;
+			var pts = itemstk.item.getRelRenderPoints();
+			noFill()
+			beginShape();
+			for (i = 0; i < pts.length; i += 2){
+				var px = (-pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
+				var py = pts[i]   * scale + this.dispy - this.padding + this.height/2 - 4;
+				vertex(px,py);
+			}
+			endShape(CLOSE);
+			
+			//this.text = itemstk.item.name;
+			
+		}else{
+		}
+	}
 }
 
 // MISSION INFO: Screen giving info on the particular mission selected

@@ -205,7 +205,7 @@ var drawEntity = function(e, scale){
 		}
 		strokeWeight(1);
 	}
-	if (e instanceof EntityBuilding){
+/* 	if (e instanceof EntityBuilding){
 		var pts = e.getAbsolutePoints();
 		beginShape();
 		for (i = 0; i < pts.length; i += 2){
@@ -214,7 +214,7 @@ var drawEntity = function(e, scale){
 			//vertex(tra_x(px), tra_y(py));
 		}
 		endShape(CLOSE);
-	}
+	} */
 	
 	strokeWeight(1);
 }

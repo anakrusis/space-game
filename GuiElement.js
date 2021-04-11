@@ -185,11 +185,19 @@ class GuiElement {
 		if (this.text != ""){
 			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
 		}
+		if (this.onRender){
+			this.onRender();
+		}
 		
 		for (var i = 0; i < this.children.length; i++){
 			var e  = this.children[i];
 			e.render();
 		}
+	}
+	
+	// Same deal, this is empty so each element can have custom rendering stuff
+	onRender(){
+		
 	}
 	
 	// Likewise for the following methods
