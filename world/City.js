@@ -18,7 +18,7 @@ class City {
 		this.planetUUID = planetuuid;
 		this.nationUUID = nationuuid;
 		
-		this.resources = []; // like a citywide collective inventory of goods..
+		this.resources = new Inventory(100); // like a citywide collective inventory of goods..
 		// I guess every city is like a centralized command economy because its simpler to program lmao
 		
 		this.availableMissions = [];

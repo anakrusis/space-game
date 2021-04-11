@@ -203,7 +203,7 @@ GROUP_MISSIONS.show = function(){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-10"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-11"
 
 var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
 entityinfo.onUpdate = function(){
@@ -215,7 +215,9 @@ entityinfo.onUpdate = function(){
 	}
 	
 	if (e){
+		// All entitys have names!!
 		var infostring = "" + e.name + "\n";
+		
 		if (e instanceof BodyPlanet){
 			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
 			
@@ -223,6 +225,11 @@ entityinfo.onUpdate = function(){
 			infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
 			var yearlen = e.orbitPeriod / 60 / 60;
 			infostring += "• Year length: " + Math.round(yearlen) + " Earth min\n"
+			
+		}else if (e instanceof EntityBuilding){
+			
+			infostring += e.productionProgress + "/" + e.productionTime + "\n";
+			
 		}
 		
 		this.text = infostring;	
