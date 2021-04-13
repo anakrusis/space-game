@@ -14,8 +14,8 @@ class Mission {
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		// temporarily baked in for now
 		this.desc = "The city of " + dest.name + " is awaiting a delivery of " + item.name + ".\n";
-		this.failtext = "You failed! You frickin idiot! Dumass!!!";
-		this.successtext = "You succeeded! You frickin idiot! Dumass!!!";
+		this.failtext = "You failed the mission! What the heck are you gonna do now?";
+		this.successtext = "You succeeded in delivering the " + item.name + " to the city of " + dest.name + "!";
 	}
 	
 	getSourceCity(){

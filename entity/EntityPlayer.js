@@ -6,7 +6,7 @@ class EntityPlayer extends Entity {
 		this.name = "Player";
 		this.color = [ 0, 255, 255 ];
 		this.inventory = new Inventory(9);
-		this.money = 500;
+		this.money = 0;
 		
 		// Physical properties
 		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
@@ -56,7 +56,7 @@ class EntityPlayer extends Entity {
 					if (tile.hasRoad){
 						this.boostForce.magnitude /= 1.01;
 					}else{
-						this.boostForce.magnitude /= 1.05;
+						this.boostForce.magnitude /= 1.025;
 					}
 				}
 			}

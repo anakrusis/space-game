@@ -79,10 +79,17 @@ class GuiHandler {
 				angle -= Math.PI ;
 				angle = loopyMod( angle, Math.PI*2 );
 				textAlign(RIGHT);
+				
 				citystring = city.name + "🠖 ";
+				if (client.world.player.getNation().getCapitalCity() == city){
+					citystring = "⌂ " + citystring;
+				}
 			}else{
 				textAlign(LEFT);
 				citystring = "🠔 " + city.name;
+				if (client.world.player.getNation().getCapitalCity() == city){
+					citystring = citystring + " ⌂";
+				}
 			}
 			
 			rotate(angle);
@@ -280,6 +287,12 @@ GROUP_MISSION_SELECT.onShow = function(){
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
 var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-13"
+
+var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+playerstatus.onUpdate = function(){
+	var infostring = "$" + client.world.player.money;
+	this.text = infostring;
+}
 
 var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 missioninfo.onUpdate = function(){
