@@ -3,6 +3,7 @@ class BuildingMine extends EntityBuilding {
 	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
 		super(x,y,planetuuid, cityuuid, startindex, endindex);
 		this.name = "Mine";
+		this.productionItem = Items.ITEM_IRON;
 	}
 	
 	getRelRenderPoints(){

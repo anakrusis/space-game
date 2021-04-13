@@ -6,6 +6,7 @@ class EntityPlayer extends Entity {
 		this.name = "Player";
 		this.color = [ 0, 255, 255 ];
 		this.inventory = new Inventory(9);
+		this.money = 500;
 		
 		// Physical properties
 		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
@@ -73,6 +74,16 @@ class EntityPlayer extends Entity {
 			this.filled = framecount % 60 > 30;
 		}else{
 			this.filled = true;
+		}
+		
+		if (this.currentMission){
+			this.currentMission.update();
+			
+			if (this.currentMission.timeRemaining <= 0){
+				
+				this.currentMission.onFail();
+				
+			}
 		}
 	}
 	

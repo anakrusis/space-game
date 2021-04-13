@@ -92,6 +92,12 @@ function draw(){
 			var b = chunk.bodies[uuid];
 			
 			if (b instanceof BodyPlanet){
+				
+				if (b.oceanUUID){
+					var ocean = b.getChunk().getBody(b.oceanUUID);
+					drawEntity(ocean);
+				}
+				
 				var orbitbody = new EntityBody(b.getStar().x, b.getStar().y, 0, b.getOrbitDistance());
 				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
 				drawEntity(orbitbody);
@@ -211,7 +217,7 @@ var drawEntity = function(e, scale){
 		for (i = 0; i < pts.length; i += 2){
 			var px = pts[i]; var py = pts[i+1];
 			px = ((px - e.x) * scale) + e.x;  py = ((py - e.y) * scale) + e.y; 
-			//vertex(tra_x(px), tra_y(py));
+			vertex(tra_x(px), tra_y(py));
 		}
 		endShape(CLOSE);
 	} */

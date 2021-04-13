@@ -23,12 +23,7 @@ class BodyPlanet extends EntityBody {
 		//this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		this.oceanUUID = null;
 		
-		var oreveinscount = RandomUtil.fromRangeI(0,10);
-		for (var i = 0; i < 10; i++){
-			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
-			var e = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
-			server.world.spawnEntity( e );
-		}
+		this.populateOreVeins();
 	}
 	
 	update(){
@@ -100,6 +95,22 @@ class BodyPlanet extends EntityBody {
 		return out;
 	}
 	
+	populateOreVeins(){
+		var oreveinscount = RandomUtil.fromRangeI(0,10);
+		for (var i = 0; i < 10; i++){
+			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
+			var e = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
+			server.world.spawnEntity( e );
+			
+			for (var j = e.startindex; j <= end; j++){
+				
+				var index = loopyMod(j, this.terrainSize);
+				
+				this.tiles[index].oreVeinUUID = e.uuid;
+			}
+		}
+	}
+	
 	// returns the city if it can do it, else returns false.
 	spawnCity(nation){
 		var cityPlaceAttempts = 30;
@@ -140,13 +151,18 @@ class BodyPlanet extends EntityBody {
 			return false;
 		}
 		
+		// The spaceport is always the first one placed because, it has to spawn no matter what.
+		var newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, cityCenterIndex, cityCenterIndex + 4);
+		this.spawnBuilding( newbuilding, city );
+		
 		for (var i = -cityRadius; i <= cityRadius; i++){
 			
 			var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
 			
 			var newbuilding;
 			if (i == 0){
-				newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 4);
+				
+				// Spaceport already done above
 				
 			}else if (i == 1){
 				var ei = loopyMod(relIndex + 1, this.terrainSize);
@@ -154,7 +170,11 @@ class BodyPlanet extends EntityBody {
 				
 			}else{
 				
-				newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 1);
+				if (this.tiles[relIndex].oreVeinUUID != null){
+					newbuilding = new BuildingMine( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+				}else{
+					newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 1);
+				}					
 			}
 			this.spawnBuilding( newbuilding, city );
 			

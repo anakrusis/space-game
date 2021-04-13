@@ -120,14 +120,16 @@ for (var i = 0; i < 9; i++){
 			var scale = 18;
 			var pts = itemstk.item.getRelRenderPoints();
 			noFill()
+			stroke(itemstk.item.color[0], itemstk.item.color[1], itemstk.item.color[2]);
 			beginShape();
 			for (i = 0; i < pts.length; i += 2){
-				var px = (-pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
-				var py = pts[i]   * scale + this.dispy - this.padding + this.height/2 - 4;
+				var px = (pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
+				var py = (-pts[i])   * scale + this.dispy - this.padding + this.height/2 + 4;
 				vertex(px,py);
 			}
 			endShape(CLOSE);
 			
+			stroke(255);
 			textAlign(RIGHT);
 			text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
 			textAlign(LEFT);
@@ -137,6 +139,38 @@ for (var i = 0; i < 9; i++){
 		}else{
 		}
 	}
+}
+
+// MISSION SUCCESS: When you succeed a mission
+
+var GROUP_MISSION_SUCCESS = new GuiElement(0,0,500,500);
+GROUP_MISSION_SUCCESS.autosize = true; GROUP_MISSION_SUCCESS.autopos = "top"; GROUP_MISSION_SUCCESS.hide();
+
+GROUP_MISSION_SUCCESS.onUpdate = function(){
+	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
+}
+
+var toto = new GuiElement(0,0,300,40,GROUP_MISSION_SUCCESS);
+
+var bobbobo = new GuiElement(0,0,150,40,GROUP_MISSION_SUCCESS); bobbobo.text = "Ok";
+bobbobo.onClick = function(){
+	GROUP_MISSION_SUCCESS.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+}
+
+// MISSION FAIL: When you fail a mission...
+
+var GROUP_MISSION_FAIL = new GuiElement(0,0,500,500);
+GROUP_MISSION_FAIL.autosize = true; GROUP_MISSION_FAIL.autopos = "top"; GROUP_MISSION_FAIL.hide();
+
+GROUP_MISSION_FAIL.onUpdate = function(){
+	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
+}
+
+var tete = new GuiElement(0,0,300,40,GROUP_MISSION_FAIL);
+
+var bb = new GuiElement(0,0,150,40,GROUP_MISSION_FAIL); bb.text = "Ok";
+bb.onClick = function(){
+	GROUP_MISSION_FAIL.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 
 // MISSION CONFIRM: Menu giving mission details and asking you if your sure or not
@@ -156,7 +190,7 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 	missionname += "\n$" + selectedMission.reward;
 	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = missionname;
 	
-	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to do this mission?";
+	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to\nbegin this mission?";
 
 	var yesbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); yesbtn.text = "Yea";
 	yesbtn.onClick = function(){
@@ -165,6 +199,8 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 		
 		var scm = selectedMission.getSourceCity().availableMissions;
 		scm.splice( scm.indexOf( selectedMission ) );
+		
+		server.world.getPlayer().inventory.add( new ItemStack( selectedMission.item, selectedMission.quantity ) );
 	}
 	
 	var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); backbtn.text = "Nah";
@@ -224,8 +260,8 @@ missioninfo.onUpdate = function(){
 	var mission = client.world.player.currentMission;
 	if (mission){
 		var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name;
-		var missiontime_min = ~~(mission.timeRemaining / 60) ;
-		var missiontime_sec = ~~(mission.timeRemaining % 60 );
+		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
+		var missiontime_sec = ~~((mission.timeRemaining /60) % 60 );
 		
 		var outtime = ""
 		outtime += "" + missiontime_min + ":" + (missiontime_sec < 10 ? "0" : "");
@@ -287,6 +323,25 @@ var p = function(){
 	}else{
 		this.hide();
 	}
+}
+
+var deliverbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); deliverbutton.text = "Deliver";
+deliverbutton.onUpdate = function(){
+
+	var mision = server.world.getPlayer().currentMission;
+	
+	if (mision && selectedEntity instanceof EntityBuilding){
+		
+		if (mision.getDestinationCity() == selectedEntity.getCity()){
+			this.show();
+		}
+	}else{
+		this.hide();
+	}
+	
+}
+deliverbutton.onClick = function(){
+	server.world.getPlayer().currentMission.onSuccess();
 }
 
 var missionbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); missionbutton.text = "Missions...";

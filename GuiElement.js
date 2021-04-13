@@ -206,11 +206,13 @@ class GuiElement {
 				var e  = this.children[i];
 				e.click();
 			} 
-			if (mouseX > this.dispx && mouseX < this.dispx + this.dispwidth
-			 && mouseY > this.dispy && mouseY < this.dispy + this.dispheight){
-			
-				this.onClick(); 
-				bypassGameClick = true;
+			if (this.visible && this.active){
+				if (mouseX > this.dispx && mouseX < this.dispx + this.dispwidth
+				 && mouseY > this.dispy && mouseY < this.dispy + this.dispheight){
+				
+					this.onClick(); 
+					bypassGameClick = true;
+				}
 			}
 		}
 	}

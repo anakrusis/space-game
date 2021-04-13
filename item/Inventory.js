@@ -19,8 +19,37 @@ class Inventory {
                 }
             }
         }
-        // If no matching itemstacks exist, make a new one at the first blank spot
-		this.stacks.push( new ItemStack(itemstack.item, itemstack.amount) );
+		
+		for (var i = 0; i < this.size; i++){
+            if (this.stacks[i] == null){
+				// If no matching itemstacks exist, make a new one at the first blank spot
+				this.stacks[i] = new ItemStack(itemstack.item, itemstack.amount);
+				return;
+			}
+		}
+
+	}
+	
+	shrink(itemtype, amount){
+		
+		var remainingAmount = amount;
+		
+		for (var i = this.size; i >= 0; i--){
+            if (this.stacks[i] != null){
+				
+				if (this.stacks[i].item == itemtype){
+					
+					var amountToSubtract = Math.min( this.stacks[i].amount, remainingAmount );
+					this.stacks[i].amount -= amountToSubtract;
+					remainingAmount -= amountToSubtract;
+					
+					if (this.stacks[i].amount <= 0){
+						this.stacks[i] = null;
+					}
+				}
+				
+            }
+        }
 	}
 	
 	totalAmount(itemtype){
