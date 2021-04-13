@@ -52,7 +52,7 @@ class World {
 		this.player.nationUUID = playerNation.uuid;
 		this.spawnEntity( this.player );
 		
-		this.player.inventory.add( new ItemStack( Items.ITEM_IRON, 4 ) );
+		//this.player.inventory.add( new ItemStack( Items.ITEM_IRON, 4 ) );
 		
 	}
 	

@@ -189,6 +189,19 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 	missionname += selectedMission.getSourceCity().name + " ➔ " + selectedMission.getDestinationCity().name;
 	missionname += "\n$" + selectedMission.reward;
 	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = missionname;
+	missioninfo.onRender = function(){
+		var scale = 18;
+		var pts = selectedMission.item.getRelRenderPoints();
+		noFill()
+		stroke(selectedMission.item.color[0], selectedMission.item.color[1], selectedMission.item.color[2]);
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+			var py = (-pts[i])   * scale + this.dispy - this.padding*2 + this.height + 4;
+			vertex(px,py);
+		}
+		endShape(CLOSE);
+	}
 	
 	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to\nbegin this mission?";
 
@@ -242,6 +255,19 @@ GROUP_MISSION_SELECT.onShow = function(){
 			selectedMission = this.mission;
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
 		}
+		button.onRender = function(){
+			var scale = 18;
+			var pts = this.mission.item.getRelRenderPoints();
+			noFill()
+			stroke(this.mission.item.color[0], this.mission.item.color[1], this.mission.item.color[2]);
+			beginShape();
+			for (i = 0; i < pts.length; i += 2){
+				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+				var py = (-pts[i])   * scale + this.dispy - this.padding*2 + this.height + 4;
+				vertex(px,py);
+			}
+			endShape(CLOSE);
+		}
 	}
 	
 	var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT); backbtn.text = "Back";
@@ -253,7 +279,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-11"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-13"
 
 var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 missioninfo.onUpdate = function(){
@@ -329,14 +355,17 @@ var deliverbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); deliverbutton.text
 deliverbutton.onUpdate = function(){
 
 	var mision = server.world.getPlayer().currentMission;
+	this.hide();
 	
 	if (mision && selectedEntity instanceof EntityBuilding){
 		
 		if (mision.getDestinationCity() == selectedEntity.getCity()){
-			this.show();
+			
+			var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
+			if (selectedEntity.isIndexInBuilding(pindex)){
+				this.show();
+			}
 		}
-	}else{
-		this.hide();
 	}
 	
 }
@@ -347,10 +376,13 @@ deliverbutton.onClick = function(){
 var missionbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); missionbutton.text = "Missions...";
 missionbutton.onUpdate = function(){
 
+	this.hide();
 	if (selectedEntity instanceof BuildingSpaceport){
-		this.show();
-	}else{
-		this.hide();
+		
+		var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
+		if (selectedEntity.isIndexInBuilding(pindex)){
+			this.show();
+		}
 	}
 	
 }

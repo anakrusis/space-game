@@ -108,6 +108,28 @@ class City {
 			}
 		
 		}
+		var iron_amt = this.resources.totalAmount( Items.ITEM_IRON );
+		if (iron_amt > 0){
+			
+			var iron_mission_present = false;
+			for (var i = 0; i < this.availableMissions.length; i++){
+				var mission = this.availableMissions[i];
+				if (mission.item == Items.ITEM_IRON){
+					iron_mission_present = true;
+				}
+			}
+			
+			if (!iron_mission_present){
+				var keys = Object.keys( server.world.cities );
+				var randomcity = this;
+				while (randomcity == this){
+					randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+				}
+				var m = new Mission(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
+				this.availableMissions.push(m);
+			}
+		
+		}
 	}
 	
 	registerBuilding(building){

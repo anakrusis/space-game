@@ -109,6 +109,23 @@ class EntityBuilding extends Entity {
 		}
 	}
 	
+	isIndexInBuilding(index){
+		
+		var ende = this.endindex;
+		if (this.endindex < this.startindex){
+			ende += this.getPlanet().terrainSize;
+		}
+		
+		for (var i = this.startindex; i <= ende; i++){
+			
+			if (i == index){
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	
 	isOnScreen(){
 		return super.isOnScreen() && cam_zoom > MAX_INTERPLANETARY_ZOOM;
 	}

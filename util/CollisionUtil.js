@@ -33,8 +33,7 @@ class CollisionUtil{
         return nearestDist;
     }
 	
-	// Todo make some of this redundant code into functions
-	static tileFromEntityAngle(entity,body){
+	static messyIndexFromEntityAngle(entity,body){
 		var terrsize = body.terrainSize;
 
         // If the player is halfway between terrainPoints 3 and 4, then it will be 3.5,
@@ -67,52 +66,29 @@ class CollisionUtil{
         }else{
             messyIndex = angle * ((0.5 * terrsize) / Math.PI);
         }
-        cleanIndex = Math.floor(messyIndex);
-		//console.log(cleanIndex);
-		return body.tiles[cleanIndex];
+        return messyIndex;
+	}
+	
+	static indexFromEntityAngle(entity, body){
+		return Math.floor( this.messyIndexFromEntityAngle(entity,body) );
+	}
+	
+	// Todo make some of this redundant code into functions
+	static tileFromEntityAngle(entity,body){
+		
+		return body.tiles[ this.indexFromEntityAngle(entity,body) ];
 	}
 	
 	static heightFromEntityAngle(entity, body){
-        var terrain = body.terrain;
-        var terrsize = body.terrainSize;
+        var messyIndex = this.messyIndexFromEntityAngle(entity,body);
+        var cleanIndex = this.indexFromEntityAngle(entity,body);
 
-        // If the player is halfway between terrainPoints 3 and 4, then it will be 3.5,
-        // (for example)
-        var messyIndex;
-        var cleanIndex;
-        var messyDifference;
-        var currentHeight;
-        var nextHeight;
+        var messyDifference = messyIndex - cleanIndex;
 
-        var interpolatedHeight;
+        var currentHeight = body.terrain[cleanIndex];
+        var nextHeight = body.terrain[(cleanIndex + 1) % body.terrainSize];
 
-        var angle = Math.atan2(entity.y - body.y, entity.x - body.x);
-        var bodydir = body.dir;
-
-        // This maps the value to between -pi and pi
-        bodydir += Math.PI;
-        bodydir %= 2 * Math.PI;
-        bodydir -= Math.PI;
-
-        angle -= bodydir;
-
-        // I was just being safe here in fear of the dreaded IndexOutOfBoundsException
-        angle += Math.PI;
-        angle %= 2 * Math.PI;
-        angle -= Math.PI;
-
-        if (angle < 0){
-            messyIndex = angle * ((0.5 * terrsize) / Math.PI) + terrsize;
-        }else{
-            messyIndex = angle * ((0.5 * terrsize) / Math.PI);
-        }
-        cleanIndex = Math.floor(messyIndex);
-        messyDifference = messyIndex - cleanIndex;
-
-        currentHeight = terrain[cleanIndex];
-        nextHeight = terrain[(cleanIndex + 1) % terrsize];
-
-        interpolatedHeight = (nextHeight * messyDifference) + (currentHeight * (1 - messyDifference));
+        var interpolatedHeight = (nextHeight * messyDifference) + (currentHeight * (1 - messyDifference));
         return interpolatedHeight;
     }
 	

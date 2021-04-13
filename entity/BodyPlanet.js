@@ -96,7 +96,7 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	populateOreVeins(){
-		var oreveinscount = RandomUtil.fromRangeI(0,10);
+		var oreveinscount = RandomUtil.fromRangeI(5,20);
 		for (var i = 0; i < 10; i++){
 			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
 			var e = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
@@ -186,6 +186,10 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	spawnBuilding(building, city){
+		if (building.endindex >= this.terrainSize){
+			building.endindex -= this.terrainSize;
+		}
+		
 		if (this.tiles[building.startindex].buildingUUID == null){
 			
 			var ende = building.endindex;
