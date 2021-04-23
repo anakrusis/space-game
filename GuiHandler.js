@@ -80,13 +80,13 @@ class GuiHandler {
 				angle = loopyMod( angle, Math.PI*2 );
 				textAlign(RIGHT);
 				
-				citystring = city.name + "🠖 ";
+				citystring = city.name + " →";
 				if (client.world.player.getNation().getCapitalCity() == city){
 					citystring = "⌂ " + citystring;
 				}
 			}else{
 				textAlign(LEFT);
-				citystring = "🠔 " + city.name;
+				citystring = "← " + city.name;
 				if (client.world.player.getNation().getCapitalCity() == city){
 					citystring = citystring + " ⌂";
 				}
@@ -286,7 +286,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game 0.0.1 2021-04-13"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game pre alpha 0.1.0\n2021-04-23"
 
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 playerstatus.onUpdate = function(){
