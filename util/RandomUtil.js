@@ -8,7 +8,8 @@ class RandomUtil{
     }
 	
 	static nextFloat(bound){
-        return Math.random()*bound;
+		var rand = p5.prototype.random(); //console.log(rand);
+        return ( rand ) * bound;
     }
 	
 	static fromRangeI(min, max){

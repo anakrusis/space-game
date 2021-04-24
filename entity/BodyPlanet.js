@@ -100,7 +100,7 @@ class BodyPlanet extends EntityBody {
 		for (var i = 0; i < 10; i++){
 			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
 			var e = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
-			server.world.spawnEntity( e );
+			//server.worldworld.spawnEntity( e );
 			
 			for (var j = e.startindex; j <= end; j++){
 				

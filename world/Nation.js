@@ -2,7 +2,7 @@ class Nation {
 	constructor(homeChunkX, homeChunkY, homePlanetUUID){
 		this.name = Nymgen.newName();
 		this.color = RandomUtil.randomNationColor();
-		this.uuid = Math.round(Math.random() * 10000000000);
+		this.uuid = Math.round(p5.prototype.random() * 10000000000);
 		this.homeChunkX = homeChunkX;
 		this.homeChunkY = homeChunkY;
 		this.homePlanetUUID = homePlanetUUID;

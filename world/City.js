@@ -4,7 +4,7 @@ class City {
 		// core properties
 		this.name = Nymgen.newName();
 		
-		this.uuid = Math.round(Math.random() * 10000000000);
+		this.uuid = Math.round(p5.prototype.random() * 10000000000);
 		this.chunkx = chunkx;
 		this.chunky = chunky;
 		this.population = 0;
@@ -61,7 +61,7 @@ class City {
 			var keys = Object.keys( server.world.cities );
 			var randomcity = this;
 			while (randomcity == this){
-				randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+				randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 			}
 			var m = new Mission(this.uuid, randomcity.uuid);
 			this.availableMissions.push(m);
@@ -101,7 +101,7 @@ class City {
 				var keys = Object.keys( server.world.cities );
 				var randomcity = this;
 				while (randomcity == this){
-					randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 				}
 				var m = new Mission(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
 				this.availableMissions.push(m);
@@ -123,7 +123,7 @@ class City {
 				var keys = Object.keys( server.world.cities );
 				var randomcity = this;
 				while (randomcity == this){
-					randomcity = server.world.cities[keys[ keys.length * Math.random() << 0]];
+					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 				}
 				var m = new Mission(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
 				this.availableMissions.push(m);

@@ -12,7 +12,7 @@ class Nymgen {
 		var nombreFinal = "";
 		
 		for (var i = 0; i < cantidaddesilabas; i++){
-			var patronSeed = Math.random();
+			var patronSeed = p5.prototype.random();
 			if (patronSeed < 0.773 ){ // CV patron
 				
 				nombreFinal += this.randomFromArr(iniciales);
@@ -67,7 +67,7 @@ class Nymgen {
 				
 				case "x":
 					// Puede ser "gi" y "ge"...
-					if ((next == "i" || next == "e") && Math.random() > 0.5){
+					if ((next == "i" || next == "e") && p5.prototype.random() > 0.5){
 						nombreFinal = this.replacechar(nombreFinal, i, "g");
 						
 					// y tambien "ji", "je" y el resto "ja","ju","jo" todo representando el mismo sonido

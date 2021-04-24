@@ -16,6 +16,10 @@ class World {
 	}
 	
 	init(){
+		
+		this.seed = Math.floor ( 56 );
+		p5.prototype.randomSeed(this.seed);
+		
 		var homePlanet = this.findHomePlanet();
 		var ocean = new BodyOcean(homePlanet.x,homePlanet.y,0,homePlanet.radius,homePlanet.uuid);
 		homePlanet.hasOcean = true; homePlanet.oceanUUID = ocean.uuid;

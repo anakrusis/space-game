@@ -18,7 +18,7 @@ class Chunk {
         for (var uuid in this.bodies) {
 			var body = this.bodies[uuid];
             if (body instanceof BodyStar) {
-                //var planetnum = orbitDistanceInterval * Math.floor(Math.random()*4 + 2) + orbitDistanceInterval;
+                //var planetnum = orbitDistanceInterval * Math.floor(random()*4 + 2) + orbitDistanceInterval;
 				var planetnum = orbitDistanceInterval * 5 + orbitDistanceInterval;
 				//console.log(planetnum);
 				//var planetnum = 4;

@@ -2,7 +2,7 @@ class Mission {
 	
 	constructor(sourceCityUUID, destinationCityUUID, item, quantity){
 			
-		this.uuid = Math.round(Math.random() * 10000000000);
+		this.uuid = Math.round(random() * 10000000000);
 			
 		this.item = item; this.quantity = quantity;	
 			

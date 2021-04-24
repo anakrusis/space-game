@@ -74,7 +74,7 @@ class EntityBuilding extends Entity {
 		
 		if (this.productionTime == -1 && this.productionItem){
 			this.productionTime = Math.round((2*Math.PI) / this.getPlanet().rotSpeed / 10);
-			this.productionProgress = Math.round(Math.random() * this.productionTime);
+			this.productionProgress = Math.round(random() * this.productionTime);
 		}
 		
 		if (this.cityUUID){

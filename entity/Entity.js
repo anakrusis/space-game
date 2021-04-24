@@ -15,7 +15,7 @@ class Entity {
         this.name = "Entity";
         this.color = [ 255, 255, 255 ];
 		this.filled = true;
-        this.uuid = Math.round(Math.random() * 10000000000);
+        this.uuid = Math.round(p5.prototype.random() * 10000000000);
         this.rotSpeed = 0;
 		
 		this.dead = false;
@@ -223,7 +223,7 @@ class Entity {
         this.dead = true;
 
         for (var i = 0; i < 20; i++){
-            var randomdir = (2 * Math.PI) * Math.random();
+            var randomdir = (2 * Math.PI) * random();
 			var particle = new ParticleSmoke(this.x, this.y, randomdir); particle.color = [255, 128, 0]; particle.velocity = 1; particle.size = 0.1;
             server.world.spawnEntity(particle);
         }
