@@ -137,20 +137,12 @@ function draw(){
 				
 				if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
 		
-				// This renders the trail in front of the player predicting where it will be in the next 500 ticks
-				if (!e.isDead()){
-					var fx = e.x; var fy = e.y;
-					var futurePoints = predictFuturePoints(e); var futurePointsX = futurePoints[0]; var futurePointsY = futurePoints[1];
-					
-					stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
-					noFill();
-					beginShape();
-					for (var i = 0; i < futurePointsX.length; i+=10){
-						fx = futurePointsX[i]; fy = futurePointsY[i];
-						vertex(tra_x(fx),tra_y(fy));
-					}
-					endShape();
-				}
+				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+				drawPointsTrailFromEntity(e, predictFuturePoints(e));
+				
+				stroke(128,0,0);
+				drawPointsTrailFromEntity(e, predictDerivativePoints(e));
+				
 				drawEntity(e, escala); 
 			}
 		}
@@ -169,6 +161,22 @@ function draw(){
 	textSize(16);
 	textFont("Courier");
 	text("FPS: " + Math.round(frameRate()), width - 75, 16);
+}
+
+var drawPointsTrailFromEntity = function(e, points){
+		// This renders the trail in front of the player predicting where it will be in the next 500 ticks
+	if (!e.isDead()){
+		var fx = e.x; var fy = e.y;
+		var futurePointsX = points[0]; var futurePointsY = points[1];
+		
+		noFill();
+		beginShape();
+		for (var i = 0; i < futurePointsX.length; i+=10){
+			fx = futurePointsX[i]; fy = futurePointsY[i];
+			vertex(tra_x(fx),tra_y(fy));
+		}
+		endShape();
+	}
 }
 
 var drawEntity = function(e, scale){
@@ -223,6 +231,29 @@ var drawEntity = function(e, scale){
 	} */
 	
 	strokeWeight(1);
+}
+
+var x_derivs   = [];
+var y_derivs   = [];
+var dir_derivs = [];
+
+var predictDerivativePoints = function(player){
+	if (!pathPredictEnabled){ return [[],[]]; }
+	
+	var futurePointsX = [];
+	var futurePointsY = [];
+	
+	//var accel = player.velocity - player.lastvel;
+	
+	var vel = player.velocity;
+	var x   = player.x; var y = player.y;
+	for (var i = 0; i < 100; i++){
+		x +=  vel * Math.cos( player.dir );
+		y +=  vel * Math.sin( player.dir );
+		
+		futurePointsX.push(x); futurePointsY.push(y);
+	}
+	return [futurePointsX, futurePointsY];
 }
 
 var predictFuturePoints = function(player){
@@ -294,9 +325,30 @@ function mouseWheel(e) {
 	return false;
 }
 
+// vel = x - lastx
+// acc = vel - lastvel -> acc = (x - lastx) - lastvel
+// jer = acc - lastacc -> jer = ( x-lastx-lastvel ) - lastacc
+
+
 var update = function(){
-	server.update();
 	
+/* 	var player = client.world.getPlayer();
+	
+	x_derivs[0] = player.x - player.lastx;
+	
+	for ( var i = 1; i < 5; i++ ){
+		
+		//x_derivs[i] =
+		
+		for ( var j = i; j >= 0; j--){
+			
+			x_derivs[i] -= x_derivs[i - j] ;
+			
+		}
+		
+	} */
+	
+	server.update();
 	var player = client.world.getPlayer();
 	
 	// KEYBOARD HANDLING
