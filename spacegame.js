@@ -7,6 +7,8 @@ var cursorAbsX; var cursorAbsY;
 var bypassGameClick = false; // gui boolean for when a gui element is clicked, not to trigger anything in game world
 
 var pathPredictEnabled = true;
+var trajectory = [[],[]];
+var dir_history = [];
 
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
@@ -140,8 +142,9 @@ function draw(){
 				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
 				drawPointsTrailFromEntity(e, predictFuturePoints(e));
 				
+				updateTrajectory(e);
 				stroke(128,0,0);
-				drawPointsTrailFromEntity(e, predictDerivativePoints(e));
+				drawPointsTrailFromEntity(e, trajectory);
 				
 				drawEntity(e, escala); 
 			}
@@ -161,6 +164,8 @@ function draw(){
 	textSize(16);
 	textFont("Courier");
 	text("FPS: " + Math.round(frameRate()), width - 75, 16);
+	
+	text("" + client.world.getPlayer().angjer, width - 75, 32);
 }
 
 var drawPointsTrailFromEntity = function(e, points){
@@ -171,7 +176,7 @@ var drawPointsTrailFromEntity = function(e, points){
 		
 		noFill();
 		beginShape();
-		for (var i = 0; i < futurePointsX.length; i+=10){
+		for (var i = 0; i < futurePointsX.length; i+=1){
 			fx = futurePointsX[i]; fy = futurePointsY[i];
 			vertex(tra_x(fx),tra_y(fy));
 		}
@@ -233,9 +238,53 @@ var drawEntity = function(e, scale){
 	strokeWeight(1);
 }
 
-var x_derivs   = [];
-var y_derivs   = [];
-var dir_derivs = [];
+var updateTrajectory = function(player){
+	
+	if (!pathPredictEnabled){ 
+		trajectory = [[],[]]; return; 
+	}
+	
+	var lastx = trajectory[0][ trajectory[0].length - 1 ];
+	var lasty = trajectory[1][ trajectory[1].length - 1 ];
+	var lastdir = dir_history[ dir_history.length - 1 ]
+	
+	if (!lastx){
+		
+		lastx = player.x;
+		lasty = player.y;
+		lastdir = player.dir;
+	}
+	
+	var e = new Entity(lastx, lasty, lastdir );
+	
+	for (var i = 0; i < 5; i++){
+		
+		e.update();
+		
+		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
+		e.forceVectors.push(e.boostForce);
+		
+		if (e.isDead() || e.grounded){ 
+			break;
+		}
+		
+		trajectory[0].push(e.x); trajectory[1].push(e.y); dir_history.push(e.dir);
+		
+
+	}
+	
+	if (trajectory[0].length < 500){
+		//
+		
+	}else{
+		//trajectory[0].splice(125); trajectory[1].splice(125); dir_history.splice(125);
+		//trajectory[0].length = 500; trajectory[1].length = 500; dir_history.length = 500;
+		trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
+		trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
+	}
+	
+	
+}
 
 var predictDerivativePoints = function(player){
 	if (!pathPredictEnabled){ return [[],[]]; }
@@ -245,6 +294,7 @@ var predictDerivativePoints = function(player){
 	var futurePointsX = [];
 	var futurePointsY = [];
 	
+	var angacc = player.angacc;
 	var angvel = player.angvel;
 	var vel = player.velocity;
 	var x   = player.x; var y = player.y;
@@ -253,7 +303,8 @@ var predictDerivativePoints = function(player){
 		
 		if ( CollisionUtil.euclideanDistance(nearbody.x, nearbody.y, x, y) < nearbody.radius ) { break; }
 		
-		angvel += player.angacc;
+		angacc += player.angjer;
+		angvel += angacc;
 		vel += player.acc;
 		
 		dir += angvel;
@@ -367,11 +418,13 @@ var update = function(){
 		if (keyIsDown(87)) { // up
 			if (player.boostForce.magnitude < 10) {
 				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+				trajectory = [[],[]]; dir_history = [];
 			}
 		}
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
 				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
+				trajectory = [[],[]]; dir_history = [];
 			}
 			
 		}else{
@@ -381,9 +434,11 @@ var update = function(){
 		
 		if (keyIsDown(65)) { // left
 			server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+			trajectory = [[],[]]; dir_history = [];
 		}
 		if (keyIsDown(68)) { // right
 			server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+			trajectory = [[],[]]; dir_history = [];
 		}
 		
 		if (keyIsDown(82)) {

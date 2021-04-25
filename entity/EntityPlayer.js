@@ -44,6 +44,9 @@ class EntityPlayer extends Entity {
 		this.lastx = this.x; this.lasty = this.y; this.lastdir = this.dir;
 		this.lastvel = this.velocity;
 		this.lastangvel = this.angvel;
+		this.lastangacc = this.angacc;
+		
+		
 /* 		this.lastxvel = this.xvel; this.lastyvel = this.yvel;
 		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
 		
@@ -54,7 +57,7 @@ class EntityPlayer extends Entity {
 		
 		this.acc = this.velocity - this.lastvel;
 		this.angacc = this.angvel - this.lastangvel;
-		
+		this.angjer = this.angacc - this.lastangacc;
 		//this.xvel = this.x - this.lastx; this.yvel = this.y - this.lasty;
 /* 		this.xacc = this.xvel - this.lastxvel; this.yacc = this.yvel - this.lastyvel;
 		this.xjer = this.xacc - this.lastxacc; this.yjer = this.yacc - this.lastyacc; */
