@@ -42,8 +42,23 @@ class EntityPlayer extends Entity {
 		}
 		
 		this.lastx = this.x; this.lasty = this.y; this.lastdir = this.dir;
+		this.lastvel = this.velocity;
+		this.lastangvel = this.angvel;
+/* 		this.lastxvel = this.xvel; this.lastyvel = this.yvel;
+		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
+		
 		this.boostForce.dir = this.dir;
 		super.update();
+		
+		this.angvel = this.dir - this.lastdir;
+		
+		this.acc = this.velocity - this.lastvel;
+		this.angacc = this.angvel - this.lastangvel;
+		
+		//this.xvel = this.x - this.lastx; this.yvel = this.y - this.lasty;
+/* 		this.xacc = this.xvel - this.lastxvel; this.yacc = this.yvel - this.lastyvel;
+		this.xjer = this.xacc - this.lastxacc; this.yjer = this.yacc - this.lastyacc; */
+		
 		cam_x = this.x; cam_y = this.y;
 		
 		if (this.grounded && this.getGroundedBody() != null) {

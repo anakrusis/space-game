@@ -240,16 +240,26 @@ var dir_derivs = [];
 var predictDerivativePoints = function(player){
 	if (!pathPredictEnabled){ return [[],[]]; }
 	
+	var nearbody = player.getNearestBody();
+	
 	var futurePointsX = [];
 	var futurePointsY = [];
 	
-	//var accel = player.velocity - player.lastvel;
-	
+	var angvel = player.angvel;
 	var vel = player.velocity;
 	var x   = player.x; var y = player.y;
-	for (var i = 0; i < 100; i++){
-		x +=  vel * Math.cos( player.dir );
-		y +=  vel * Math.sin( player.dir );
+	var dir = player.dir;
+	for (var i = 0; i < 1000; i++){
+		
+		if ( CollisionUtil.euclideanDistance(nearbody.x, nearbody.y, x, y) < nearbody.radius ) { break; }
+		
+		angvel += player.angacc;
+		vel += player.acc;
+		
+		dir += angvel;
+		
+		x += vel * Math.cos( dir );
+		y += vel * Math.sin( dir );
 		
 		futurePointsX.push(x); futurePointsY.push(y);
 	}
