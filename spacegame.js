@@ -7,8 +7,11 @@ var cursorAbsX; var cursorAbsY;
 var bypassGameClick = false; // gui boolean for when a gui element is clicked, not to trigger anything in game world
 
 var pathPredictEnabled = true;
+var trajPredictor = new Entity(0,0,0);
 var trajectory = [[],[]];
 var dir_history = [];
+
+var trajectoryBuffer = [[],[]];
 
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
@@ -139,11 +142,11 @@ function draw(){
 				
 				if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
 		
-				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
-				drawPointsTrailFromEntity(e, predictFuturePoints(e));
+				//stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+				//drawPointsTrailFromEntity(e, predictFuturePoints(e));
 				
 				updateTrajectory(e);
-				stroke(128,0,0);
+				stroke(255,0,0);
 				drawPointsTrailFromEntity(e, trajectory);
 				
 				drawEntity(e, escala); 
@@ -238,10 +241,28 @@ var drawEntity = function(e, scale){
 	strokeWeight(1);
 }
 
+var doTrajectoryStep = function(e, player){
+	
+	e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
+	e.forceVectors.push(e.boostForce);
+	
+	e.update();
+	
+	if (e.isDead() || e.grounded){ 
+		return;
+	}
+	
+	trajectory[0].push(e.x); trajectory[1].push(e.y); dir_history.push(e.dir);
+}
+
 var updateTrajectory = function(player){
 	
 	if (!pathPredictEnabled){ 
 		trajectory = [[],[]]; return; 
+	}
+	
+	if ( framecount % 600 == 0 ){
+		trajectory = [[],[]];
 	}
 	
 	var lastx = trajectory[0][ trajectory[0].length - 1 ];
@@ -255,33 +276,34 @@ var updateTrajectory = function(player){
 		lastdir = player.dir;
 	}
 	
-	var e = new Entity(lastx, lasty, lastdir );
+	trajPredictor.x = lastx; trajPredictor.y = lasty; trajPredictor.dir = lastdir;
 	
-	for (var i = 0; i < 5; i++){
+	//trajPredictor.boostForce = player.boostForce; trajPredictor.boostForce.dir = trajPredictor.dir;
+	//trajPredictor.forceVectors.push(trajPredictor.boostForce);
+	
+	//var e = new Entity(lastx, lasty, lastdir );
+	
+	if (trajectory[0].length < 1000){
 		
-		e.update();
-		
-		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
-		e.forceVectors.push(e.boostForce);
-		
-		if (e.isDead() || e.grounded){ 
-			break;
+		for (var i = 0; i < 5; i++){
+			doTrajectoryStep(trajPredictor, player);
 		}
 		
-		trajectory[0].push(e.x); trajectory[1].push(e.y); dir_history.push(e.dir);
-		
-
+	}else{
+		doTrajectoryStep(trajPredictor, player);
 	}
 	
-	if (trajectory[0].length < 500){
+	trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
+	
+/* 	if (trajectory[0].length < 500){
 		//
 		
 	}else{
 		//trajectory[0].splice(125); trajectory[1].splice(125); dir_history.splice(125);
 		//trajectory[0].length = 500; trajectory[1].length = 500; dir_history.length = 500;
+		
 		trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
-		trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
-	}
+	} */
 	
 	
 }
@@ -393,22 +415,6 @@ function mouseWheel(e) {
 
 var update = function(){
 	
-/* 	var player = client.world.getPlayer();
-	
-	x_derivs[0] = player.x - player.lastx;
-	
-	for ( var i = 1; i < 5; i++ ){
-		
-		//x_derivs[i] =
-		
-		for ( var j = i; j >= 0; j--){
-			
-			x_derivs[i] -= x_derivs[i - j] ;
-			
-		}
-		
-	} */
-	
 	server.update();
 	var player = client.world.getPlayer();
 	
@@ -417,12 +423,14 @@ var update = function(){
 	if (player){
 		if (keyIsDown(87)) { // up
 			if (player.boostForce.magnitude < 10) {
+				server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
 				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 				trajectory = [[],[]]; dir_history = [];
 			}
 		}
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
+				server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
 				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
 				trajectory = [[],[]]; dir_history = [];
 			}

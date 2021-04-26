@@ -214,9 +214,7 @@ class Entity {
 	}
 	
 	onCrash(){
-		this.dead = true;
-		this.ticksExisted = 0; 
-		this.velocity = 0;
+
 	}
 	
 	explode(){
