@@ -12,6 +12,7 @@ var trajectory = [[],[]];
 var dir_history = [];
 
 var trajectoryBuffer = [[],[]];
+var traj_pointer = 0;
 
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
@@ -23,12 +24,6 @@ MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whol
 // anything smaller than this will only render stars (no planets)
 
 MIN_ZOOM  = 0.001;
-
-server = new Server();
-server.init(); server.world.init();
-//server.world = new World();
-
-client = new Client();
 
 function loopyMod(x, m) {
 	return (x % m + m) % m;
@@ -53,13 +48,20 @@ function setup(){
 	
 	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
+	
+	server = new Server();
+	server.init(); server.world.init();
+	//server.world = new World();
+
+	client = new Client();
+	update(); update(); update(); // I guess it takes three ticks to position everything correctly (including the camera and player)
 
 	//settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-02", mainelement);	
 }
 
 function draw(){
 	
-	if (framecount % 1 == 0){
+	if (GROUP_INFOBAR.active){
 		update();
 	}
 	framecount++;
@@ -142,11 +144,11 @@ function draw(){
 				
 				if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
 		
-				//stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
-				//drawPointsTrailFromEntity(e, predictFuturePoints(e));
+				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+				//drawPointsTrailFromEntity(e, trajectoryBuffer);
 				
 				updateTrajectory(e);
-				stroke(255,0,0);
+				//stroke(255,0,0);
 				drawPointsTrailFromEntity(e, trajectory);
 				
 				drawEntity(e, escala); 
@@ -168,7 +170,7 @@ function draw(){
 	textFont("Courier");
 	text("FPS: " + Math.round(frameRate()), width - 75, 16);
 	
-	text("" + client.world.getPlayer().angjer, width - 75, 32);
+	text("" + traj_pointer, width - 75, 32);
 }
 
 var drawPointsTrailFromEntity = function(e, points){
@@ -270,6 +272,7 @@ var updateTrajectory = function(player){
 	var lastdir = dir_history[ dir_history.length - 1 ]
 	
 	if (!lastx){
+		traj_pointer = 0;
 		
 		lastx = player.x;
 		lasty = player.y;
@@ -287,6 +290,7 @@ var updateTrajectory = function(player){
 		
 		for (var i = 0; i < 5; i++){
 			doTrajectoryStep(trajPredictor, player);
+			traj_pointer++;
 		}
 		
 	}else{
@@ -304,8 +308,6 @@ var updateTrajectory = function(player){
 		
 		trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
 	} */
-	
-	
 }
 
 var predictDerivativePoints = function(player){
@@ -408,10 +410,9 @@ function mouseWheel(e) {
 	return false;
 }
 
-// vel = x - lastx
-// acc = vel - lastvel -> acc = (x - lastx) - lastvel
-// jer = acc - lastacc -> jer = ( x-lastx-lastvel ) - lastacc
+// This is truly a double-duty function, doing both serverside and clientside calls. However, the backend behavior is almost entirely relegated to the corresponding objects (World, Chunk, Entity) whereas the clientside behavior is mostly in here (or the GuiHandler and its constituents)
 
+// For multiplayer test, the server side calls will be moved and all the rest will stay put!
 
 var update = function(){
 	

@@ -30,6 +30,7 @@ class GuiHandler {
 		}
 		
 		element.active = true;
+		
 		element.show();
 		
 	}
@@ -146,6 +147,28 @@ for (var i = 0; i < 9; i++){
 		}else{
 		}
 	}
+}
+
+// WELCOME: When you first open up the game
+
+var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show();
+
+GROUP_WELCOME.onUpdate = function(){
+	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
+}
+
+var hdr = new GuiElement(0,0,700,40,GROUP_WELCOME); hdr.text = "Welcome to Space Game";
+var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a cargo spaceplane. You can do   delivery missions, or you can just explore freely if you want. \n\nThere  isn't much to see right now, but you can always come back later and see how things have changed!"
+
+var butoncontainer = new GuiElement(0,0,700,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
+
+var startbuton = new GuiElement(0,0,150,40,butoncontainer); startbuton.text = "Begin flying";
+startbuton.onClick = function(){
+	GROUP_WELCOME.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+}
+var sorcebuton = new GuiElement(0,0,150,40,butoncontainer); sorcebuton.text = "View code";
+sorcebuton.onClick = function(){
+	GROUP_WELCOME.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 
 // MISSION SUCCESS: When you succeed a mission
@@ -286,7 +309,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game pre alpha 0.1.1a\n2021-04-23"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = "Space Game pre alpha 0.1.1a\n2021-05-03"
 
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 playerstatus.onUpdate = function(){
@@ -402,3 +425,5 @@ missionbutton.onUpdate = function(){
 missionbutton.onClick = function(){
 	GuiHandler.openWindow( GROUP_MISSION_SELECT )
 }
+
+GuiHandler.openWindow( GROUP_WELCOME );

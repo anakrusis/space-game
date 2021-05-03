@@ -99,14 +99,14 @@ class BodyPlanet extends EntityBody {
 		var oreveinscount = RandomUtil.fromRangeI(5,20);
 		for (var i = 0; i < 10; i++){
 			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
-			var e = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
-			//server.worldworld.spawnEntity( e );
+			var ent = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
+			server.world.spawnEntity( ent );
 			
-			for (var j = e.startindex; j <= end; j++){
+			for (var j = ent.startindex; j <= end; j++){
 				
 				var index = loopyMod(j, this.terrainSize);
 				
-				this.tiles[index].oreVeinUUID = e.uuid;
+				this.tiles[index].oreVeinUUID = ent.uuid;
 			}
 		}
 	}
