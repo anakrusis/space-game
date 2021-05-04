@@ -1,4 +1,4 @@
-TITLE_VERSION = "Space Game pre alpha 0.1.1a";
+TITLE_VERSION = "Space Game pre alpha 0.1.1b";
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -30,6 +30,8 @@ class GuiHandler {
 		if (element == GROUP_INFOBAR){
 			GROUP_HOTBAR.active = true;
 			GROUP_HOTBAR.show();
+			BUTTON_MENU.active = true;
+			BUTTON_MENU.show();
 		}
 		
 		element.active = true;
@@ -172,7 +174,29 @@ startbuton.onClick = function(){
 var sorcebuton = new GuiElement(0,0,200,40,butoncontainer); sorcebuton.text = "View code (Github)";
 sorcebuton.onClick = function(){
 	window.open("https://github.com/anakrusis/space-game", "_blank");;
+
 }
+
+var GROUP_OPTIONS = new GuiElement(0,0,500,500); GROUP_OPTIONS.autosize = true; GROUP_OPTIONS.autopos = "top"; GROUP_OPTIONS.hide();
+
+GROUP_OPTIONS.onUpdate = function(){
+	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
+}
+
+var options_title = new GuiElement(0,0,500,40,GROUP_OPTIONS); options_title.text = "Options";
+
+var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true;  options_btncntr.autopos = "left";
+
+var options_back = new GuiElement(0,0,100,40,options_btncntr); options_back.text = "Back";
+options_back.onClick = function(){
+	GROUP_OPTIONS.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+}
+var options_apply = new GuiElement(0,0,100,40,options_btncntr); options_apply.text = "Apply";
+options_apply.onClick = function(){
+
+
+}
+
 
 // MISSION SUCCESS: When you succeed a mission
 
@@ -315,6 +339,16 @@ var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
 var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-03"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
+}
+
+var BUTTON_MENU = new GuiElement(0,0,150,40); BUTTON_MENU.text = "Options..."
+BUTTON_MENU.onUpdate = function(){
+	//var mid = width/2;
+	this.y = height - this.height;
+	this.x = 0;
+}
+BUTTON_MENU.onClick = function(){
+	GuiHandler.openWindow(GROUP_OPTIONS);
 }
 
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
