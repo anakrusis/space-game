@@ -14,8 +14,8 @@ class Mission {
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		// temporarily baked in for now
 		this.desc = "The city of " + dest.name + " is awaiting a delivery of " + item.name + ".\n";
-		this.failtext = "You failed the mission! What the heck are you gonna do now?";
-		this.successtext = "You succeeded in delivering  the " + item.name + " to the city of " + dest.name + "!";
+		this.failtext = "The " + item.name + " did not reach its   destination! Be more careful next time!";
+		this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!";
 	}
 	
 	getSourceCity(){
@@ -34,14 +34,14 @@ class Mission {
 	}
 	
 	onFail(){
-		GROUP_MISSION_FAIL.children[0].text = this.failtext; server.world.getPlayer().currentMission = null;
+		GROUP_MISSION_FAIL.children[1].text = this.failtext; server.world.getPlayer().currentMission = null;
 		GuiHandler.openWindow(GROUP_MISSION_FAIL);
 		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 	}
 	
 	onSuccess(){
-		GROUP_MISSION_SUCCESS.children[0].text = this.successtext; server.world.getPlayer().currentMission = null;
+		GROUP_MISSION_SUCCESS.children[1].text = this.successtext; server.world.getPlayer().currentMission = null;
 		GuiHandler.openWindow(GROUP_MISSION_SUCCESS);
 		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);

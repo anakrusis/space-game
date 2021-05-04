@@ -3,6 +3,8 @@ TITLE_VERSION = "Space Game pre alpha 0.1.1b";
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
 
+GUI_SCALE = 2;
+
 class GuiHandler {	
 	static elements = []; // outermost parent elements here, child elements contained within..
 	
@@ -50,10 +52,15 @@ class GuiHandler {
 	}
 	
 	static render(){
+		
+		scale(GUI_SCALE);
+		
 		for (var i = 0; i < this.elements.length; i++){
 			var e = this.elements[i];
 			e.render();
 		}
+		
+		resetMatrix()
 	}
 	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.
@@ -112,12 +119,9 @@ class GuiHandler {
 // HOTBAR: Shows the cargo hold of items (nine in total for now)
 
 var GROUP_HOTBAR = new GuiElement(0,0,500,500);
-GROUP_HOTBAR.autosize = true; GROUP_HOTBAR.autopos = "left";
-
+GROUP_HOTBAR.autosize = true; GROUP_HOTBAR.autopos = "left"; GROUP_HOTBAR.autocenterX = true;
 GROUP_HOTBAR.onUpdate = function(){
-	var mid = width/2;
-	this.y = height - this.height;
-	this.x = mid + (-0.5) * this.width;
+	this.y = height/GUI_SCALE - this.height;
 }
 
 for (var i = 0; i < 9; i++){
@@ -156,11 +160,7 @@ for (var i = 0; i < 9; i++){
 
 // WELCOME: When you first open up the game
 
-var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show();
-
-GROUP_WELCOME.onUpdate = function(){
-	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
-}
+var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
 
 var hdr = new GuiElement(0,0,700,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
 var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a cargo spaceplane. You can do   delivery missions, or just explore freely if you want. \n\nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nControls:\n\n W/S - accelerate/decelerate\n A/D - turn\n F - toggle fullscreen\n P - toggle path drawing\n Mouse wheel - zoom in/out"
@@ -177,11 +177,7 @@ sorcebuton.onClick = function(){
 
 }
 
-var GROUP_OPTIONS = new GuiElement(0,0,500,500); GROUP_OPTIONS.autosize = true; GROUP_OPTIONS.autopos = "top"; GROUP_OPTIONS.hide();
-
-GROUP_OPTIONS.onUpdate = function(){
-	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
-}
+var GROUP_OPTIONS = new GuiElement(0,0,500,500); GROUP_OPTIONS.autosize = true; GROUP_OPTIONS.autopos = "top"; GROUP_OPTIONS.hide(); GROUP_OPTIONS.autocenterX = true; GROUP_OPTIONS.autocenterY = true;
 
 var options_title = new GuiElement(0,0,500,40,GROUP_OPTIONS); options_title.text = "Options";
 
@@ -202,10 +198,9 @@ options_apply.onClick = function(){
 
 var GROUP_MISSION_SUCCESS = new GuiElement(0,0,500,500);
 GROUP_MISSION_SUCCESS.autosize = true; GROUP_MISSION_SUCCESS.autopos = "top"; GROUP_MISSION_SUCCESS.hide();
+GROUP_MISSION_SUCCESS.autocenterX = true; GROUP_MISSION_SUCCESS.autocenterY = true;
 
-GROUP_MISSION_SUCCESS.onUpdate = function(){
-	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
-}
+var success_title = new GuiElement(0,0,300,40,GROUP_MISSION_SUCCESS); success_title.text = "Mission Success!"
 
 var toto = new GuiElement(0,0,300,40,GROUP_MISSION_SUCCESS);
 
@@ -218,10 +213,9 @@ bobbobo.onClick = function(){
 
 var GROUP_MISSION_FAIL = new GuiElement(0,0,500,500);
 GROUP_MISSION_FAIL.autosize = true; GROUP_MISSION_FAIL.autopos = "top"; GROUP_MISSION_FAIL.hide();
+GROUP_MISSION_FAIL.autocenterX = true; GROUP_MISSION_FAIL.autocenterY = true;
 
-GROUP_MISSION_FAIL.onUpdate = function(){
-	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
-}
+var fail_title = new GuiElement(0,0,300,40,GROUP_MISSION_FAIL); fail_title.text = "Mission Failed"
 
 var tete = new GuiElement(0,0,300,40,GROUP_MISSION_FAIL);
 
@@ -233,9 +227,7 @@ bb.onClick = function(){
 // MISSION CONFIRM: Menu giving mission details and asking you if your sure or not
 
 var GROUP_MISSION_CONFIRM = new GuiElement(0,0,0,0); GROUP_MISSION_CONFIRM.hide(); GROUP_MISSION_CONFIRM.autosize = true;
-GROUP_MISSION_CONFIRM.onUpdate = function(){
-	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
-}
+GROUP_MISSION_CONFIRM.autocenterX = true; GROUP_MISSION_CONFIRM.autocenterY = true;
 GROUP_MISSION_CONFIRM.onShow = function(){
 	
 	this.children = []; // For dynamic button arrangements, it has to reset each time or else they will just KEEP STACKING LOL
@@ -284,9 +276,7 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 
 var GROUP_MISSION_SELECT = new GuiElement(0, 0, 0, 0); GROUP_MISSION_SELECT.hide(); GROUP_MISSION_SELECT.autosize = true;
 
-GROUP_MISSION_SELECT.onUpdate = function(){
-	this.x = width/2 - this.width/2; this.y = height/2 - this.height/2;
-}
+GROUP_MISSION_SELECT.autocenterX = true; GROUP_MISSION_SELECT.autocenterY = true;
 
 GROUP_MISSION_SELECT.onShow = function(){
 	
@@ -336,7 +326,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-03"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-04"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -344,8 +334,8 @@ tittle.onClick = function(){
 var BUTTON_MENU = new GuiElement(0,0,150,40); BUTTON_MENU.text = "Options..."
 BUTTON_MENU.onUpdate = function(){
 	//var mid = width/2;
-	this.y = height - this.height;
-	this.x = 0;
+	this.y = height/GUI_SCALE - this.height;
+
 }
 BUTTON_MENU.onClick = function(){
 	GuiHandler.openWindow(GROUP_OPTIONS);
@@ -465,5 +455,7 @@ missionbutton.onUpdate = function(){
 missionbutton.onClick = function(){
 	GuiHandler.openWindow( GROUP_MISSION_SELECT )
 }
+
+GROUP_INFOBAR.hide(); BUTTON_MENU.hide(); GROUP_HOTBAR.hide();
 
 GuiHandler.openWindow( GROUP_WELCOME );

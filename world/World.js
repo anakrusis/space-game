@@ -123,6 +123,10 @@ class World {
 			
 			var homecity   = homenation.getCapitalCity(); var homeindex = homecity.getPlayerSpawnIndex();
 			this.player.moveToIndexOnPlanet(homeindex, homeplanet, 0);
+			
+			if (this.player.currentMission){
+				this.player.currentMission.onFail();
+			}
         }
 		
 		this.worldTime++;

@@ -19,6 +19,9 @@ class GuiElement {
 		this.autopos = "top"; // float property
 		this.autosize = false; // will fill up to the size of its children elements
 		
+		this.autocenterX = false; // will center to middle of screen (best for popup windows, or also some HUD stuff)
+		this.autocenterY = false;
+		
 		this.text = "";
 		this.disptext = "";
 		
@@ -96,6 +99,14 @@ class GuiElement {
 				}
 			} 
 		}else {
+			
+			if (this.autocenterX){
+				this.x = width/GUI_SCALE/2 - this.width/2;
+			}
+			if (this.autocenterY){
+				this.y = height/GUI_SCALE/2 - this.height/2;
+			}
+			
 			this.dispx = this.x + this.padding; this.dispy = this.y + this.padding;
 		}
 		
@@ -207,8 +218,8 @@ class GuiElement {
 				e.click();
 			} 
 			if (this.visible && this.active){
-				if (mouseX > this.dispx && mouseX < this.dispx + this.dispwidth
-				 && mouseY > this.dispy && mouseY < this.dispy + this.dispheight){
+				if (mouseX > this.dispx*GUI_SCALE && mouseX < (this.dispx + this.dispwidth) * GUI_SCALE
+				 && mouseY > this.dispy*GUI_SCALE && mouseY < (this.dispy + this.dispheight)* GUI_SCALE ){
 				
 					this.onClick(); 
 					bypassGameClick = true;
@@ -248,6 +259,7 @@ class GuiElement {
 			var e  = this.children[i];
 			e.render();
 		}
+
 	}
 	
 	// Same deal, this is empty so each element can have custom rendering stuff
