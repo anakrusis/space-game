@@ -3,7 +3,11 @@ TITLE_VERSION = "Space Game pre alpha 0.1.1b";
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
 
-GUI_SCALE = 2;
+GUI_SCALE = 1.5;
+
+options_buffer = {}; // This is used to buffer changes in the options menu
+// Each key is an array containing a set of strings referring to the path of the variable
+// and the value associated is the value assigned to said variable
 
 class GuiHandler {	
 	static elements = []; // outermost parent elements here, child elements contained within..
@@ -12,7 +16,7 @@ class GuiHandler {
 		
 		for (var i = 0; i < this.elements.length; i++){
 			var e = this.elements[i];
-			if (e.active){
+			if (true){
 				e.update();
 			}
 		}
@@ -158,6 +162,139 @@ for (var i = 0; i < 9; i++){
 	}
 }
 
+// INFOBAR: Left hand bar with the information on various things
+
+var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-05"
+tittle.onClick = function(){
+	GuiHandler.openWindow(GROUP_WELCOME);
+}
+
+var BUTTON_MENU = new GuiElement(0,0,150,40); BUTTON_MENU.text = "Options..."
+BUTTON_MENU.onUpdate = function(){
+	//var mid = width/2;
+	this.y = height/GUI_SCALE - this.height;
+
+}
+BUTTON_MENU.onClick = function(){
+	GuiHandler.openWindow(GROUP_OPTIONS);
+}
+
+var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+playerstatus.onUpdate = function(){
+	var infostring = "$" + client.world.player.money;
+	this.text = infostring;
+}
+
+var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+missioninfo.onUpdate = function(){
+	var mission = client.world.player.currentMission;
+	if (mission){
+		var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name;
+		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
+		var missiontime_sec = ~~((mission.timeRemaining /60) % 60 );
+		
+		var outtime = ""
+		outtime += "" + missiontime_min + ":" + (missiontime_sec < 10 ? "0" : "");
+		outtime += "" + missiontime_sec;
+		
+		infostring += " (" + outtime + ")" + "\n";
+		
+		infostring += "\n" + mission.desc;
+		
+		this.text = infostring;
+		this.show();
+	}else{
+		this.hide();
+	}
+}
+
+var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
+entityinfo.onUpdate = function(){
+	var e = null;
+	if (selectedEntity){
+		e = selectedEntity;
+	}else if (hoverEntity){
+		e = hoverEntity;
+	}
+	
+	if (e){
+		// All entitys have names!!
+		var infostring = "" + e.name + "\n";
+		
+		if (e instanceof BodyPlanet){
+			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
+			
+			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
+			infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
+			var yearlen = e.orbitPeriod / 60 / 60;
+			infostring += "• Year length: " + Math.round(yearlen) + " Earth min"
+			
+		}else if (e instanceof EntityBuilding){
+			
+			infostring += e.productionProgress + "/" + e.productionTime + "\n";
+			
+		}
+		
+		this.text = infostring;	
+		this.show();
+	}else{
+		this.hide();
+	}
+}
+
+//var info2 = new GuiElement(0,0,300,40,GROUP_INFOBAR);
+var p = function(){
+	if (selectedEntity instanceof EntityBuilding){
+		var city = selectedEntity.getCity();
+		var infostring = city.name + "\nCity of the " + city.getNation().name + " nation";
+		
+		this.text = infostring;
+		this.show();
+	}else{
+		this.hide();
+	}
+}
+
+var deliverbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); deliverbutton.text = "Deliver";
+deliverbutton.onUpdate = function(){
+
+	var mision = server.world.getPlayer().currentMission;
+	this.hide();
+	
+	if (mision && selectedEntity instanceof EntityBuilding){
+		
+		if (mision.getDestinationCity() == selectedEntity.getCity()){
+			
+			var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
+			if (selectedEntity.isIndexInBuilding(pindex)){
+				this.show();
+			}
+		}
+	}
+	
+}
+deliverbutton.onClick = function(){
+	server.world.getPlayer().currentMission.onSuccess();
+}
+
+var missionbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); missionbutton.text = "Missions...";
+missionbutton.onUpdate = function(){
+
+	this.hide();
+	if (selectedEntity instanceof BuildingSpaceport){
+		
+		var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
+		if (selectedEntity.isIndexInBuilding(pindex)){
+			this.show();
+		}
+	}
+	
+}
+missionbutton.onClick = function(){
+	GuiHandler.openWindow( GROUP_MISSION_SELECT )
+}
+
 // WELCOME: When you first open up the game
 
 var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
@@ -181,6 +318,11 @@ var GROUP_OPTIONS = new GuiElement(0,0,500,500); GROUP_OPTIONS.autosize = true; 
 
 var options_title = new GuiElement(0,0,500,40,GROUP_OPTIONS); options_title.text = "Options";
 
+var options_guiscale = new GuiSlider(0,0,300,40,GROUP_OPTIONS,["GUI_SCALE","SQUIDWARD"], 0.5, 2); options_guiscale.text = "Gui scale: ";
+options_guiscale.onUpdate = function(){
+	this.text = "Gui scale: " + Math.round(this.setting * 100)/100;
+}
+
 var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true;  options_btncntr.autopos = "left";
 
 var options_back = new GuiElement(0,0,100,40,options_btncntr); options_back.text = "Back";
@@ -190,9 +332,15 @@ options_back.onClick = function(){
 var options_apply = new GuiElement(0,0,100,40,options_btncntr); options_apply.text = "Apply";
 options_apply.onClick = function(){
 
-
+	for (var key in options_buffer){
+		console.log(key);
+		
+		var keyfirst = key.substring(0, key.indexOf(','));
+		
+		window[ keyfirst ] = options_buffer[key] ;
+		
+	}
 }
-
 
 // MISSION SUCCESS: When you succeed a mission
 
@@ -321,139 +469,6 @@ GROUP_MISSION_SELECT.onShow = function(){
 	backbtn.onClick = function(){
 		GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	}
-}
-
-// INFOBAR: Left hand bar with the information on various things
-
-var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-04"
-tittle.onClick = function(){
-	GuiHandler.openWindow(GROUP_WELCOME);
-}
-
-var BUTTON_MENU = new GuiElement(0,0,150,40); BUTTON_MENU.text = "Options..."
-BUTTON_MENU.onUpdate = function(){
-	//var mid = width/2;
-	this.y = height/GUI_SCALE - this.height;
-
-}
-BUTTON_MENU.onClick = function(){
-	GuiHandler.openWindow(GROUP_OPTIONS);
-}
-
-var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
-playerstatus.onUpdate = function(){
-	var infostring = "$" + client.world.player.money;
-	this.text = infostring;
-}
-
-var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
-missioninfo.onUpdate = function(){
-	var mission = client.world.player.currentMission;
-	if (mission){
-		var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name;
-		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
-		var missiontime_sec = ~~((mission.timeRemaining /60) % 60 );
-		
-		var outtime = ""
-		outtime += "" + missiontime_min + ":" + (missiontime_sec < 10 ? "0" : "");
-		outtime += "" + missiontime_sec;
-		
-		infostring += " (" + outtime + ")" + "\n";
-		
-		infostring += "\n" + mission.desc;
-		
-		this.text = infostring;
-		this.show();
-	}else{
-		this.hide();
-	}
-}
-
-var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
-entityinfo.onUpdate = function(){
-	var e = null;
-	if (selectedEntity){
-		e = selectedEntity;
-	}else if (hoverEntity){
-		e = hoverEntity;
-	}
-	
-	if (e){
-		// All entitys have names!!
-		var infostring = "" + e.name + "\n";
-		
-		if (e instanceof BodyPlanet){
-			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
-			
-			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
-			infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
-			var yearlen = e.orbitPeriod / 60 / 60;
-			infostring += "• Year length: " + Math.round(yearlen) + " Earth min"
-			
-		}else if (e instanceof EntityBuilding){
-			
-			infostring += e.productionProgress + "/" + e.productionTime + "\n";
-			
-		}
-		
-		this.text = infostring;	
-		this.show();
-	}else{
-		this.hide();
-	}
-}
-
-//var info2 = new GuiElement(0,0,300,40,GROUP_INFOBAR);
-var p = function(){
-	if (selectedEntity instanceof EntityBuilding){
-		var city = selectedEntity.getCity();
-		var infostring = city.name + "\nCity of the " + city.getNation().name + " nation";
-		
-		this.text = infostring;
-		this.show();
-	}else{
-		this.hide();
-	}
-}
-
-var deliverbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); deliverbutton.text = "Deliver";
-deliverbutton.onUpdate = function(){
-
-	var mision = server.world.getPlayer().currentMission;
-	this.hide();
-	
-	if (mision && selectedEntity instanceof EntityBuilding){
-		
-		if (mision.getDestinationCity() == selectedEntity.getCity()){
-			
-			var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
-			if (selectedEntity.isIndexInBuilding(pindex)){
-				this.show();
-			}
-		}
-	}
-	
-}
-deliverbutton.onClick = function(){
-	server.world.getPlayer().currentMission.onSuccess();
-}
-
-var missionbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); missionbutton.text = "Missions...";
-missionbutton.onUpdate = function(){
-
-	this.hide();
-	if (selectedEntity instanceof BuildingSpaceport){
-		
-		var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
-		if (selectedEntity.isIndexInBuilding(pindex)){
-			this.show();
-		}
-	}
-	
-}
-missionbutton.onClick = function(){
-	GuiHandler.openWindow( GROUP_MISSION_SELECT )
 }
 
 GROUP_INFOBAR.hide(); BUTTON_MENU.hide(); GROUP_HOTBAR.hide();

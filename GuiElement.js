@@ -290,3 +290,48 @@ class GuiElement {
 		}
 	}
 }
+
+class GuiSlider extends GuiElement {
+	
+	constructor(x,y,width,height,parent,patharray, min, max){
+		
+		super(x,y,width,60,parent);
+		
+		this.min = min; this.max = max;
+		
+		this.patharray = patharray;
+		this.setting = window[ this.patharray[0] ];
+	}
+	
+	updateValFromMousePos(){
+		// first scales the mouse position to a range between 0 and 1 (I guess for easier understandability)...
+		
+		var coeff = ((mouseX / GUI_SCALE) - this.dispx) / ( (this.dispx + this.dispwidth) - this.dispx); //coeff /= GUI_SCALE;
+		
+		// then rescales to the min and max values of the slider...
+		
+		var realval = this.min + (coeff * (this.max - this.min))
+		
+		console.log(coeff + " -> " + realval);
+		
+		this.setting = realval;
+	
+		options_buffer[ this.patharray ] = this.setting;
+	}
+	
+	onClick(){
+		this.updateValFromMousePos();
+		
+	}
+	
+	onRender(){
+		fill(0);
+		rect( this.dispx, this.dispy + 30, this.dispwidth, this.dispheight - 30 );
+		
+		var coeff = (this.setting - this.min) / ( this.max - this.min );
+		fill(255);
+		rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
+		
+	}
+	
+}
