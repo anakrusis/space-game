@@ -48,26 +48,6 @@ class City {
 		return server.world.nations[ this.nationUUID ] ;
 	}
 	
-	generateMissions(){
-		this.availableMissions = [];
-		var missioncount = 3;
-		
-		for (var i = 0; i < this.resources.length; i++){
-			
-		}
-		
-/* 		for (var i = 0; i < missioncount; i++){
-			
-			var keys = Object.keys( server.world.cities );
-			var randomcity = this;
-			while (randomcity == this){
-				randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-			}
-			var m = new Mission(this.uuid, randomcity.uuid);
-			this.availableMissions.push(m);
-		} */
-	}
-	
 	getAvailableMissions(){
 		return this.availableMissions;
 	}
@@ -103,7 +83,7 @@ class City {
 				while (randomcity == this){
 					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 				}
-				var m = new Mission(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
+				var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
 				this.availableMissions.push(m);
 			}
 		
@@ -125,7 +105,7 @@ class City {
 				while (randomcity == this){
 					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 				}
-				var m = new Mission(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
+				var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
 				this.availableMissions.push(m);
 			}
 		

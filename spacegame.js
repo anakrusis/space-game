@@ -403,7 +403,7 @@ function mouseWheel(e) {
 	//console.log(e.delta);
 	//cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
 	
-	cam_zoom -= (cam_zoom / 25) * (e.delta / 25);
+	cam_zoom -= (cam_zoom / 25) * (e.delta * MOUSE_SENSITIVITY / 25);
 	cam_zoom = Math.min(cam_zoom, MAX_ZOOM);
 	cam_zoom = Math.max(cam_zoom, MIN_ZOOM);
 

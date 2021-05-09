@@ -4,6 +4,7 @@ var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
 
 GUI_SCALE = 1.5;
+MOUSE_SENSITIVITY = 1;
 
 options_buffer = {}; // This is used to buffer changes in the options menu
 // Each key is an array containing a set of strings referring to the path of the variable
@@ -165,7 +166,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-05"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-08"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -321,6 +322,11 @@ var options_title = new GuiElement(0,0,500,40,GROUP_OPTIONS); options_title.text
 var options_guiscale = new GuiSlider(0,0,300,40,GROUP_OPTIONS,["GUI_SCALE","SQUIDWARD"], 0.5, 2); options_guiscale.text = "Gui scale: ";
 options_guiscale.onUpdate = function(){
 	this.text = "Gui scale: " + Math.round(this.setting * 100)/100;
+}
+
+var options_mouse = new GuiSlider(0,0,300,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY","SQUIDWARD"], 0.5, 2); options_mouse.text = "Gui scale: ";
+options_mouse.onUpdate = function(){
+	this.text = "Mouse wheel sensitivity: " + Math.round(this.setting * 100)/100;
 }
 
 var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true;  options_btncntr.autopos = "left";
