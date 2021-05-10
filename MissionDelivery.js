@@ -8,10 +8,20 @@ class MissionDelivery extends Mission {
 		this.destinationCityUUID = destinationCityUUID;
 		
 		var dest = server.world.cities[ this.destinationCityUUID ];
-		// temporarily baked in for now
-		this.desc = "The city of " + dest.name + " is awaiting a delivery of " + item.name + ".\n";
-		this.failtext = "The " + item.name + " did not reach its   destination! Be more careful next time!";
-		this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!";
+		
+		if (item == Items.ITEM_PASSENGERS){
+			
+			this.desc = "The city of " + dest.name + " is awaiting the arrival of " + item.name + ".\n";
+			this.failtext = "The passengers did not reach their destination! This is an atrocity!";
+			this.successtext = "The " + item.name + " were safely brought to the city of " + dest.name + "!\nGreat work!";
+			
+		}else{
+		
+			this.desc = "The city of " + dest.name + " is awaiting a delivery of " + item.name + ".\n";
+			this.failtext = "The " + item.name + " did not reach its   destination! Be more careful next time!";
+			this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!";
+		
+		}
 	}
 	
 	getSourceCity(){

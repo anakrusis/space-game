@@ -50,7 +50,7 @@ class EntityPlayer extends Entity {
 		
 /* 		this.lastxvel = this.xvel; this.lastyvel = this.yvel;
 		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
-		this.forceVectors.push(this.boostForce);
+		//this.forceVectors.push(this.boostForce);
 		this.boostForce.dir = this.dir;
 		super.update();
 		
@@ -81,7 +81,7 @@ class EntityPlayer extends Entity {
 			}
 		}
 		
-		
+		this.forceVectors.push(this.boostForce);
 		
 		if (this.boostForce.magnitude > 0.01 && this.ticksExisted % 10 == 0){
             var dir = (this.dir - Math.PI + (random() * 0.5));

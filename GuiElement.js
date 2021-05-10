@@ -301,6 +301,7 @@ class GuiSlider extends GuiElement {
 		
 		this.patharray = patharray;
 		this.setting = window[ this.patharray[0] ];
+		this.originalsetting = this.setting;
 	}
 	
 	updateValFromMousePos(){
@@ -312,7 +313,7 @@ class GuiSlider extends GuiElement {
 		
 		var realval = this.min + (coeff * (this.max - this.min))
 		
-		console.log(coeff + " -> " + realval);
+		//console.log(coeff + " -> " + realval);
 		
 		this.setting = realval;
 	
@@ -321,6 +322,10 @@ class GuiSlider extends GuiElement {
 	
 	onClick(){
 		this.updateValFromMousePos();
+		
+	}
+	
+	onShow(){
 		
 	}
 	

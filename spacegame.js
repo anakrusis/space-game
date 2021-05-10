@@ -149,7 +149,7 @@ function draw(){
 				
 				updateTrajectory(e);
 				//stroke(255,0,0);
-				drawPointsTrailFromEntity(e, trajectory);
+				drawPointsTrailFromEntity(e, predictFuturePoints(e));
 				
 				drawEntity(e, escala); 
 			}
@@ -157,11 +157,10 @@ function draw(){
 	}
 	
 	GuiHandler.update();
-	
 	GuiHandler.drawCityLabels();
-	
 	GuiHandler.render();
 	
+	GuiHandler.handleTouches();
 	fill(255,0,0);
 	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);
 	
@@ -464,43 +463,6 @@ var update = function(){
 		
 	}else if (keyIsDown(69)) { // e
 		cam_zoom -= (cam_zoom / 25);
-	}
-	
-	cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
-	
-	// TOUCHSCREEN HANDLING
-	
-	if (touches.length == 1){
-		// This is both random accidental screen tap protection, and, also allows double touch events to not
-		// accidentally trigger single touch events (you know, both fingers dont touch the screen on the same tick hardly ever)
-		// so there is a 20-tick window for a single touch event to add on more touches, before it's registered as a single touch
-		
-		if (lasttouches.length==0){ singletouchtimer = 0;}else{ singletouchtimer++; }
-		
-		if (singletouchtimer > 20){
-			
-			cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y ); mouseClicked();
-			
-			var angle = Math.atan2(touches[0].y - tra_y(player.y) , touches[0].x - tra_x(player.x));
-			//console.log(angle);
-			server.onUpdateRequest( angle, "world", "player", "dir" );
-			server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
-		}
-	}
-	
-	if (touches.length == 2 && lasttouches.length == 2){
-		
-		var thistickdist = CollisionUtil.euclideanDistance( touches[0].x, touches[0].y, touches[1].x, touches[1].y);
-		var lasttickdist = CollisionUtil.euclideanDistance( lasttouches[0].x, lasttouches[0].y, lasttouches[1].x, lasttouches[1].y);
-		
-		var diff = thistickdist - lasttickdist;
-		console.log(diff);
-		cam_zoom += ((cam_zoom / 25) * (diff / 11 ))
-	}
-	// deep copy of last tick's touch events
-	lasttouches = [];
-	for (var i = 0; i < touches.length; i++){
-		lasttouches[i] = touches[i];
 	}
 	
 	// MOUSE HANDLING
