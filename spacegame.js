@@ -7,7 +7,8 @@ var cursorAbsX; var cursorAbsY;
 var bypassGameClick = false; // gui boolean for when a gui element is clicked, not to trigger anything in game world
 
 var pathPredictEnabled = true;
-var trajPredictor = new Entity(0,0,0);
+var trajPredictor = new Entity(0,0,0); 
+    trajPredictor.boostForce = new ForceVector(0,0);
 var trajectory = [[],[]];
 var dir_history = [];
 
@@ -150,7 +151,7 @@ function draw(){
 				if (e instanceof EntityPlayer){
 					updateTrajectory(e);
 				//stroke(255,0,0);
-				//drawPointsTrailFromEntity(e, predictFuturePoints(e));
+					drawPointsTrailFromEntity(e, predictFuturePoints(e));
 					drawPointsTrailFromEntity(e, trajectory);
 				}
 				
@@ -247,14 +248,23 @@ var drawEntity = function(e, scale){
 
 var doTrajectoryStep = function(e, player){
 	
-	e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
+	e.boostForce.dir = e.dir;
+	
+	e.update();
+
+	e.boostForce = player.boostForce; 
+	e.forceVectors.push(e.boostForce);
+	
+	//futurePointsX.push(e.x); futurePointsY.push(e.y);
+	
+/* 	e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
 	e.forceVectors.push(e.boostForce);
 	
 	e.update();
 	
 	if (e.isDead() || e.grounded){ 
 		return;
-	}
+	} */
 	
 	trajectory[0].push(e.x); trajectory[1].push(e.y); dir_history.push(e.dir);
 }
