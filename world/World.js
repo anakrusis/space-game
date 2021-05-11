@@ -17,7 +17,8 @@ class World {
 	
 	init(){
 		
-		this.seed = Math.floor ( random() * 10000 );
+		//this.seed = Math.floor ( random() * 10000 );
+		this.seed = (2653);
 		p5.prototype.randomSeed(this.seed);
 		
 		var homePlanet = this.findHomePlanet();
@@ -43,6 +44,12 @@ class World {
 			var natcap = homePlanet.spawnCity( nat );
 			nat.cityUUIDs.push(natcap.uuid);
 			nat.capitalCityUUID = natcap.uuid;
+			
+			var ship = new EntityShip(7500, 8192, 0);
+			ship.nationUUID = nat.uuid;
+			if ( this.cities[natcap.uuid] ){
+				ship.moveToSpawnPoint(); this.spawnEntity(ship);
+			}
 		}
 		
 		// Generates player now
@@ -110,13 +117,7 @@ class World {
 			this.player.dead = false; this.player.velocity = 0; 
 			this.player.boostForce = new ForceVector(0,0); this.player.forceVectors = [];
 			
-			var homenation = this.nations[this.player.nationUUID];
-			var homeplanid = homenation.homePlanetUUID;
-			var homechunkx = homenation.homeChunkX; var homechunky = homenation.homeChunkY;
-			var homeplanet = this.chunks[homechunkx][homechunky].bodies[homeplanid];
-			
-			var homecity   = homenation.getCapitalCity(); var homeindex = homecity.getPlayerSpawnIndex();
-			this.player.moveToIndexOnPlanet(homeindex, homeplanet, 0);
+			this.player.moveToSpawnPoint();
 			
 			if (this.player.currentMission){
 				this.player.currentMission.onFail();

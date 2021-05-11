@@ -134,11 +134,11 @@ class GuiHandler {
 		if (touches.length == 1){
 			// This is both random accidental screen tap protection, and, also allows double touch events to not
 			// accidentally trigger single touch events (you know, both fingers dont touch the screen on the same tick hardly ever)
-			// so there is a 20-tick window for a single touch event to add on more touches, before it's registered as a single touch
+			// so there is a 15-tick window for a single touch event to add on more touches, before it's registered as a single touch
 			
 			if (lasttouches.length==0){ singletouchtimer = 0;}else{ singletouchtimer++; }
 			
-			if (singletouchtimer > 20){
+			if (singletouchtimer > 15){
 				
 				cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y );
 				

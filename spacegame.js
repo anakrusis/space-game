@@ -71,7 +71,7 @@ function draw(){
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
 		if (e.isOnScreen()){
-			if (!(e instanceof EntityPlayer || e instanceof EntityOreVein)){ drawEntity(e); }
+			if (!(e instanceof EntityShip || e instanceof EntityOreVein)){ drawEntity(e); }
 		}
 	}
 	
@@ -140,16 +140,19 @@ function draw(){
 			if (e instanceof EntityOreVein && cam_zoom > MAX_INTERPLANETARY_ZOOM){
 				drawEntity(e);
 			}
-			if (e instanceof EntityPlayer){ 
+			if (e instanceof EntityShip){ 
 				
 				if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
 		
 				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
 				//drawPointsTrailFromEntity(e, trajectoryBuffer);
 				
-				updateTrajectory(e);
+				if (e instanceof EntityPlayer){
+					updateTrajectory(e);
 				//stroke(255,0,0);
-				drawPointsTrailFromEntity(e, predictFuturePoints(e));
+				//drawPointsTrailFromEntity(e, predictFuturePoints(e));
+					drawPointsTrailFromEntity(e, trajectory);
+				}
 				
 				drawEntity(e, escala); 
 			}
@@ -483,7 +486,7 @@ var update = function(){
 	for (var uuid in client.world.entities){
 		entity = client.world.entities[uuid];
 		if (entity.isOnScreen()){
-			if ((entity instanceof EntityBuilding || entity instanceof EntityOreVein) && CollisionUtil.isEntityCollidingWithEntity(cursorEntity, entity)){
+			if (!(entity instanceof EntityPlayer || entity instanceof EntityParticle) && CollisionUtil.isEntityCollidingWithEntity(cursorEntity, entity)){
 				hoverEntity = entity;
 			}
 		}

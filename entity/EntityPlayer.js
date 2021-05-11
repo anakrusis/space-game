@@ -1,4 +1,4 @@
-class EntityPlayer extends Entity {
+class EntityPlayer extends EntityShip {
 	constructor(x, y, dir){
 		super(x,y,dir);
 		
@@ -12,30 +12,8 @@ class EntityPlayer extends Entity {
 		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
 		this.lastBoostForce = new ForceVector(0,0); // last tick's, for reference
 	
-		// Referential properties
-		this.nationUUID = null;
 		this.currentMission = null;
 	}
-	
-	getNation(){
-		return server.world.nations[this.nationUUID];
-	}
-	
-	getAbsolutePoints() {
-		//if (cam_zoom < 1.5){ scale = 20 / cam_zoom; } else { scale = 1; }
-		var scale = 1;
-		
-        var point1x = rot_x(this.dir,-0.5*scale,0.4*scale) + this.x;
-        var point1y = rot_y(this.dir,-0.5*scale,0.4*scale) + this.y;
-
-        var point2x = rot_x(this.dir,0.8*scale,0.0) + this.x;
-        var point2y = rot_y(this.dir,0.8*scale,0.0) + this.y;
-
-        var point3x = rot_x(this.dir,-0.5*scale,-0.4*scale) + this.x;
-        var point3y = rot_y(this.dir,-0.5*scale,-0.4*scale) + this.y;
-
-        return [ point1x, point1y, point2x, point2y, point3x, point3y ];
-    }
 	
 	update(){
 		if (this.nationUUID){
@@ -111,25 +89,5 @@ class EntityPlayer extends Entity {
 		this.ticksExisted = 0; 
 		this.velocity = 0;
 		this.explode();
-	}
-	
-	getNearestBody(){
-		var nearestdist = 100000000;
-		var nearestplanet = null;
-		for (var uuid in this.getChunk().bodies){
-			var body = this.getChunk().getBody(uuid);
-			
-			var dede = CollisionUtil.euclideanDistance(this.x, this.y, body.x, body.y);
-			//if (this.ticksExisted < 5){ console.log("nearest:" + nearestdist + " dist:" + dede); };
-			
-			if (dede <= nearestdist){
-				if (body.canEntitiesCollide){
-					nearestdist = dede;
-					nearestplanet = body;
-					//if (this.ticksExisted < 5){console.log(nearestplanet.name);};
-				}
-			}
-		}
-		return nearestplanet;
 	}
 }
