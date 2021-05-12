@@ -152,7 +152,7 @@ function draw(){
 					updateTrajectory(e);
 				//stroke(255,0,0);
 					drawPointsTrailFromEntity(e, predictFuturePoints(e));
-					drawPointsTrailFromEntity(e, trajectory);
+					//drawPointsTrailFromEntity(e, trajectory);
 				}
 				
 				drawEntity(e, escala); 

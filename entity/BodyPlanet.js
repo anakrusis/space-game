@@ -123,7 +123,13 @@ class BodyPlanet extends EntityBody {
 		for (var a = 0; a < cityPlaceAttempts; a++){
 			
 			var cityCenterIndex = RandomUtil.fromRangeI(0, this.terrainSize);
-			cityRadius = 8;
+			
+			// The radius starts at a high value and goes down as more city placing attempts are made until it reaches a low value.
+			// This way there can be almost always found a place to put a city between sizes of 8 and 24
+			
+			var attemptratio = 1.0 - (a / cityPlaceAttempts);
+			
+			cityRadius = Math.round(16 * (attemptratio) + 8);
 			
 			var cityCenterValid = true;
 			for (var i = -cityRadius; i <= cityRadius; i++){
@@ -173,7 +179,19 @@ class BodyPlanet extends EntityBody {
 				if (this.tiles[relIndex].oreVeinUUID != null){
 					newbuilding = new BuildingMine( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
 				}else{
-					newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 1);
+					
+					var dist = this.terrainIndexDistance( relIndex, cityCenterIndex );
+					var probability = 2 / dist;
+					
+					if ( random() < probability ){
+						
+						newbuilding = new BuildingHouse( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+						
+					}else{
+						
+						newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 1);
+						
+					}
 				}					
 			}
 			this.spawnBuilding( newbuilding, city );
@@ -215,6 +233,14 @@ class BodyPlanet extends EntityBody {
 			return true;
 		}
 		return false;
+	}
+	
+	terrainIndexDistance(index1, index2) {
+		
+		var rightDiff = index2 - (index1 - this.terrainSize);
+        var leftDiff =  index1 - index2;
+        return Math.min( Math.abs(leftDiff), Math.abs(rightDiff));
+		
 	}
 	
 	// This is from the page https://en.wikipedia.org/wiki/Linear_interpolation

@@ -57,85 +57,88 @@ class City {
 		// Removes delivery missions if the item to be delivered is not present in the citys inventory.
 		// With the exception of passengers, who are not in the city inventory ever.
 		
-		for (var i = 0; i < this.availableMissions.length; i++){
-			var mission = this.availableMissions[i];
-			
-			if (mission.item != Items.ITEM_PASSENGERS){
+		if (server.world.cities.length > 1){
+		
+			for (var i = 0; i < this.availableMissions.length; i++){
+				var mission = this.availableMissions[i];
 				
-				if (this.resources.totalAmount( mission.item ) <= 0){
+				if (mission.item != Items.ITEM_PASSENGERS){
 					
-					this.availableMissions.splice(i,1);
+					if (this.resources.totalAmount( mission.item ) <= 0){
+						
+						this.availableMissions.splice(i,1);
+					}
+					
+				}
+			}
+			
+			// Adds passenger missions if there is none already.
+			var passenger_mission_found = false;
+			
+			for (var i = 0; i < this.availableMissions.length; i++){
+				var mission = this.availableMissions[i];
+				
+				if (mission.item == Items.ITEM_PASSENGERS){
+					passenger_mission_found = true; break;
+				}
+			}
+			if (!passenger_mission_found){
+				var keys = Object.keys( server.world.cities );
+				var randomcity = this;
+				while (randomcity == this){
+					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
+				}
+				var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_PASSENGERS, 20);
+				this.availableMissions.push(m);
+			}
+			
+			// Adds delivery missions if there is a surplus of certain items in the citys inventory, 
+			// and no existing missions that already plan on delivering it
+			
+			var food_amt = this.resources.totalAmount( Items.ITEM_FOOD );
+			if (food_amt > 0){
+				
+				var food_mission_present = false;
+				for (var i = 0; i < this.availableMissions.length; i++){
+					var mission = this.availableMissions[i];
+					if (mission.item == Items.ITEM_FOOD){
+						food_mission_present = true;
+					}
 				}
 				
-			}
-		}
-		
-		// Adds passenger missions if there is none already.
-		var passenger_mission_found = false;
-		
-		for (var i = 0; i < this.availableMissions.length; i++){
-			var mission = this.availableMissions[i];
-			
-			if (mission.item == Items.ITEM_PASSENGERS){
-				passenger_mission_found = true; break;
-			}
-		}
-		if (!passenger_mission_found){
-			var keys = Object.keys( server.world.cities );
-			var randomcity = this;
-			while (randomcity == this){
-				randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-			}
-			var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_PASSENGERS, 20);
-			this.availableMissions.push(m);
-		}
-		
-		// Adds delivery missions if there is a surplus of certain items in the citys inventory, 
-		// and no existing missions that already plan on delivering it
-		
-		var food_amt = this.resources.totalAmount( Items.ITEM_FOOD );
-		if (food_amt > 0){
-			
-			var food_mission_present = false;
-			for (var i = 0; i < this.availableMissions.length; i++){
-				var mission = this.availableMissions[i];
-				if (mission.item == Items.ITEM_FOOD){
-					food_mission_present = true;
+				if (!food_mission_present){
+					var keys = Object.keys( server.world.cities );
+					var randomcity = this;
+					while (randomcity == this){
+						randomcity = server.world.cities[keys[ keys.length * random() << 0]];
+					}
+					var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
+					this.availableMissions.push(m);
 				}
-			}
 			
-			if (!food_mission_present){
-				var keys = Object.keys( server.world.cities );
-				var randomcity = this;
-				while (randomcity == this){
-					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-				}
-				var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
-				this.availableMissions.push(m);
 			}
-		
-		}
-		var iron_amt = this.resources.totalAmount( Items.ITEM_IRON );
-		if (iron_amt > 0){
+			var iron_amt = this.resources.totalAmount( Items.ITEM_IRON );
+			if (iron_amt > 0){
+				
+				var iron_mission_present = false;
+				for (var i = 0; i < this.availableMissions.length; i++){
+					var mission = this.availableMissions[i];
+					if (mission.item == Items.ITEM_IRON){
+						iron_mission_present = true;
+					}
+				}
+				
+				if (!iron_mission_present){
+					var keys = Object.keys( server.world.cities );
+					var randomcity = this;
+					while (randomcity == this){
+						randomcity = server.world.cities[keys[ keys.length * random() << 0]];
+					}
+					var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
+					this.availableMissions.push(m);
+				}
 			
-			var iron_mission_present = false;
-			for (var i = 0; i < this.availableMissions.length; i++){
-				var mission = this.availableMissions[i];
-				if (mission.item == Items.ITEM_IRON){
-					iron_mission_present = true;
-				}
 			}
-			
-			if (!iron_mission_present){
-				var keys = Object.keys( server.world.cities );
-				var randomcity = this;
-				while (randomcity == this){
-					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-				}
-				var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
-				this.availableMissions.push(m);
-			}
-		
 		}
 	}
 	

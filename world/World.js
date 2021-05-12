@@ -17,8 +17,8 @@ class World {
 	
 	init(){
 		
-		//this.seed = Math.floor ( random() * 10000 );
-		this.seed = (2653);
+		this.seed = Math.floor ( random() * 10000 );
+		//this.seed = (2653);
 		p5.prototype.randomSeed(this.seed);
 		
 		var homePlanet = this.findHomePlanet();
