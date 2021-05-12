@@ -15,6 +15,18 @@ options_buffer = {}; // This is used to buffer changes in the options menu
 class GuiHandler {	
 	static elements = []; // outermost parent elements here, child elements contained within..
 	
+	static init(){
+		
+		if (getItem("GUI_SCALE")){
+			GUI_SCALE = getItem("GUI_SCALE");
+		}
+		
+		if (getItem("MOUSE_SENSITIVITY")){
+			MOUSE_SENSITIVITY = getItem("MOUSE_SENSITIVITY");
+		}
+		
+	}
+	
 	static update(){
 		
 		for (var i = 0; i < this.elements.length; i++){
@@ -135,24 +147,7 @@ class GuiHandler {
 		
 		var player = client.world.getPlayer();
 		
-		if (PLANET_CAM){
-		
-			var ordx = mouseX - (width / 2); var ordy = mouseY - (height / 2);
-			
-			var angle = Math.atan2( ordy, ordx ); 
-			
-			//var rotx = Math.cos( cam_rot ) * (ordx) + width/2;
-			
-			var rotx = rot_x( cam_rot + HALF_PI, ordx, ordy ) + width/2; 
-			var roty = rot_y( cam_rot + HALF_PI, ordx, ordy ) + height/2; 
-		
-		//if (framecount % 60 == 0){ console.log(rotx + " " + roty) }
-		} else {
-			
-			var rotx = mouseX; var roty = mouseY;
-		}
-		
-		cursorAbsX = untra_x( rotx, roty ); cursorAbsY = untra_y( rotx, roty );
+		cursorAbsX = untra_x( mouseX, mouseY ); cursorAbsY = untra_y( mouseX, mouseY );
 	
 		// TOUCHSCREEN HANDLING
 		

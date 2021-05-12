@@ -216,13 +216,25 @@ var options_apply = new GuiElement(0,0,100,40,options_btncntr); options_apply.te
 options_apply.onClick = function(){
 
 	for (var key in options_buffer){
-		console.log(key);
+		//console.log(key);
 		
 		var keyfirst = key.substring(0, key.indexOf(','));
 		
 		window[ keyfirst ] = options_buffer[key] ;
 		
+		storeItem(keyfirst, options_buffer[key]);
+		
 	}
+}
+var options_default = new GuiElement(0,0,175,40,options_btncntr); options_default.text = "Restore Defaults";
+options_default.onClick = function(){
+
+	options_buffer[ "GUI_SCALE,SQUIDWARD" ] = 1.5;
+	options_buffer[ "MOUSE_SENSITIVITY,SQUIDWARD" ] = 1;
+	
+	options_apply.onClick();
+	
+	GuiHandler.openWindow(GROUP_OPTIONS);
 }
 
 // MISSION SUCCESS: When you succeed a mission

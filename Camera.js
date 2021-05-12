@@ -20,49 +20,49 @@ var tra_y = function(y){ // translate y based on camera values
 }
 
 var untra_x = function(x,y){ // these two convert screen pos back to ingame pos (for cursor clicking and stuff)
+	
 	var originx = width / 2;
 	var originy = height / 2;
 	
-	//var px = client.world.getPlayer().getNearestBody().x;
-	//var py = client.world.getPlayer().getNearestBody().y;
+	if (PLANET_CAM){
 	
-	//output = rot_x( -cam_rot, (x - px), (y - py)) + px;
-	//output = rot_x( cam_rot, (x + originx), ( y + originy ) ) - originx;
-	var outputx = x - originx;
-	var outputy = y - originy;
+		var ordx = x - (width / 2); var ordy = y - (height / 2);
+				
+		var rotx = rot_x( cam_rot + HALF_PI, ordx, ordy ) + width/2; 
+		var roty = rot_y( cam_rot + HALF_PI, ordx, ordy ) + height/2; 
 	
-	//outputx = rot_x( cam_rot, outputx - originx, outputy - originy ) + originx;
-	//outputy = rot_y( cam_rot, outputx - originx, outputy - originy ) + originy;
-	//var output = rot_x(-cam_rot, (x - originx), (y - originy));
+	} else {
+		
+		var rotx = x; var roty = y;
+	}
+	
+	var outputx = rotx - originx;
+	var outputy = roty - originy;
 	
 	outputx = ( (outputx) / cam_zoom ) + cam_x ;
 	outputy = ( (outputy) / cam_zoom ) + cam_y ;
 	
 	return outputx;
-	
-	//return ((x - originx)/cam_zoom) + cam_x
 }
 var untra_y = function(x,y){
-/* 	var originy = height / 2;
-	return ((y - originy)/cam_zoom) + cam_y */
 	
 	var originx = width / 2;
 	var originy = height / 2;
 	
-/* 	var output = y - originy;
-	//output = rot_y( cam_rot, (x + originx), ( y + originy ) ) - originy;
+	if (PLANET_CAM){
 	
-	//var output = rot_y(-cam_rot, (x - originx), (y - originy));
+		var ordx = x - (width / 2); var ordy = y - (height / 2);
+				
+		var rotx = rot_x( cam_rot + HALF_PI, ordx, ordy ) + width/2; 
+		var roty = rot_y( cam_rot + HALF_PI, ordx, ordy ) + height/2; 
 	
-	output = ( (output) / cam_zoom ) + cam_y ; */
+	} else {
+		
+		var rotx = x; var roty = y;
+	}
 	
-	var outputx = x - originx;
-	var outputy = y - originy;
-	
-	//outputx = rot_x( cam_rot, outputx - originx, outputy - originy ) + originx;
-	//outputy = rot_y( cam_rot, outputx - originx, outputy - originy ) + originy;
-	
-	//var output = rot_x(-cam_rot, (x - originx), (y - originy));
+	var outputx = rotx - originx;
+	var outputy = roty - originy;
 	
 	outputx = ( (outputx) / cam_zoom ) + cam_x ;
 	outputy = ( (outputy) / cam_zoom ) + cam_y ;

@@ -326,7 +326,7 @@ class GuiSlider extends GuiElement {
 	}
 	
 	onShow(){
-		
+		this.setting = window[ this.patharray[0] ];
 	}
 	
 	onRender(){

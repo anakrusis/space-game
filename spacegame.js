@@ -56,7 +56,8 @@ function setup(){
 
 	client = new Client();
 	update(); update(); update(); // I guess it takes three ticks to position everything correctly (including the camera and player)
-
+	
+	GuiHandler.init();
 	//settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-02", mainelement);	
 }
 
