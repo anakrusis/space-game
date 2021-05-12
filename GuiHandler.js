@@ -5,6 +5,7 @@ document.title = TITLE_VERSION;
 
 GUI_SCALE = 1.5;
 MOUSE_SENSITIVITY = 1;
+PLANET_CAM = true; cam_rot = 0;
 
 lasttouches = [];
 options_buffer = {}; // This is used to buffer changes in the options menu
@@ -125,7 +126,15 @@ class GuiHandler {
 		
 		var player = client.world.getPlayer();
 		
-		cursorAbsX = untra_x( mouseX ); cursorAbsY = untra_y( mouseY );
+		//var ordx = mouseX - (width / 2); var ordy = mouseY - (height / 2);
+		
+		//var angle = Math.atan2( ordy, ordx );
+		
+		//var rotx = Math.cos( cam_rot ) * (ordx) + width/2;
+		
+		//var rotx = rot_x( -cam_rot + angle, ordx, ordy ) + width/2;
+		
+		cursorAbsX = untra_x( mouseX, mouseY ); cursorAbsY = untra_y( mouseX, mouseY );
 	
 		// TOUCHSCREEN HANDLING
 		

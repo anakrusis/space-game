@@ -69,6 +69,17 @@ function draw(){
 	
 	background(13,0,13);
 	
+	//
+	//scale( cam_zoom );
+	//translate( -cam_x, -cam_y );
+	
+	if (PLANET_CAM){
+		translate(width/2, height/2);
+		rotate(-cam_rot);
+		rotate(-HALF_PI);
+		translate(-width/2, -height/2);
+	}
+	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
 		if (e.isOnScreen()){
@@ -160,13 +171,18 @@ function draw(){
 		}
 	}
 	
-	GuiHandler.update();
+	fill(255,0,0);
+	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);
+	
 	GuiHandler.drawCityLabels();
+	
+	resetMatrix()
+	
+	GuiHandler.update();
 	GuiHandler.render();
 	
 	GuiHandler.handleTouches();
-	fill(255,0,0);
-	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);
+
 	
 	stroke(255); fill(255);
 	textSize(16);
@@ -388,6 +404,8 @@ function keyPressed() {
 		fullscreen(!fullscreen());
 	}else if (keyCode === 80){
 		pathPredictEnabled = !pathPredictEnabled;
+	}else if (keyCode === 32){
+		PLANET_CAM = !PLANET_CAM;
 	}
 }
 

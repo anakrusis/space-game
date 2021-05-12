@@ -19,13 +19,55 @@ var tra_y = function(y){ // translate y based on camera values
 	return ((y-cam_y)*cam_zoom)+originy
 }
 
-var untra_x = function(x){ // these two convert screen pos back to ingame pos (for cursor clicking and stuff)
+var untra_x = function(x,y){ // these two convert screen pos back to ingame pos (for cursor clicking and stuff)
 	var originx = width / 2;
-	return ((x - originx)/cam_zoom) + cam_x
-}
-var untra_y = function(y){
 	var originy = height / 2;
-	return ((y - originy)/cam_zoom) + cam_y
+	
+	//var px = client.world.getPlayer().getNearestBody().x;
+	//var py = client.world.getPlayer().getNearestBody().y;
+	
+	//output = rot_x( -cam_rot, (x - px), (y - py)) + px;
+	//output = rot_x( cam_rot, (x + originx), ( y + originy ) ) - originx;
+	var outputx = x - originx;
+	var outputy = y - originy;
+	
+	//outputx = rot_x( cam_rot, outputx - originx, outputy - originy ) + originx;
+	//outputy = rot_y( cam_rot, outputx - originx, outputy - originy ) + originy;
+	//var output = rot_x(-cam_rot, (x - originx), (y - originy));
+	
+	outputx = ( (outputx) / cam_zoom ) + cam_x ;
+	outputy = ( (outputy) / cam_zoom ) + cam_y ;
+	
+	return outputx;
+	
+	//return ((x - originx)/cam_zoom) + cam_x
+}
+var untra_y = function(x,y){
+/* 	var originy = height / 2;
+	return ((y - originy)/cam_zoom) + cam_y */
+	
+	var originx = width / 2;
+	var originy = height / 2;
+	
+/* 	var output = y - originy;
+	//output = rot_y( cam_rot, (x + originx), ( y + originy ) ) - originy;
+	
+	//var output = rot_y(-cam_rot, (x - originx), (y - originy));
+	
+	output = ( (output) / cam_zoom ) + cam_y ; */
+	
+	var outputx = x - originx;
+	var outputy = y - originy;
+	
+	//outputx = rot_x( cam_rot, outputx - originx, outputy - originy ) + originx;
+	//outputy = rot_y( cam_rot, outputx - originx, outputy - originy ) + originy;
+	
+	//var output = rot_x(-cam_rot, (x - originx), (y - originy));
+	
+	outputx = ( (outputx) / cam_zoom ) + cam_x ;
+	outputy = ( (outputy) / cam_zoom ) + cam_y ;
+	
+	return outputy;
 }
 
 var tra_x_o = function(x, orx){ // translate x based on camera values and a specified origin X point

@@ -41,7 +41,7 @@ class EntityPlayer extends EntityShip {
 /* 		this.xacc = this.xvel - this.lastxvel; this.yacc = this.yvel - this.lastyvel;
 		this.xjer = this.xacc - this.lastxacc; this.yjer = this.yacc - this.lastyacc; */
 		
-		cam_x = this.x; cam_y = this.y;
+		cam_x = this.x; cam_y = this.y; cam_rot = Math.atan2( this.y - this.getNearestBody().y, this.x - this.getNearestBody().x );
 		
 		if (this.grounded && this.getGroundedBody() != null) {
 			
