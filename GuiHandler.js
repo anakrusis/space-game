@@ -94,6 +94,11 @@ class GuiHandler {
 			
 			var citystring;
 			
+			if (PLANET_CAM){
+				angle -= (cam_rot + HALF_PI);
+				angle = loopyMod(angle, Math.PI*2);
+			}
+			
 			// This part here decides whether the text is facing up or down and adjusts the angle accordingly
 			if (angle > Math.PI / 2 && angle < (3 * Math.PI)/2){
 				angle -= Math.PI ;
@@ -110,6 +115,10 @@ class GuiHandler {
 				if (client.world.player.getNation().getCapitalCity() == city){
 					citystring = citystring + " ⌂";
 				}
+			}
+			
+			if (PLANET_CAM){
+				angle += (cam_rot + HALF_PI);
 			}
 			
 			rotate(angle);
