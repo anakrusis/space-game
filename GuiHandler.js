@@ -126,15 +126,24 @@ class GuiHandler {
 		
 		var player = client.world.getPlayer();
 		
-		//var ordx = mouseX - (width / 2); var ordy = mouseY - (height / 2);
+		if (PLANET_CAM){
 		
-		//var angle = Math.atan2( ordy, ordx );
+			var ordx = mouseX - (width / 2); var ordy = mouseY - (height / 2);
+			
+			var angle = Math.atan2( ordy, ordx ); 
+			
+			//var rotx = Math.cos( cam_rot ) * (ordx) + width/2;
+			
+			var rotx = rot_x( cam_rot + HALF_PI, ordx, ordy ) + width/2; 
+			var roty = rot_y( cam_rot + HALF_PI, ordx, ordy ) + height/2; 
 		
-		//var rotx = Math.cos( cam_rot ) * (ordx) + width/2;
+		//if (framecount % 60 == 0){ console.log(rotx + " " + roty) }
+		} else {
+			
+			var rotx = mouseX; var roty = mouseY;
+		}
 		
-		//var rotx = rot_x( -cam_rot + angle, ordx, ordy ) + width/2;
-		
-		cursorAbsX = untra_x( mouseX, mouseY ); cursorAbsY = untra_y( mouseX, mouseY );
+		cursorAbsX = untra_x( rotx, roty ); cursorAbsY = untra_y( rotx, roty );
 	
 		// TOUCHSCREEN HANDLING
 		
