@@ -57,7 +57,7 @@ class City {
 		// Removes delivery missions if the item to be delivered is not present in the citys inventory.
 		// With the exception of passengers, who are not in the city inventory ever.
 		
-		if (server.world.cities.length > 1){
+		if (Object.keys(server.world.cities).length > 1){
 		
 			for (var i = 0; i < this.availableMissions.length; i++){
 				var mission = this.availableMissions[i];

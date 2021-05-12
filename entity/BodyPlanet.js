@@ -180,8 +180,8 @@ class BodyPlanet extends EntityBody {
 					newbuilding = new BuildingMine( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
 				}else{
 					
-					var dist = this.terrainIndexDistance( relIndex, cityCenterIndex );
-					var probability = 2 / dist;
+					var dist = this.terrainIndexDistance( relIndex, cityCenterIndex + 2 );
+					var probability = 4 / dist;
 					
 					if ( random() < probability ){
 						
