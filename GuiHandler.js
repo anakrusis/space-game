@@ -162,7 +162,7 @@ class GuiHandler {
 			
 			if (singletouchtimer > 15){
 				
-				cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y );
+				//cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y );
 				
 				// First, it will try to find a gui element and interact with it. All other actions will be skipped.
 				
@@ -183,10 +183,61 @@ class GuiHandler {
 				
 				if (!GROUP_INFOBAR.active){ return; };
 				
-				var angle = Math.atan2(touches[0].y - tra_y(player.y) , touches[0].x - tra_x(player.x));
-				//console.log(angle);
-				server.onUpdateRequest( angle, "world", "player", "dir" );
-				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+				var abs_angle = Math.atan2( cursorAbsY - player.y, cursorAbsX - player.x );
+				
+/* 				if ( PLANET_CAM ){
+				
+					var rel_angle = abs_angle - cam_rot - HALF_PI// - (player.dir % HALF_PI);
+				
+				} else {
+					
+					var rel_angle = abs_angle;
+				}
+				
+				rel_angle = rel_angle % PI; */
+				
+				//console.log(rel_angle);
+				
+/* 				if ( rel_angle > -HALF_PI/2 && rel_angle < HALF_PI/2){
+					server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+				} 
+				else if ( rel_angle > HALF_PI/2 && rel_angle < HALF_PI ){
+					server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+				}
+				else if ( rel_angle > -HALF_PI && rel_angle < -HALF_PI/2 ){
+					server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+				} */
+				
+				//var angle = Math.atan2(touches[0].y - tra_y(player.y) , touches[0].x - tra_x(player.x));
+				
+				abs_angle = loopyMod(abs_angle - player.dir, PI*2);
+				
+				// forward
+				if ( abs_angle < HALF_PI/2 || abs_angle > (3/2)*PI + (1/4)*PI ){
+					server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+				} 
+				// left
+				if ( abs_angle > PI + (1/4)*PI && abs_angle < (3/2)*PI + (1/4)*PI ){
+					server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+				} 
+				// right
+				if ( abs_angle > HALF_PI/2 && abs_angle < 3 * HALF_PI/2 ){
+					server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+				}
+				if ( abs_angle > 3 * HALF_PI/2 && abs_angle < PI + (1/4)*PI) {
+					
+					if (player.boostForce.magnitude > 0) {
+					
+						server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+					
+					}
+				}
+				
+				if (framecount % 30 == 0){
+					//console.log(abs_angle);
+				}
+				//server.onUpdateRequest( abs_angle, "world", "player", "dir" );
+				
 			}
 		}
 		

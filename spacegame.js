@@ -147,6 +147,23 @@ function draw(){
 		}
 	}
 	
+	if (touches.length == 1){
+		
+		stroke(255);
+		
+		for ( var i = 0; i < 4; i++ ){
+			
+			var angle = HALF_PI * i;
+			 
+			var rotx = rot_x( angle + client.world.player.dir, 300, 300 ) + width/2;
+			var roty = rot_y( angle + client.world.player.dir, 300, 300 ) + height/2;
+			
+			line( width/2, height/2, rotx, roty );
+			
+		}
+		
+	}
+	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
 		if (e.isOnScreen()){
@@ -455,14 +472,14 @@ var update = function(){
 	if (player){
 		if (keyIsDown(87)) { // up
 			if (player.boostForce.magnitude < 10) {
-				server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
+				//server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
 				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 				trajectory = [[],[]]; dir_history = [];
 			}
 		}
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
-				server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
+				//server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
 				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
 				trajectory = [[],[]]; dir_history = [];
 			}
@@ -498,6 +515,8 @@ var update = function(){
 	}
 	
 	// MOUSE HANDLING
+	
+	cursorAbsX = untra_x( mouseX, mouseY ); cursorAbsY = untra_y( mouseX, mouseY );
 	
 	hoverEntity = null;
 	cursorChunkX = Math.floor(cursorAbsX / CHUNK_DIM); cursorChunkY = Math.floor(cursorAbsY / CHUNK_DIM); 
