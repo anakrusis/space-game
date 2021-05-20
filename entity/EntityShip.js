@@ -21,6 +21,14 @@ class EntityShip extends Entity {
 	
 	}
 	
+	render(){
+		
+		if (cam_zoom < 1.5){ this.scale = 20/cam_zoom; } else { this.scale = 1; }
+		
+		super.render();
+		
+	}
+	
 	getAbsolutePoints() {
 		//if (cam_zoom < 1.5){ scale = 20 / cam_zoom; } else { scale = 1; }
 		var scale = 1;

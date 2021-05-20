@@ -3,6 +3,8 @@ class EntityBody extends Entity {
 		super(x,y,dir);
 		this.name = "Body";
 		this.color = [255, 255, 255];
+		this.renderPriority = 3;
+		
 		this.radius = radius;
 		this.terrainSize = 16;
 		this.terrain = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];

@@ -81,14 +81,53 @@ function draw(){
 		translate(-width/2, -height/2);
 	}
 	
-	for ( var uuid in client.world.entities ){
-		var e = client.world.entities[uuid];
-		if (e.isOnScreen()){
-			if (!(e instanceof EntityShip || e instanceof EntityOreVein)){ drawEntity(e); }
+	// chunk boundary lines are behind everything
+	var chunk = client.world.getPlayer().getChunk();
+	var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
+	stroke(128);
+	noFill();
+	square(chunkx, chunky, CHUNK_DIM * cam_zoom);
+
+	for ( var i = 0; i < 6; i++ ){
+				
+		// entities not confined to chunk
+		for ( var uuid in client.world.entities ){
+			var e = client.world.entities[uuid];
+			if (e.isOnScreen() && e.renderPriority == i){
+				e.render();
+			}
 		}
-	}
+		
+		// entities confined to chunk
 	
-	// Optimized version that only renders the nearest body when above a certain zoom level
+		for ( var uuid in chunk.bodies ){
+			var b = chunk.bodies[uuid];
+			//if (b.isOnScreen() && b.renderPriority == i){
+			if (b.renderPriority == i){
+				
+				b.render();
+			
+/* 				if (b instanceof BodyPlanet){
+					
+					if (b.oceanUUID){
+						var ocean = b.getChunk().getBody(b.oceanUUID);
+						drawEntity(ocean);
+					}
+					
+					var orbitbody = new EntityBody(b.getStar().x, b.getStar().y, 0, b.getOrbitDistance());
+					orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
+					drawEntity(orbitbody);
+				}
+				if (!(b instanceof BodyOcean)){
+					drawEntity(b);
+				} */
+			}
+		}
+		
+	}
+
+	
+/* 	// Optimized version that only renders the nearest body when above a certain zoom level
 	
 	if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
 		
@@ -102,30 +141,7 @@ function draw(){
 			
 	}else if (cam_zoom > MAX_INTERSTELLAR_ZOOM){
 		
-		var chunk = client.world.getPlayer().getChunk();
-		var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
-		stroke(128);
-		noFill();
-		square(chunkx, chunky, CHUNK_DIM * cam_zoom);
-	
-		for ( var uuid in chunk.bodies ){
-			var b = chunk.bodies[uuid];
-			
-			if (b instanceof BodyPlanet){
-				
-				if (b.oceanUUID){
-					var ocean = b.getChunk().getBody(b.oceanUUID);
-					drawEntity(ocean);
-				}
-				
-				var orbitbody = new EntityBody(b.getStar().x, b.getStar().y, 0, b.getOrbitDistance());
-				orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
-				drawEntity(orbitbody);
-			}
-			if (!(b instanceof BodyOcean)){
-				drawEntity(b);
-			}
-		}
+
 		
 	// Full version that renders all loaded chunks fully (not very optimized, needs work)
 	}else{
@@ -145,46 +161,29 @@ function draw(){
 				}
 			}
 		}
-	}
+	} */
 	
-	if (touches.length == 1){
-		
-		stroke(255);
-		
-		for ( var i = 0; i < 4; i++ ){
-			
-			var angle = HALF_PI * i;
-			 
-			var rotx = rot_x( angle + client.world.player.dir, 300, 300 ) + width/2;
-			var roty = rot_y( angle + client.world.player.dir, 300, 300 ) + height/2;
-			
-			line( width/2, height/2, rotx, roty );
-			
-		}
-		
-	}
+
 	
 	for ( var uuid in client.world.entities ){
 		var e = client.world.entities[uuid];
 		if (e.isOnScreen()){
 			if (e instanceof EntityOreVein && cam_zoom > MAX_INTERPLANETARY_ZOOM){
-				drawEntity(e);
+				//drawEntity(e);
 			}
 			if (e instanceof EntityShip){ 
 				
 				if (cam_zoom < 1.5){ var escala = 20/cam_zoom; } else { var escala = 1; }
 		
-				stroke(e.color[0] / 2, e.color[1] / 2, e.color[2] / 2);
+				//
 				//drawPointsTrailFromEntity(e, trajectoryBuffer);
 				
 				if (e instanceof EntityPlayer){
-					updateTrajectory(e);
-				//stroke(255,0,0);
-					drawPointsTrailFromEntity(e, predictFuturePoints(e));
+
 					//drawPointsTrailFromEntity(e, trajectory);
 				}
 				
-				drawEntity(e, escala); 
+				//drawEntity(e, escala); 
 			}
 		}
 	}

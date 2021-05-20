@@ -6,6 +6,7 @@ class BodyOcean extends EntityBody {
 		this.filled = true;
 		this.name = "Ocean";
 		this.color = [0, 30, 80];
+		this.renderPriority = 1;
 		
 		this.terrainSize = 64;
 		this.terrain = [];

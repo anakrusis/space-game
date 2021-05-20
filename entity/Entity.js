@@ -15,6 +15,8 @@ class Entity {
         this.name = "Entity";
         this.color = [ 255, 255, 255 ];
 		this.filled = true;
+		this.renderPriority = 4;
+		
         this.uuid = Math.round(p5.prototype.random() * 10000000000);
         this.rotSpeed = 0;
 		
@@ -26,6 +28,63 @@ class Entity {
 	
 	isDead(){
 		return this.dead;
+	}
+	
+	render() {
+		
+		if (this.isDead()){ return; };
+		if (!this.scale){
+			this.scale = 1;
+		}
+		
+		if (this.filled){
+			fill(this.color[0], this.color[1], this.color[2]);
+		}else{
+			noFill();
+		}
+		if (selectedEntity == this){
+			stroke(255, 255 * (1 + Math.sin(framecount / 15)), 0);
+			strokeWeight(5);
+		}else{
+			stroke(this.color[0], this.color[1], this.color[2]);
+			strokeWeight(1);
+		}
+		var pts = this.getRenderPoints();
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = pts[i]; var py = pts[i+1];
+			px = ((px - this.x) * this.scale) + this.x;  py = ((py - this.y) * this.scale) + this.y; 
+			vertex(tra_x(px), tra_y(py));
+		}
+		endShape(CLOSE);
+		
+		if (this instanceof BodyPlanet){
+			stroke(128);
+			strokeWeight(0.5 * cam_zoom);
+			for (var i = 0; i < this.terrainSize; i++){
+				if (this.tiles[ i ].hasRoad){
+					beginShape();
+					//console.log("e");
+					var slice = this.getAbsPointsSlice( i, i );
+					vertex(tra_x(slice[0]), tra_y(slice[1])); vertex(tra_x(slice[2]), tra_y(slice[3]));
+					endShape(CLOSE);
+				}
+			}
+			strokeWeight(1);
+	}
+/* 	if (e instanceof EntityBuilding){
+		var pts = e.getAbsolutePoints();
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = pts[i]; var py = pts[i+1];
+			px = ((px - e.x) * scale) + e.x;  py = ((py - e.y) * scale) + e.y; 
+			vertex(tra_x(px), tra_y(py));
+		}
+		endShape(CLOSE);
+	} */
+	
+	strokeWeight(1);
+		
 	}
 	
 	update() {

@@ -6,6 +6,8 @@ class BodyGravityRadius extends EntityBody {
 		this.filled = false;
 		this.name = "GravityRadius";
 		//this.color = [20, 10, 20];
+		
+		this.renderPriority = 0;
 	}
 	
 	getDependentBody() {

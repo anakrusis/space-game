@@ -5,6 +5,7 @@ class EntityPlayer extends EntityShip {
 		// Core Properties
 		this.name = "Player";
 		this.color = [ 0, 255, 255 ];
+		this.renderPriority = 5;
 		this.inventory = new Inventory(9);
 		this.money = 0;
 		
@@ -13,6 +14,35 @@ class EntityPlayer extends EntityShip {
 		this.lastBoostForce = new ForceVector(0,0); // last tick's, for reference
 	
 		this.currentMission = null;
+	}
+	
+	render(){
+		
+		updateTrajectory(this);
+
+		stroke(this.color[0] / 2, this.color[1] / 2, this.color[2] / 2);
+		
+		drawPointsTrailFromEntity(this, predictFuturePoints(this));
+		
+		if (touches.length == 1){
+		
+			stroke(255);
+			
+			for ( var i = 0; i < 4; i++ ){
+				
+				var angle = HALF_PI * i;
+				 
+				var rotx = rot_x( angle + client.world.player.dir, 300, 300 ) + width/2;
+				var roty = rot_y( angle + client.world.player.dir, 300, 300 ) + height/2;
+				
+				line( width/2, height/2, rotx, roty );
+				
+			}
+			
+		}
+		
+		super.render();
+		
 	}
 	
 	update(){

@@ -3,6 +3,7 @@ class EntityParticle extends Entity {
 	constructor(x,y,dir){
 		super(x,y,dir);
 		this.filled = false;
+		this.renderPriority = 2;
 	}
 	
 	isDead() {

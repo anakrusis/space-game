@@ -3,6 +3,8 @@ class EntityBuilding extends Entity {
 		super(x,y,0);
 		this.name = "Building";
 		this.filled = false;
+		this.renderPriority = 2;
+		
 		this.startindex = startindex;
 		this.endindex   = endindex;
 		this.planetUUID = planetuuid;
