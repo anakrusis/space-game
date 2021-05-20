@@ -299,13 +299,23 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 
 	var yesbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); yesbtn.text = "Yea";
 	yesbtn.onClick = function(){
-		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
-		server.world.getPlayer().currentMission = selectedMission;
+		GROUP_MISSION_CONFIRM.hide(); 
 		
-		var scm = selectedMission.getSourceCity().availableMissions;
-		scm.splice( scm.indexOf( selectedMission ) );
+		if (server.world.getPlayer().currentMission){
+			
+			GuiHandler.openWindow(GROUP_MISSION_CANCEL_CURRENT);
+			
+		} else {
+			
+			GuiHandler.openWindow(GROUP_INFOBAR);
+			server.world.getPlayer().currentMission = selectedMission;
 		
-		server.world.getPlayer().inventory.add( new ItemStack( selectedMission.item, selectedMission.quantity ) );
+			var scm = selectedMission.getSourceCity().availableMissions;
+			scm.splice( scm.indexOf( selectedMission ) );
+		
+			server.world.getPlayer().inventory.add( new ItemStack( selectedMission.item, selectedMission.quantity ) );
+			
+		}
 	}
 	
 	var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); backbtn.text = "Nah";
@@ -313,6 +323,38 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_MISSION_SELECT);
 	}
 	
+}
+
+// MISSION CANCEL EXISTING: Menu for when you already are in a mission and going to cancel it.
+
+var GROUP_MISSION_CANCEL_CURRENT = new GuiElement(0,0,0,0); GROUP_MISSION_CANCEL_CURRENT.hide(); GROUP_MISSION_CANCEL_CURRENT.autosize = true;
+GROUP_MISSION_CANCEL_CURRENT.autocenterX = true; GROUP_MISSION_CANCEL_CURRENT.autocenterY = true;
+
+var mission_cancel_title = new GuiElement(0,0,300,40,GROUP_MISSION_CANCEL_CURRENT); mission_cancel_title.text = "Cancel current mission?"
+
+var mission_cancel_cntr = new GuiElement(0,0,700,64, GROUP_MISSION_CANCEL_CURRENT); mission_cancel_cntr.autosize = true;  mission_cancel_cntr.autopos = "left";
+
+var mission_cancel_yes = new GuiElement(0,0,100,40,mission_cancel_cntr); mission_cancel_yes.text = "Yes";
+mission_cancel_yes.onClick = function(){
+	
+	server.world.getPlayer().currentMission.onCancel();
+	server.world.getPlayer().currentMission = null;
+	
+	GROUP_MISSION_CANCEL_CURRENT.hide();
+	GuiHandler.openWindow(GROUP_INFOBAR);
+	server.world.getPlayer().currentMission = selectedMission;
+		
+	var scm = selectedMission.getSourceCity().availableMissions;
+	scm.splice( scm.indexOf( selectedMission ) );
+		
+	server.world.getPlayer().inventory.add( new ItemStack( selectedMission.item, selectedMission.quantity ) );
+	
+}
+
+
+var mission_cancel_no = new GuiElement(0,0,100,40,mission_cancel_cntr); mission_cancel_no.text = "No";
+mission_cancel_no.onClick = function(){
+	GROUP_MISSION_CANCEL_CURRENT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
 }
 
 // MISSION SELECT: Menu with the list of missions available

@@ -49,4 +49,8 @@ class MissionDelivery extends Mission {
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 		server.world.getPlayer().money += this.reward;
 	}
+	
+	onCancel(){
+		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
+	}
 }

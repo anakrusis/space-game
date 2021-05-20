@@ -1,4 +1,4 @@
-TITLE_VERSION = "Space Game pre alpha 0.1.1b";
+TITLE_VERSION = "Space Game pre alpha 0.1.1c";
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;

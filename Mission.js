@@ -21,4 +21,8 @@ class Mission {
 	onSuccess(){
 		
 	}
+	
+	onCancel(){
+		
+	}
 }
