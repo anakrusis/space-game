@@ -26,6 +26,26 @@ class BodyPlanet extends EntityBody {
 		this.populateOreVeins();
 	}
 	
+	render(){
+		
+		stroke(0, 128, 0); noFill();
+		circle( tra_x(this.getStar().x), tra_y(this.getStar().y), this.getOrbitDistance() * 2 * cam_zoom )
+		
+		super.render();
+		
+		stroke(128);
+		strokeWeight(0.5 * cam_zoom);
+		for (var i = 0; i < this.terrainSize; i++){
+			if (this.tiles[ i ].hasRoad){
+				beginShape();
+				var slice = this.getAbsPointsSlice( i, i );
+				vertex(tra_x(slice[0]), tra_y(slice[1])); vertex(tra_x(slice[2]), tra_y(slice[3]));
+				endShape(CLOSE);
+			}
+		}
+		strokeWeight(1);
+	}
+	
 	update(){
 		super.update();
 		

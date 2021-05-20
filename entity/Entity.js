@@ -58,20 +58,6 @@ class Entity {
 		}
 		endShape(CLOSE);
 		
-		if (this instanceof BodyPlanet){
-			stroke(128);
-			strokeWeight(0.5 * cam_zoom);
-			for (var i = 0; i < this.terrainSize; i++){
-				if (this.tiles[ i ].hasRoad){
-					beginShape();
-					//console.log("e");
-					var slice = this.getAbsPointsSlice( i, i );
-					vertex(tra_x(slice[0]), tra_y(slice[1])); vertex(tra_x(slice[2]), tra_y(slice[3]));
-					endShape(CLOSE);
-				}
-			}
-			strokeWeight(1);
-	}
 /* 	if (e instanceof EntityBuilding){
 		var pts = e.getAbsolutePoints();
 		beginShape();
@@ -83,7 +69,7 @@ class Entity {
 		endShape(CLOSE);
 	} */
 	
-	strokeWeight(1);
+		strokeWeight(1);
 		
 	}
 	
