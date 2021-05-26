@@ -31,6 +31,10 @@ class EntityPlayer extends EntityShip {
 			for ( var i = 0; i < 4; i++ ){
 				
 				var angle = HALF_PI * i;
+				
+				if (PLANET_CAM){
+					angle -= cam_rot;
+				}
 				 
 				var rotx = rot_x( angle + client.world.player.dir, 300, 300 ) + width/2;
 				var roty = rot_y( angle + client.world.player.dir, 300, 300 ) + height/2;
