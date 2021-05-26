@@ -70,23 +70,13 @@ function draw(){
 	
 	background(13,0,13);
 	
-	//
-	//scale( cam_zoom );
-	//translate( -cam_x, -cam_y );
-	
-	if (PLANET_CAM){
-		translate(width/2, height/2);
-		rotate(-cam_rot);
-		rotate(-HALF_PI);
-		translate(-width/2, -height/2);
-	}
-	
 	// chunk boundary lines are behind everything
 	var chunk = client.world.getPlayer().getChunk();
-	var chunkx = tra_x(chunk.x * CHUNK_DIM); var chunky = tra_y(chunk.y * CHUNK_DIM);
-	stroke(128);
-	noFill();
-	square(chunkx, chunky, CHUNK_DIM * cam_zoom);
+	//var chunkx = tra_rot_x(chunk.x * CHUNK_DIM, chunk.y * CHUNK_DIM); 
+	//var chunky = tra_rot_y(chunk.x * CHUNK_DIM, chunk.y * CHUNK_DIM);
+	//stroke(128);
+	//noFill();
+	//square(chunkx, chunky, CHUNK_DIM * cam_zoom);
 
 	for ( var i = 0; i < 6; i++ ){
 				
@@ -111,7 +101,14 @@ function draw(){
 	}
 	
 	fill(255,0,0);
-	circle(tra_x(cursorAbsX), tra_y(cursorAbsY), 5);
+	circle(tra_rot_x(cursorAbsX, cursorAbsY), tra_rot_y(cursorAbsX, cursorAbsY), 5);
+	
+	if (PLANET_CAM){
+		translate(width/2, height/2);
+		rotate(-cam_rot);
+		rotate(-HALF_PI);
+		translate(-width/2, -height/2);
+	}
 	
 	GuiHandler.drawCityLabels();
 	
@@ -128,7 +125,7 @@ function draw(){
 	textFont("Courier");
 	text("FPS: " + Math.round(frameRate()), width - 75, 16);
 	
-	text("" + traj_pointer, width - 75, 32);
+	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);
 }
 
 var drawPointsTrailFromEntity = function(e, points){
@@ -140,8 +137,11 @@ var drawPointsTrailFromEntity = function(e, points){
 		noFill();
 		beginShape();
 		for (var i = 0; i < futurePointsX.length; i+=1){
+			
 			fx = futurePointsX[i]; fy = futurePointsY[i];
-			vertex(tra_x(fx),tra_y(fy));
+			
+			vertex(tra_rot_x(fx,fy),tra_rot_y(fx,fy));
+			
 		}
 		endShape();
 	}

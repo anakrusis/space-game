@@ -11,6 +11,17 @@ class EntityBody extends Entity {
 		this.canEntitiesCollide = false;
 	}
 	
+	render(){
+		
+		super.render();
+		
+		//if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
+			
+			
+		//}
+		
+	}
+	
 	update(){
 		this.dir += this.rotSpeed;
 		this.ticksExisted++;

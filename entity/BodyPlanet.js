@@ -28,8 +28,12 @@ class BodyPlanet extends EntityBody {
 	
 	render(){
 		
-		stroke(0, 128, 0); noFill();
-		circle( tra_x(this.getStar().x), tra_y(this.getStar().y), this.getOrbitDistance() * 2 * cam_zoom )
+		var orbitbody = new EntityBody(this.getStar().x, this.getStar().y, 0, this.getOrbitDistance());
+		orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
+		orbitbody.render();
+		
+		//stroke(0, 128, 0); noFill();
+		//circle( tra_x(this.getStar().x), tra_y(this.getStar().y), this.getOrbitDistance() * 2 * cam_zoom )
 		
 		super.render();
 		
@@ -39,7 +43,9 @@ class BodyPlanet extends EntityBody {
 			if (this.tiles[ i ].hasRoad){
 				beginShape();
 				var slice = this.getAbsPointsSlice( i, i );
-				vertex(tra_x(slice[0]), tra_y(slice[1])); vertex(tra_x(slice[2]), tra_y(slice[3]));
+				vertex(tra_rot_x(slice[0],slice[1]), tra_rot_y(slice[0],slice[1])); 
+				
+				vertex(tra_rot_x(slice[2],slice[3]), tra_rot_y(slice[2],slice[3]));
 				endShape(CLOSE);
 			}
 		}

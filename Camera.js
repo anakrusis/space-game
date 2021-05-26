@@ -19,6 +19,67 @@ var tra_y = function(y){ // translate y based on camera values
 	return ((y-cam_y)*cam_zoom)+originy
 }
 
+var tra_rot_x = function(x,y){
+	
+/* 	if (PLANET_CAM){
+		translate(width/2, height/2);
+		rotate(-cam_rot);
+		rotate(-HALF_PI);
+		translate(-width/2, -height/2);
+	} */
+	
+	var originx = width / 2;
+	var originy = height / 2;
+	var orx = tra_x(x); var ory = tra_y(y);
+	var outputx = x; var outputy = y;
+	
+	if (PLANET_CAM){
+		
+		orx -= originx;
+		ory -= originy;
+		
+		outputx = rot_x( -cam_rot - HALF_PI, orx, ory );
+		outputy = rot_y( -cam_rot - HALF_PI, orx, ory );
+		
+		outputx += originx;
+		outputy += originy;
+		
+		return outputx;
+		
+	} else {
+
+		return orx;
+	
+	}
+}
+
+var tra_rot_y = function(x,y){
+	
+	var originx = width / 2;
+	var originy = height / 2;
+	var orx = tra_x(x); var ory = tra_y(y);
+	var outputx = x; var outputy = y;
+	
+	if (PLANET_CAM){
+		
+		orx -= originx;
+		ory -= originy;
+		
+		outputx = rot_x( -cam_rot - HALF_PI, orx, ory );
+		outputy = rot_y( -cam_rot - HALF_PI, orx, ory );
+		
+		outputx += originx;
+		outputy += originy;
+		
+		return outputy;
+		
+	} else {
+
+		return ory;
+	
+	}
+}
+
 var untra_x = function(x,y){ // these two convert screen pos back to ingame pos (for cursor clicking and stuff)
 	
 	var originx = width / 2;

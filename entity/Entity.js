@@ -52,9 +52,12 @@ class Entity {
 		var pts = this.getRenderPoints();
 		beginShape();
 		for (i = 0; i < pts.length; i += 2){
+			
 			var px = pts[i]; var py = pts[i+1];
+			
 			px = ((px - this.x) * this.scale) + this.x;  py = ((py - this.y) * this.scale) + this.y; 
-			vertex(tra_x(px), tra_y(py));
+			
+			vertex(tra_rot_x(px,py), tra_rot_y(px,py));
 		}
 		endShape(CLOSE);
 		
