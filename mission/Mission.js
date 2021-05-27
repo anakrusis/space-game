@@ -8,6 +8,9 @@ class Mission {
 		this.desc = "No description found!";
 		this.failtext = "No failure text found!";
 		this.successtext = "No success text found!";
+		
+		this.objectives = [];
+		this.currentObjective = null;
 	}
 	
 	update(){

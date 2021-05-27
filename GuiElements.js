@@ -87,6 +87,23 @@ missioninfo.onUpdate = function(){
 	}
 }
 
+var objectiveinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+objectiveinfo.onUpdate = function(){
+	var mission = client.world.player.currentMission;
+	if (mission){
+		this.text = "";
+		
+		for (var i = 0; i < mission.objectives.length; i++){
+			
+			this.text += "[ ] " + mission.objectives[i].text + "\n"
+			
+		}
+		
+	}else{
+		this.hide();
+	}
+}
+
 var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
 entityinfo.onUpdate = function(){
 	var e = null;

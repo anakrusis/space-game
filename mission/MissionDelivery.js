@@ -22,6 +22,8 @@ class MissionDelivery extends Mission {
 			this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!";
 		
 		}
+		
+		this.objectives = [ new ObjectiveBringItemToPlace( this.item, this.quantity, this.destinationCityUUID ) ] 
 	}
 	
 	getSourceCity(){
