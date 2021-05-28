@@ -25,6 +25,7 @@ class World {
 		var ocean = new BodyOcean(homePlanet.x,homePlanet.y,0,homePlanet.radius,homePlanet.uuid);
 		homePlanet.hasOcean = true; homePlanet.oceanUUID = ocean.uuid;
 		homePlanet.getChunk().spawnBody(ocean);
+		homePlanet.explored = true;
 		
 		//this.spawnEntity( new EntityOreVein(homePlanet.x, homePlanet.y, homePlanet.uuid, 24, 27) );
 		

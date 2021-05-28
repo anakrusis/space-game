@@ -52,7 +52,42 @@ class City {
 		return this.availableMissions;
 	}
 	
+	getSpaceport(){
+		
+		for (var uuid of this.buildingUUIDs){
+			var building = server.world.entities[uuid];
+			if (building instanceof BuildingSpaceport){
+				return building;
+			}
+		}
+		
+	}
+	
 	update(){
+		
+		for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
+			var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
+			
+			if (b instanceof BodyPlanet && !b.explored){
+				
+				// Adds exploration missions if there is none already.
+				var explore_mission_found = false;
+				for (var i = 0; i < this.availableMissions.length; i++){
+					var mission = this.availableMissions[i];
+					
+					if (mission.bodyUUID == b.uuid){
+						explore_mission_found = true; break;
+					}
+				}
+				
+				if (!explore_mission_found){
+
+					var m = new MissionExploration(b.uuid);
+					this.availableMissions.push(m);
+				
+				}
+			}
+		}
 		
 		// Removes delivery missions if the item to be delivered is not present in the citys inventory.
 		// With the exception of passengers, who are not in the city inventory ever.

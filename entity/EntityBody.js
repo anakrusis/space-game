@@ -9,6 +9,8 @@ class EntityBody extends Entity {
 		this.terrainSize = 16;
 		this.terrain = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		this.canEntitiesCollide = false;
+		
+		this.explored = false;
 	}
 	
 	render(){

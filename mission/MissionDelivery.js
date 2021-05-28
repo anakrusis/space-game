@@ -23,7 +23,7 @@ class MissionDelivery extends Mission {
 		
 		}
 		
-		this.objectives = [ new ObjectiveBringItemToPlace( this.item, this.quantity, this.destinationCityUUID ) ] 
+		this.objectives = [ new ObjectiveBringItemToPlace( this.item, this.quantity, new Place( dest.getSpaceport() ) ) ] 
 	}
 	
 	getSourceCity(){

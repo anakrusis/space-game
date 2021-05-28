@@ -249,6 +249,7 @@ class GuiElement {
 		
 		fill(255);
 		if (this.text != ""){
+			//textWrap(LINE)
 			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
 		}
 		if (this.onRender){

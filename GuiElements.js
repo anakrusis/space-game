@@ -98,7 +98,7 @@ objectiveinfo.onUpdate = function(){
 			this.text += "[ ] " + mission.objectives[i].text + "\n"
 			
 		}
-		
+		this.show();
 	}else{
 		this.hide();
 	}
@@ -199,11 +199,11 @@ var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little
 
 var butoncontainer = new GuiElement(0,0,700,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
 
-var startbuton = new GuiElement(0,0,150,40,butoncontainer); startbuton.text = "Begin flying!";
+var startbuton = new GuiElement(0,0,160,40,butoncontainer); startbuton.text = "Begin flying!";
 startbuton.onClick = function(){
 	GROUP_WELCOME.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
-var sorcebuton = new GuiElement(0,0,200,40,butoncontainer); sorcebuton.text = "View code (Github)";
+var sorcebuton = new GuiElement(0,0,210,40,butoncontainer); sorcebuton.text = "View code (Github)";
 sorcebuton.onClick = function(){
 	window.open("https://github.com/anakrusis/space-game", "_blank");;
 
@@ -243,7 +243,7 @@ options_apply.onClick = function(){
 		
 	}
 }
-var options_default = new GuiElement(0,0,175,40,options_btncntr); options_default.text = "Restore Defaults";
+var options_default = new GuiElement(0,0,190,40,options_btncntr); options_default.text = "Restore Defaults";
 options_default.onClick = function(){
 
 	options_buffer[ "GUI_SCALE,SQUIDWARD" ] = 1.5;
@@ -395,9 +395,19 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	for (mission of missions){
 		
-		var missionname = mission.item.name + " (" + mission.quantity + ")\n" 
-		missionname += mission.getSourceCity().name + " ➔ " + mission.getDestinationCity().name;
+		var missionname = "";
+		if (mission instanceof MissionDelivery){
+			
+			missionname += mission.item.name + " (" + mission.quantity + ")\n" 
+			missionname += mission.getSourceCity().name + " ➔ " + mission.getDestinationCity().name;
+			
+		}else if (mission instanceof MissionExploration){
+			
+			//missionname += mission.getPlanet().name;
+			
+		}
 		missionname += "\n$" + mission.reward;
+		
 		
 		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = missionname; button.mission = mission;
 		button.onClick = function(){
@@ -406,16 +416,18 @@ GROUP_MISSION_SELECT.onShow = function(){
 		}
 		button.onRender = function(){
 			var scale = 18;
-			var pts = this.mission.item.getRelRenderPoints();
-			noFill()
-			stroke(this.mission.item.color[0], this.mission.item.color[1], this.mission.item.color[2]);
-			beginShape();
-			for (i = 0; i < pts.length; i += 2){
-				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
-				var py = (-pts[i])   * scale + this.dispy - this.padding*2 + this.height + 4;
-				vertex(px,py);
+			if (this.mission instanceof MissionDelivery){
+				var pts = this.mission.item.getRelRenderPoints();
+				noFill()
+				stroke(this.mission.item.color[0], this.mission.item.color[1], this.mission.item.color[2]);
+				beginShape();
+				for (i = 0; i < pts.length; i += 2){
+					var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+					var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
+					vertex(px,py);
+				}
+				endShape(CLOSE);
 			}
-			endShape(CLOSE);
 		}
 	}
 	

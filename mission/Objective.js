@@ -11,17 +11,17 @@ class Objective {
 
 class ObjectiveBringItemToPlace extends Objective {
 	
-	constructor( item, quantity, destinationUUID ){
+	constructor( item, quantity, place ){
 		
 		super();
 		
-		var dest = server.world.cities[ destinationUUID ];
+		//var dest = server.world.cities[ destinationUUID ];
 		
-		this.text = "Bring " + quantity + " " + item.name + " to " + dest.name;
+		this.text = "Bring " + quantity + " " + item.name + " to " + place.name;
 		
 		this.item = item;
 		this.quantity = quantity;
-		this.destinationUUID = destinationUUID;
+		//this.destinationUUID = destinationUUID;
 		
 	}
 
