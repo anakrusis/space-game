@@ -13,8 +13,10 @@ class MissionExploration extends Mission {
 		this.displaytext  = "Exploration of " + this.destination.name + "\n";
 		this.displaytext += "\n$" + this.reward;
 		
-		this.desc = "Our nation is eager to send a crewed mission to the planet " + this.destination.name + ".\n";
+		this.desc = "Our nation is ready to send a crewed mission to the planet " + this.destination.name + ".\nWe will be eagerly awaiting your safe return.";
 		
-		this.objectives = [ [ new ObjectiveGoToPlace( this.destination ) ] ];
+		var sorcecity = server.world.cities[ this.sourceCityUUID ];
+		
+		this.objectives = [ [ new ObjectiveGoToPlace( this.destination ) ], [ new ObjectiveGoToPlace( new Place( sorcecity.getSpaceport() ) ) ] ];
 	}
 }

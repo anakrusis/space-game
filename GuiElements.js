@@ -95,10 +95,23 @@ objectiveinfo.onUpdate = function(){
 		
 		for (var i = 0; i < mission.objectives.length; i++){
 			
+			this.text += (i + 1) + ".\n" 
+			
 			for (var j = 0; j < mission.objectives[i].length; j++){
 			
-				this.text += "[ ] " + mission.objectives[i][j].text + "\n"
+				var m;
+				if (mission.objectives[i][j].complete){
+					m = "X";
+				}else{
+					m = " ";
+				}
 			
+				this.text += "[" + m + "] " + mission.objectives[i][j].text + "\n"
+			
+			}
+			
+			if ( i != mission.objectives.length - 1 ) {
+				this.text += "\n";
 			}
 			
 		}
@@ -108,8 +121,8 @@ objectiveinfo.onUpdate = function(){
 	}
 }
 
-var entityinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
-entityinfo.onUpdate = function(){
+GROUP_INFOBAR.ELM_ENTITYINFO = new GuiElement(0,0,300,40,GROUP_INFOBAR);
+GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 	var e = null;
 	if (selectedEntity){
 		e = selectedEntity;
@@ -142,21 +155,8 @@ entityinfo.onUpdate = function(){
 	}
 }
 
-//var info2 = new GuiElement(0,0,300,40,GROUP_INFOBAR);
-var p = function(){
-	if (selectedEntity instanceof EntityBuilding){
-		var city = selectedEntity.getCity();
-		var infostring = city.name + "\nCity of the " + city.getNation().name + " nation";
-		
-		this.text = infostring;
-		this.show();
-	}else{
-		this.hide();
-	}
-}
-
-var deliverbutton = new GuiElement(0,0,150,40,GROUP_INFOBAR); deliverbutton.text = "Deliver";
-deliverbutton.onUpdate = function(){
+GROUP_INFOBAR.BTN_DELIVER = new GuiElement(0,0,150,40,GROUP_INFOBAR); GROUP_INFOBAR.BTN_DELIVER.text = "Deliver";
+GROUP_INFOBAR.BTN_DELIVER.onUpdate = function(){
 
 	var mision = server.world.getPlayer().currentMission;
 	this.hide();
@@ -173,7 +173,7 @@ deliverbutton.onUpdate = function(){
 	}
 	
 }
-deliverbutton.onClick = function(){
+GROUP_INFOBAR.BTN_DELIVER.onClick = function(){
 	server.world.getPlayer().currentMission.onSuccess();
 }
 

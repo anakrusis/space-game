@@ -136,10 +136,17 @@ class Entity {
                         if ( body instanceof BodyStar ) {
                             this.onCrash();
                         } else {
+							
+							// This is a first-tick grounded check which triggers an event for missions
+							if (this instanceof EntityPlayer && !this.grounded){
+								MissionHandler.onPlayerGround( this, body );
+							}
+							
                             this.grounded = true;
                             this.groundedBodyUUID = body.uuid;
                             isColliding = true;
                             CollisionUtil.resolveCollision(this, body);
+							
                         }
                     }
 					

@@ -14,7 +14,7 @@ class Mission {
 		this.successtext = "No success text found!";
 		
 		this.objectives = [];
-		this.currentObjectiveStage = 0;
+		this.currentStage = 0;
 		
 		// Used in the Mission selection menu and confirmation, gives a summary about what the mission is about
 		this.displaytext = "Mission\n$" + this.reward;
@@ -24,11 +24,34 @@ class Mission {
 	}
 	
 	update(){
+		
+		// -1 is a special time value for non time sensitive missions (Silly me that should really be a seperate boolean amirite)
 		if (this.timeRemaining != -1){
 			this.timeRemaining--;
 			
 			if (this.timeRemaining <= 0){
 				this.onFail();
+			}
+		}
+		
+		// Checks to see if all objectives in a given stage are complete before moving on to the next stage
+		
+		var alldone = true;
+		for ( i = 0; i < this.objectives[this.currentStage].length; i++ ){
+			
+			var obj = this.objectives[this.currentStage][i];
+			if (!obj.complete){
+				
+				alldone = false; break;
+			}
+		}
+		if (alldone){
+			
+			this.currentStage++;
+			
+			if (this.currentStage == this.objectives.length){
+				
+				this.onSuccess();
 			}
 		}
 	}

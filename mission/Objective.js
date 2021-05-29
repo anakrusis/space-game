@@ -39,6 +39,8 @@ class ObjectiveGoToPlace extends Objective {
 		
 		if (place.type == "building"){
 			
+			this.text = "Go to " + place.name + " in " + place.get().getCity().name;
+			
 		}else
 		if (place.type == "planet"){
 			
