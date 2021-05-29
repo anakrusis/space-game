@@ -110,12 +110,6 @@ class EntityPlayer extends EntityShip {
 		
 		if (this.currentMission){
 			this.currentMission.update();
-			
-			if (this.currentMission.timeRemaining <= 0){
-				
-				this.currentMission.onFail();
-				
-			}
 		}
 	}
 	

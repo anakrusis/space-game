@@ -2,6 +2,8 @@ class MissionDelivery extends Mission {
 	constructor(sourceCityUUID, destinationCityUUID, item, quantity){
 		super();
 			
+		this.reward = 500;
+		this.timeRemaining = 3600;
 		this.item = item; this.quantity = quantity;	
 			
 		this.sourceCityUUID = sourceCityUUID;
@@ -18,12 +20,18 @@ class MissionDelivery extends Mission {
 		}else{
 		
 			this.desc = "The city of " + dest.name + " is awaiting a delivery of " + item.name + ".\n";
-			this.failtext = "The " + item.name + " did not reach its   destination! Be more careful next time!";
-			this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!";
+			this.failtext = "The " + item.name + " did not reach its destination! Be more careful next time!";
+			this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!\n";
 		
 		}
 		
-		this.objectives = [ new ObjectiveBringItemToPlace( this.item, this.quantity, new Place( dest.getSpaceport() ) ) ] 
+		this.objectives = [ [ new ObjectiveBringItemToPlace( this.item, this.quantity, new Place( dest.getSpaceport() ) ) ] ];
+		
+		// displayed on the select menu and confirmation screen
+		
+		this.displaytext  = this.item.name + " (" + this.quantity + ")\n";
+		this.displaytext += this.getSourceCity().name + " ➔ " + this.getDestinationCity().name;
+		this.displaytext += "\n$" + this.reward;
 	}
 	
 	getSourceCity(){
@@ -38,18 +46,16 @@ class MissionDelivery extends Mission {
 	}
 	
 	onFail(){
-		GROUP_MISSION_FAIL.children[1].text = this.failtext; server.world.getPlayer().currentMission = null;
-		GuiHandler.openWindow(GROUP_MISSION_FAIL);
+		super.onFail();
 		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 	}
 	
 	onSuccess(){
-		GROUP_MISSION_SUCCESS.children[1].text = this.successtext; server.world.getPlayer().currentMission = null;
-		GuiHandler.openWindow(GROUP_MISSION_SUCCESS);
+		
+		super.onSuccess();
 		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
-		server.world.getPlayer().money += this.reward;
 	}
 	
 	onCancel(){

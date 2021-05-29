@@ -16,8 +16,12 @@ class ObjectiveBringItemToPlace extends Objective {
 		super();
 		
 		//var dest = server.world.cities[ destinationUUID ];
+		var pn;
+		if (place.type = "building"){
+			pn = place.name + " in " + place.get().getCity().name;
+		}
 		
-		this.text = "Bring " + quantity + " " + item.name + " to " + place.name;
+		this.text = "Bring " + quantity + " " + item.name + " to " + pn;
 		
 		this.item = item;
 		this.quantity = quantity;

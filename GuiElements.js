@@ -95,7 +95,11 @@ objectiveinfo.onUpdate = function(){
 		
 		for (var i = 0; i < mission.objectives.length; i++){
 			
-			this.text += "[ ] " + mission.objectives[i].text + "\n"
+			for (var j = 0; j < mission.objectives[i].length; j++){
+			
+				this.text += "[ ] " + mission.objectives[i][j].text + "\n"
+			
+			}
 			
 		}
 		this.show();
@@ -393,23 +397,9 @@ GROUP_MISSION_SELECT.onShow = function(){
 		var errtext = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); errtext.text = "Sorry, no missions available! You can check back some time soon.";
 	}
 	
-	for (mission of missions){
+	for (mission of missions){		
 		
-		var missionname = "";
-		if (mission instanceof MissionDelivery){
-			
-			missionname += mission.item.name + " (" + mission.quantity + ")\n" 
-			missionname += mission.getSourceCity().name + " ➔ " + mission.getDestinationCity().name;
-			
-		}else if (mission instanceof MissionExploration){
-			
-			//missionname += mission.getPlanet().name;
-			
-		}
-		missionname += "\n$" + mission.reward;
-		
-		
-		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = missionname; button.mission = mission;
+		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = mission.displaytext; button.mission = mission;
 		button.onClick = function(){
 			selectedMission = this.mission;
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);

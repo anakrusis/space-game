@@ -121,9 +121,10 @@ function draw(){
 
 	
 	stroke(255); fill(255);
-	textSize(16);
+	textSize(16 * GUI_SCALE);
 	textFont("Courier");
-	text("FPS: " + Math.round(frameRate()), width - 75, 16);
+	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
+	textSize(16);
 	
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);
 }
