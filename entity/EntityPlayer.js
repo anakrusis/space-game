@@ -59,6 +59,7 @@ class EntityPlayer extends EntityShip {
 		this.lastangvel = this.angvel;
 		this.lastangacc = this.angacc;
 		
+		this.lastTerrainIndex = this.terrainIndex;//CollisionUtil.indexFromEntityAngle(this, this.getNearestBody());
 		
 /* 		this.lastxvel = this.xvel; this.lastyvel = this.yvel;
 		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
@@ -110,6 +111,13 @@ class EntityPlayer extends EntityShip {
 		
 		if (this.currentMission){
 			this.currentMission.update();
+		}
+		
+		this.terrainIndex = CollisionUtil.indexFromEntityAngle(this, this.getNearestBody());
+		
+		if (this.terrainIndex != this.lastTerrainIndex){
+			
+			MissionHandler.onPlayerMoveToIndex(this, this.getNearestBody(), this.terrainIndex);
 		}
 	}
 	
