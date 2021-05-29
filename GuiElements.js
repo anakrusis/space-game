@@ -43,7 +43,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-20"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-28"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -68,7 +68,7 @@ var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR);
 missioninfo.onUpdate = function(){
 	var mission = client.world.player.currentMission;
 	if (mission){
-		var infostring = mission.getSourceCity().name + " to " + mission.getDestinationCity().name;
+		var infostring = mission.infobarblurb;
 		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
 		var missiontime_sec = ~~((mission.timeRemaining /60) % 60 );
 		
@@ -161,7 +161,7 @@ deliverbutton.onUpdate = function(){
 	var mision = server.world.getPlayer().currentMission;
 	this.hide();
 	
-	if (mision && selectedEntity instanceof EntityBuilding){
+	if (mision instanceof MissionDelivery && selectedEntity instanceof EntityBuilding){
 		
 		if (mision.getDestinationCity() == selectedEntity.getCity()){
 			
@@ -298,25 +298,24 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 	
 	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); tittle.text = "Mission Confirmation";
 	
-	var missionname = selectedMission.item.name + " (" + selectedMission.quantity + ")\n" 
-	missionname += selectedMission.getSourceCity().name + " ➔ " + selectedMission.getDestinationCity().name;
-	missionname += "\n$" + selectedMission.reward;
-	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = missionname;
+	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = selectedMission.displaytext;
 	missioninfo.onRender = function(){
-		var scale = 18;
-		var pts = selectedMission.item.getRelRenderPoints();
-		noFill()
-		stroke(selectedMission.item.color[0], selectedMission.item.color[1], selectedMission.item.color[2]);
-		beginShape();
-		for (i = 0; i < pts.length; i += 2){
-			var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
-			var py = (-pts[i])   * scale + this.dispy - this.padding*2 + this.height + 4;
-			vertex(px,py);
+		if (selectedMission instanceof MissionDelivery){
+			var scale = 18;
+			var pts = selectedMission.item.getRelRenderPoints();
+			noFill()
+			stroke(selectedMission.item.color[0], selectedMission.item.color[1], selectedMission.item.color[2]);
+			beginShape();
+			for (i = 0; i < pts.length; i += 2){
+				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+				var py = (-pts[i])   * scale + this.dispy - this.padding*2 + this.height + 4;
+				vertex(px,py);
+			}
+			endShape(CLOSE);
 		}
-		endShape(CLOSE);
 	}
 	
-	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to\nbegin this mission?";
+	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to begin this mission?\n";
 
 	var yesbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); yesbtn.text = "Yea";
 	yesbtn.onClick = function(){
@@ -329,12 +328,7 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 		} else {
 			
 			GuiHandler.openWindow(GROUP_INFOBAR);
-			server.world.getPlayer().currentMission = selectedMission;
-		
-			var scm = selectedMission.getSourceCity().availableMissions;
-			scm.splice( scm.indexOf( selectedMission ) );
-		
-			server.world.getPlayer().inventory.add( new ItemStack( selectedMission.item, selectedMission.quantity ) );
+			selectedMission.onStart();
 			
 		}
 	}
@@ -363,12 +357,7 @@ mission_cancel_yes.onClick = function(){
 	
 	GROUP_MISSION_CANCEL_CURRENT.hide();
 	GuiHandler.openWindow(GROUP_INFOBAR);
-	server.world.getPlayer().currentMission = selectedMission;
-		
-	var scm = selectedMission.getSourceCity().availableMissions;
-	scm.splice( scm.indexOf( selectedMission ) );
-		
-	server.world.getPlayer().inventory.add( new ItemStack( selectedMission.item, selectedMission.quantity ) );
+	selectedMission.onStart();
 	
 }
 

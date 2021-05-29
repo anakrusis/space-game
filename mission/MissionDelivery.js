@@ -1,12 +1,11 @@
 class MissionDelivery extends Mission {
 	constructor(sourceCityUUID, destinationCityUUID, item, quantity){
-		super();
+		super(sourceCityUUID);
 			
 		this.reward = 500;
 		this.timeRemaining = 3600;
 		this.item = item; this.quantity = quantity;	
 			
-		this.sourceCityUUID = sourceCityUUID;
 		this.destinationCityUUID = destinationCityUUID;
 		
 		var dest = server.world.cities[ this.destinationCityUUID ];
@@ -32,11 +31,8 @@ class MissionDelivery extends Mission {
 		this.displaytext  = this.item.name + " (" + this.quantity + ")\n";
 		this.displaytext += this.getSourceCity().name + " ➔ " + this.getDestinationCity().name;
 		this.displaytext += "\n$" + this.reward;
-	}
-	
-	getSourceCity(){
 		
-		return server.world.cities[ this.sourceCityUUID ];
+		this.infobarblurb = this.getSourceCity().name + " to " + this.getDestinationCity().name;
 	}
 	
 	getDestinationCity(){
@@ -60,5 +56,11 @@ class MissionDelivery extends Mission {
 	
 	onCancel(){
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
+	}
+	
+	onStart(){
+		super.onStart();
+		
+		server.world.getPlayer().inventory.add( new ItemStack( this.item, this.quantity ) );
 	}
 }

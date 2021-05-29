@@ -1,6 +1,10 @@
 class Mission {
-	
-	constructor(){
+
+	constructor(sourceCityUUID){
+		
+		// All missions must take in a source city which can be used to determine which nation commissioned it, from which planet it commenced, etc...
+		this.sourceCityUUID = sourceCityUUID;
+		
 		this.uuid = Math.round(random() * 10000000000);
 		this.reward = 0;
 		this.timeRemaining = -1;
@@ -12,8 +16,11 @@ class Mission {
 		this.objectives = [];
 		this.currentObjectiveStage = 0;
 		
-		// Used in the Mission selection menu and confirmation, gives a short blurb about what the mission is about
+		// Used in the Mission selection menu and confirmation, gives a summary about what the mission is about
 		this.displaytext = "Mission\n$" + this.reward;
+		
+		// Single line of text used in the info bar, even shorter
+		this.infobarblurb = "Mission";
 	}
 	
 	update(){
@@ -24,6 +31,11 @@ class Mission {
 				this.onFail();
 			}
 		}
+	}
+	
+	getSourceCity(){
+		
+		return server.world.cities[ this.sourceCityUUID ];
 	}
 	
 	onFail(){
@@ -40,5 +52,12 @@ class Mission {
 	
 	onCancel(){
 		
+	}
+	
+	onStart(){
+		server.world.getPlayer().currentMission = this;
+		
+		var scm = this.getSourceCity().availableMissions;
+		scm.splice( scm.indexOf( this ) );
 	}
 }

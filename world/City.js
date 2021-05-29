@@ -65,26 +65,30 @@ class City {
 	
 	update(){
 		
-		for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
-			var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
-			
-			if (b instanceof BodyPlanet && !b.explored){
+		if (this.getNation() == server.world.getPlayer().getNation()){
+			for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
+				var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
 				
-				// Adds exploration missions if there is none already.
-				var explore_mission_found = false;
-				for (var i = 0; i < this.availableMissions.length; i++){
-					var mission = this.availableMissions[i];
+				if (b instanceof BodyPlanet && (!b.explored)){
 					
-					if (mission.bodyUUID == b.uuid){
-						explore_mission_found = true; break;
+					// Adds exploration missions if there is none already.
+					var explore_mission_found = false;
+					for (var i = 0; i < this.availableMissions.length; i++){
+						var mission = this.availableMissions[i];
+						
+						if (mission instanceof MissionExploration){
+							if (mission.destination.uuid == b.uuid){
+								explore_mission_found = true; break;
+							}
+						}
 					}
-				}
-				
-				if (!explore_mission_found){
+					
+					if (!explore_mission_found){
 
-					var m = new MissionExploration(b.uuid);
-					this.availableMissions.push(m);
-				
+						var m = new MissionExploration(this.uuid, b);
+						this.availableMissions.push(m);
+					
+					}
 				}
 			}
 		}
@@ -97,13 +101,15 @@ class City {
 			for (var i = 0; i < this.availableMissions.length; i++){
 				var mission = this.availableMissions[i];
 				
-				if (mission.item != Items.ITEM_PASSENGERS){
-					
-					if (this.resources.totalAmount( mission.item ) <= 0){
+				if (mission instanceof MissionDelivery){
+					if (mission.item != Items.ITEM_PASSENGERS){
 						
-						this.availableMissions.splice(i,1);
+						if (this.resources.totalAmount( mission.item ) <= 0){
+							
+							this.availableMissions.splice(i,1);
+						}
+						
 					}
-					
 				}
 			}
 			
