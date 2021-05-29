@@ -52,6 +52,20 @@ class BodyPlanet extends EntityBody {
 		strokeWeight(1);
 	}
 	
+	getRenderPoints(){
+		var index = server.world.getPlayer().terrainIndex;
+		
+		var fov = Math.round ( 375 / cam_zoom );
+		
+		if ( fov > this.terrainSize / 2 ) { return super.getRenderPoints(); }
+		
+		var points = this.getAbsPointsSlice( index - fov, index + fov, 0 );
+		
+		points.push( this.x ); points.push( this.y );
+		
+		return points;
+	}
+	
 	update(){
 		super.update();
 		

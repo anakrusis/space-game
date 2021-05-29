@@ -62,8 +62,9 @@ class MissionHandler {
 						
 						if (building.isIndexInBuilding(index)){
 							
-							//GROUP_INFOBAR.BTN_DELIVER.show();
-							this.inPlaceForDelivery = true;
+							if ( building.getPlanet() == player.getGroundedBody() ){
+								this.inPlaceForDelivery = true;
+							}
 						}
 					}
 				}
@@ -76,7 +77,9 @@ class MissionHandler {
 						
 						if (building.isIndexInBuilding(index)){
 							
-							cobj.complete = true;
+							if ( building.getPlanet() == player.getGroundedBody() ){
+								cobj.complete = true;
+							}
 						}
 					}
 					

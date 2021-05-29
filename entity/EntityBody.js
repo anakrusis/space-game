@@ -35,6 +35,10 @@ class EntityBody extends Entity {
 		
 		if (!radial_offset){ var radial_offset = 0; }
 		
+		if (startindex < 0){
+			startindex += this.terrainSize;
+		}
+		
 		var ende = endindex;
 		if (endindex < startindex){
 			ende += this.terrainSize;
@@ -69,6 +73,14 @@ class EntityBody extends Entity {
 
         return absPoints;
     }
+	
+	getRenderPoints(){
+		
+		var ap = this.getAbsolutePoints();
+		
+		return ap;
+		
+	}
 	
 	getRadius(){ return this.radius; }
 }
