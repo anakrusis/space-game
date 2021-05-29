@@ -11,4 +11,9 @@ class Tile {
 		this.hasRoad      = false;
 	}
 	
+	getBuilding(){
+
+		return server.world.entities[ this.buildingUUID ];
+	
+	}
 }

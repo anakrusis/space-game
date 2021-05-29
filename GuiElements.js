@@ -159,26 +159,13 @@ GROUP_INFOBAR.BTN_DELIVER = new GuiElement(0,0,150,40,GROUP_INFOBAR); GROUP_INFO
 GROUP_INFOBAR.BTN_DELIVER.hide();
 GROUP_INFOBAR.BTN_DELIVER.onUpdate = function(){
 
-/* 	var mision = server.world.getPlayer().currentMission;
-	this.hide(); */
-	
-/* 	if (mision instanceof MissionDelivery && selectedEntity instanceof EntityBuilding){
-		
-		if (mision.getDestinationCity() == selectedEntity.getCity()){
-			
-			var pindex = ; 
-			if (selectedEntity.isIndexInBuilding(pindex)){
-				this.show();
-			}
-		}
-	} */
-	
+	if (MissionHandler.inPlaceForDelivery && MissionHandler.spaceportSelected){
+		this.show();
+	}else{
+		this.hide();
+	}
 }
-GROUP_INFOBAR.BTN_DELIVER.onShow = function(){
-	
-	//MissionHandler.onPlayerMoveToIndex( client.world.getPlayer(), client.world. );
-	
-}
+
 GROUP_INFOBAR.BTN_DELIVER.onClick = function(){
 	server.world.getPlayer().currentMission.onSuccess();
 }
@@ -186,15 +173,12 @@ GROUP_INFOBAR.BTN_DELIVER.onClick = function(){
 GROUP_INFOBAR.BTN_MISSION = new GuiElement(0,0,150,40,GROUP_INFOBAR); GROUP_INFOBAR.BTN_MISSION.text = "Missions...";
 GROUP_INFOBAR.BTN_MISSION.hide();
 GROUP_INFOBAR.BTN_MISSION.onUpdate = function(){
-/* 
-	this.hide(); */
-/* 	if (selectedEntity instanceof BuildingSpaceport){
-		
-		var pindex = CollisionUtil.indexFromEntityAngle(server.world.getPlayer(), server.world.getPlayer().getNearestBody()); 
-		if (selectedEntity.isIndexInBuilding(pindex)){
-			this.show();
-		}
-	} */
+	
+	if (MissionHandler.inPlaceForMission && MissionHandler.spaceportSelected){
+		this.show();
+	}else{
+		this.hide();
+	}
 	
 }
 GROUP_INFOBAR.BTN_MISSION.onClick = function(){

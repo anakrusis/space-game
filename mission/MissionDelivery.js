@@ -14,7 +14,7 @@ class MissionDelivery extends Mission {
 			
 			this.desc = "The city of " + dest.name + " is awaiting the arrival of " + item.name + ".\n";
 			this.failtext = "The passengers did not reach their destination! This is an atrocity!";
-			this.successtext = "The " + item.name + " were safely brought to the city of " + dest.name + "!\nGreat work!";
+			this.successtext = "The " + item.name + " were safely brought to the city of\n" + dest.name + "!\nGreat work!";
 			
 		}else{
 		

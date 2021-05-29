@@ -366,6 +366,7 @@ function mouseClicked() {
 	}else{
 		selectedEntity = null;
 	}
+	MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), selectedEntity );
 }
 
 function mouseWheel(e) {
