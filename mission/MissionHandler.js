@@ -34,15 +34,19 @@ class MissionHandler {
 		
 		this.spaceportSelected = false;
 		if ( entity instanceof BuildingSpaceport ){
-
-			this.spaceportSelected = true;
+			
+			//if ( entity.isIndexInBuilding( player.terrainIndex ) ) {
+			
+				this.spaceportSelected = true;
+			
+			//}
 		
 		}
 	}
 	
 	static onPlayerMoveToIndex( player, planet, index ){
 		
-		console.log("player moved to " + index);
+		//console.log("player moved to " + index);
 		
 		var mission = player.currentMission;
 		

@@ -2,12 +2,13 @@ class MissionDelivery extends Mission {
 	constructor(sourceCityUUID, destinationCityUUID, item, quantity){
 		super(sourceCityUUID);
 			
-		this.reward = 500;
+		//this.reward = 500;
 		this.timeRemaining = 3600;
 		this.item = item; this.quantity = quantity;	
 			
 		this.destinationCityUUID = destinationCityUUID;
 		
+		var srce = server.world.cities[ this.sourceCityUUID ];
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		
 		if (item == Items.ITEM_PASSENGERS){
@@ -23,6 +24,11 @@ class MissionDelivery extends Mission {
 			this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!\n";
 		
 		}
+		
+		var plnt = srce.getPlanet();
+		this.distance = plnt.terrainIndexDistance( srce.centerIndex, dest.centerIndex );
+		
+		this.reward = 10 * Math.round(this.distance / 8);
 		
 		this.objectives = [ [ new ObjectiveBringItemToPlace( this.item, this.quantity, new Place( dest.getSpaceport() ) ) ] ];
 		

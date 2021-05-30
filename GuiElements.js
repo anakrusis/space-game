@@ -43,7 +43,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-28"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-30"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -159,25 +159,36 @@ GROUP_INFOBAR.BTN_DELIVER = new GuiElement(0,0,150,40,GROUP_INFOBAR); GROUP_INFO
 GROUP_INFOBAR.BTN_DELIVER.hide();
 GROUP_INFOBAR.BTN_DELIVER.onUpdate = function(){
 
+	this.hide();
 	if (MissionHandler.inPlaceForDelivery && MissionHandler.spaceportSelected){
-		this.show();
-	}else{
-		this.hide();
+		
+		if (selectedEntity){
+			if ( selectedEntity.isIndexInBuilding( server.world.getPlayer().terrainIndex ) ){
+				
+				this.show();
+			}
+		}
 	}
 }
 
 GROUP_INFOBAR.BTN_DELIVER.onClick = function(){
 	server.world.getPlayer().currentMission.onSuccess();
+	this.hide();
 }
 
 GROUP_INFOBAR.BTN_MISSION = new GuiElement(0,0,150,40,GROUP_INFOBAR); GROUP_INFOBAR.BTN_MISSION.text = "Missions...";
 GROUP_INFOBAR.BTN_MISSION.hide();
 GROUP_INFOBAR.BTN_MISSION.onUpdate = function(){
 	
+	this.hide();
 	if (MissionHandler.inPlaceForMission && MissionHandler.spaceportSelected){
-		this.show();
-	}else{
-		this.hide();
+		
+		if (selectedEntity){
+			if ( selectedEntity.isIndexInBuilding( server.world.getPlayer().terrainIndex ) ){
+				
+				this.show();
+			}
+		}
 	}
 	
 }
@@ -190,7 +201,7 @@ GROUP_INFOBAR.BTN_MISSION.onClick = function(){
 var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
 
 var hdr = new GuiElement(0,0,700,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
-var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You  can do delivery missions, or just explore freely if you want. \n\nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nControls:\n\n W/S - accelerate/decelerate\n A/D - turn\n F - toggle fullscreen\n P - toggle path drawing\n Mouse wheel - zoom in/out"
+var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You  can do delivery missions, or just explore freely if you want. \n\nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nControls:\n\n W/S - accelerate/decelerate\n A/D - turn\n Mouse wheel - zoom in/out\n F - toggle fullscreen\n P - toggle path drawing\n Space - toggle planet camera rotation"
 
 var butoncontainer = new GuiElement(0,0,700,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
 
