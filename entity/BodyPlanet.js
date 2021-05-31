@@ -87,6 +87,9 @@ class BodyPlanet extends EntityBody {
 		
 		else{
 			
+			// This removes the remainder from the start and end indices of the "pizza slice" of terrain to draw
+			// If the remainder is left on, then the terrain appears to "tremble" or "bubble" due to the resampling caused by the LOD function immediately afterwards
+			
 			var exp = Math.pow(2, lod);
 			var start = ( index - fov ) - ((index - fov) % exp);
 			var finsh = ( index + fov ) - ((index + fov) % exp);

@@ -108,8 +108,10 @@ class World {
 				//}
 			}
 		}
-		for (var uuid in this.cities){
-			this.cities[uuid].update();
+		if (this.worldTime > 2){
+			for (var uuid in this.cities){
+				this.cities[uuid].update();
+			}
 		}
 		
 		if (this.worldTime - this.playerLastDeathTime == this.RESPAWN_INTERVAL){
