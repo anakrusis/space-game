@@ -381,11 +381,18 @@ function mouseWheel(e) {
 	return false;
 }
 
+var lod;
+
 // This is truly a double-duty function, doing both serverside and clientside calls. However, the backend behavior is almost entirely relegated to the corresponding objects (World, Chunk, Entity) whereas the clientside behavior is mostly in here (or the GuiHandler and its constituents)
 
 // For multiplayer test, the server side calls will be moved and all the rest will stay put!
 
 var update = function(){
+	
+	lod = 10 / cam_zoom;
+	lod = Math.ceil(Math.log(lod)/Math.log(2))
+	lod = Math.max( 0, lod );
+	lod = Math.min( 8, lod );
 	
 	server.update();
 	var player = client.world.getPlayer();

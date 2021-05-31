@@ -52,16 +52,53 @@ class BodyPlanet extends EntityBody {
 		strokeWeight(1);
 	}
 	
+	LODPass( points ){
+		var amt = 4
+		for (var i = 2; i < points.length; i += amt){
+			
+			points[i] = 0;
+			points[i+1] = 0;
+			//points.splice(i, amt);
+			
+			for (var j = 0; j < amt; j++){
+				
+				//points[i + j] = 0;
+				//points[i + j + 1] = 0;
+			}
+			
+			//console.log(i);
+		}
+		for (var i = 2; i < points.length; i++){
+			
+			if ( points[i] == 0 ){
+				
+				points.splice(i, 2);
+			}
+		}
+		return points;
+	}
+	
 	getRenderPoints(){
 		var index = server.world.getPlayer().terrainIndex;
 		
-		var fov = Math.round ( 375 / cam_zoom );
+		var fov = Math.round ( 500 / cam_zoom );
 		
-		if ( fov > this.terrainSize / 2 ) { return super.getRenderPoints(); }
+		if ( fov > this.terrainSize / 2 || !PLANET_CAM ) { var points = super.getRenderPoints(); }
 		
-		var points = this.getAbsPointsSlice( index - fov, index + fov, 0 );
+		else{
+			
+			var exp = Math.pow(2, lod);
+			var start = ( index - fov ) - ((index - fov) % exp);
+			var finsh = ( index + fov ) - ((index + fov) % exp);
+			
+			var points = this.getAbsPointsSlice( start, finsh, 0 );
+			points.unshift( this.y ); points.unshift( this.x ); 
 		
-		points.push( this.x ); points.push( this.y );
+		}
+		
+		for (var i = 0; i < lod; i++){
+			points = this.LODPass(points);
+		}
 		
 		return points;
 	}
