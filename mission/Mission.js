@@ -21,6 +21,12 @@ class Mission {
 		
 		// Single line of text used in the info bar, even shorter
 		this.infobarblurb = "Mission";
+		
+		this.iconColor = [255,255,255];
+	}
+	
+	getIcon(){
+		return [];
 	}
 	
 	update(){

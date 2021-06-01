@@ -39,6 +39,13 @@ class MissionDelivery extends Mission {
 		this.displaytext += "\n$" + this.reward;
 		
 		this.infobarblurb = this.getSourceCity().name + " to " + this.getDestinationCity().name;
+		
+		this.iconColor = this.item.color;
+	}
+	
+	getIcon(){
+		
+		return this.item.getRelRenderPoints();
 	}
 	
 	getDestinationCity(){

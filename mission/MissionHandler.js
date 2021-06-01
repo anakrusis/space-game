@@ -98,7 +98,10 @@ class MissionHandler {
 			var building = planet.tiles[ index ].getBuilding();
 			
 			if (building instanceof BuildingSpaceport){
-				this.inPlaceForMission = true;
+				
+				if ( building.getPlanet() == player.getGroundedBody() ){
+					this.inPlaceForMission = true;
+				}
 			}
 		}
 		

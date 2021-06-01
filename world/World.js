@@ -108,6 +108,8 @@ class World {
 				//}
 			}
 		}
+		// The reason the first two ticks have no city updates is so that the planets can be situated into place
+		// otherwise mission will give incorrect distances between locations
 		if (this.worldTime > 2){
 			for (var uuid in this.cities){
 				this.cities[uuid].update();

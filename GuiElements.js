@@ -43,7 +43,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-30"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-31"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -302,19 +302,18 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 	
 	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = selectedMission.displaytext;
 	missioninfo.onRender = function(){
-		if (selectedMission instanceof MissionDelivery){
-			var scale = 18;
-			var pts = selectedMission.item.getRelRenderPoints();
-			noFill()
-			stroke(selectedMission.item.color[0], selectedMission.item.color[1], selectedMission.item.color[2]);
-			beginShape();
-			for (i = 0; i < pts.length; i += 2){
-				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
-				var py = (-pts[i])   * scale + this.dispy - this.padding*2 + this.height + 4;
-				vertex(px,py);
-			}
-			endShape(CLOSE);
+		
+		var scale = 18;
+		var pts = selectedMission.getIcon();
+		noFill()
+		stroke(selectedMission.iconColor[0], selectedMission.iconColor[1], selectedMission.iconColor[2]);
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+			var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
+			vertex(px,py);
 		}
+		endShape(CLOSE);
 	}
 	
 	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to begin this mission?\n";
@@ -381,6 +380,8 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	this.children = [];
 	
+	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
+	
 	var selectedCity = selectedEntity.getCity();
 	var missions = selectedCity.getAvailableMissions();
 	
@@ -396,19 +397,18 @@ GROUP_MISSION_SELECT.onShow = function(){
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
 		}
 		button.onRender = function(){
+			
 			var scale = 18;
-			if (this.mission instanceof MissionDelivery){
-				var pts = this.mission.item.getRelRenderPoints();
-				noFill()
-				stroke(this.mission.item.color[0], this.mission.item.color[1], this.mission.item.color[2]);
-				beginShape();
-				for (i = 0; i < pts.length; i += 2){
-					var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
-					var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
-					vertex(px,py);
-				}
-				endShape(CLOSE);
+			var pts = this.mission.getIcon();
+			noFill()
+			stroke(this.mission.iconColor[0], this.mission.iconColor[1], this.mission.iconColor[2]);
+			beginShape();
+			for (i = 0; i < pts.length; i += 2){
+				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+				var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
+				vertex(px,py);
 			}
+			endShape(CLOSE);
 		}
 	}
 	
