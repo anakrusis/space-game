@@ -318,7 +318,9 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 	
 	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to begin this mission?\n";
 
-	var yesbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); yesbtn.text = "Yea";
+	var mission_sure_cntr = new GuiElement(0,0,700,64, GROUP_MISSION_CONFIRM); mission_sure_cntr.autosize = true;  mission_sure_cntr.autopos = "left";
+
+	var yesbtn = new GuiElement(0,0,148,40,mission_sure_cntr); yesbtn.text = "Yea";
 	yesbtn.onClick = function(){
 		GROUP_MISSION_CONFIRM.hide(); 
 		
@@ -334,7 +336,7 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 		}
 	}
 	
-	var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_CONFIRM); backbtn.text = "Nah";
+	var backbtn = new GuiElement(0,0,148,40,mission_sure_cntr); backbtn.text = "Nah";
 	backbtn.onClick = function(){
 		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_MISSION_SELECT);
 	}
