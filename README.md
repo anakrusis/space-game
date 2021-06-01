@@ -10,10 +10,12 @@ W/S - accelerate/decelerate
 
 A/D - turn
 
+Space - toggle camera rotation
+
 F - toggle fullscreen
 
 P - toggle path drawing
 
 Mouse wheel - zoom in/out
 
-![Gameplay screenshot](https://i.imgur.com/MrmX07n.png)
+![Gameplay screenshot](https://cdn.discordapp.com/attachments/794136032379142144/849122184961720370/AV9NXVjie0IAAAAAElFTkSuQmCC.png)
