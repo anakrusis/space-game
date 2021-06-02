@@ -4,7 +4,7 @@ class BodyPlanet extends EntityBody {
 		
 		// Core properties
 		this.name = Nymgen.newName();
-		//this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
+		this.color = [192,192,192];
 		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
 		this.tiles = [];
 		this.generateTerrain();
@@ -20,15 +20,42 @@ class BodyPlanet extends EntityBody {
 		
 		// Referential properties
 		this.starUUID = starUUID;
-		//this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		this.oceanUUID = null;
 		
-		this.humidity = 1; // todo make it correspond to the number of ocean tiles to land tiles
-		
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 100), 2 ) ) ) ;
-		this.color = [192,192,192];
-		//this.temperature -= 273.15; this.temperature *= 10; this.temperature += 273.15;
+		this.calculateHumidity(); // todo make it correspond to the number of ocean tiles to land tiles
+		
 		this.populateOreVeins();
+	}
+	
+	calculateHumidity(){
+		var wetTiles = 0; var dryTiles = 0;
+		
+		if (!this.hasOcean){ this.humidity = 0; return; }
+		
+		for (i = 0; i < this.terrainSize; i++){
+			
+			if (this.tiles[i].height > 0){
+				dryTiles++;
+			}else{
+				wetTiles++;
+			}
+		}
+		
+		this.humidity = wetTiles / this.terrainSize;
+	}
+	
+	makeLush(){
+		
+		this.hasOcean  = true;
+		var ocean = new BodyOcean(this.x,this.y,0,this.radius,this.uuid);
+		this.oceanUUID = ocean.uuid;
+		this.getChunk().spawnBody(ocean);
+		
+		this.calculateHumidity();
+		
+		var hue = 0.1875 + (this.humidity * 0.40);
+		this.color = RandomUtil.hslToRgb( hue, 0.8, 0.4 );
 	}
 	
 	render(){

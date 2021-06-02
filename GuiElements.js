@@ -146,6 +146,9 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			temp = Math.round(100 * temp)/100;
 			infostring += "• Temperature: " + temp + "°C\n"
 			
+			var hum = Math.round(e.humidity * 100);
+			infostring += "• Humidity: " + hum + "%\n"
+			
 		}else if (e instanceof EntityBuilding){
 			
 			infostring += e.productionProgress + "/" + e.productionTime + "\n";

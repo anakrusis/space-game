@@ -69,7 +69,7 @@ class EntityShip extends Entity {
 			//if (this.ticksExisted < 5){ console.log("nearest:" + nearestdist + " dist:" + dede); };
 			
 			if (dede <= nearestdist){
-				if (body.canEntitiesCollide){
+				if (body.canEntitiesCollide && !(body instanceof BodyOcean)){
 					nearestdist = dede;
 					nearestplanet = body;
 					//if (this.ticksExisted < 5){console.log(nearestplanet.name);};
