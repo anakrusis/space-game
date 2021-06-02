@@ -4,7 +4,7 @@ class BodyPlanet extends EntityBody {
 		
 		// Core properties
 		this.name = Nymgen.newName();
-		this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
+		//this.color = [RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255), RandomUtil.fromRangeI(0,255)];
 		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
 		this.tiles = [];
 		this.generateTerrain();
@@ -23,7 +23,10 @@ class BodyPlanet extends EntityBody {
 		//this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		this.oceanUUID = null;
 		
+		this.humidity = 1; // todo make it correspond to the number of ocean tiles to land tiles
+		
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 100), 2 ) ) ) ;
+		this.color = [192,192,192];
 		//this.temperature -= 273.15; this.temperature *= 10; this.temperature += 273.15;
 		this.populateOreVeins();
 	}
