@@ -13,26 +13,33 @@ class Chunk {
 		       // Every star gets potentially up to 4 planets
         var planetcount = 0;
         var orbitDistanceInterval = 12000;
-        var orbitVariance = 60;
+        var orbitVariance = 4000;
+		
+		// chance that a given orbital position will yield a planet
+		var planetChance = 1;
 
         for (var uuid in this.bodies) {
 			var body = this.bodies[uuid];
             if (body instanceof BodyStar) {
                 //var planetnum = orbitDistanceInterval * Math.floor(random()*4 + 2) + orbitDistanceInterval;
-				var planetnum = orbitDistanceInterval * 5 + orbitDistanceInterval;
+				var planetnum = orbitDistanceInterval * 8 + orbitDistanceInterval;
 				//console.log(planetnum);
 				//var planetnum = 4;
                 for (var planetdist = 2 * orbitDistanceInterval; planetdist < planetnum; planetdist += orbitDistanceInterval) {
 
-                    //var orbitDistance = RandomUtil.fromRangeF(planetdist - orbitVariance, planetdist + orbitVariance);
-					var orbitDistance = planetdist;
+                    var orbitDistance = RandomUtil.fromRangeF(planetdist - orbitVariance, planetdist + orbitVariance);
+					//var orbitDistance = planetdist;
 
                     //String name = body.getName() + " " + NymGen.greekLetters()[planetcount];
-
-                    var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body.uuid);
-
-					this.spawnBody(planet);
-                    planetcount++;
+					
+					if ( RandomUtil.nextFloat(1) < planetChance ){
+						
+						var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body.uuid);
+						
+						this.spawnBody(planet);
+						planetcount++;
+						planetChance -= 0.1;
+					}
                 }
             }
         }

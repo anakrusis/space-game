@@ -43,7 +43,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-05-31"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-06-02"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -138,9 +138,13 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
 			
 			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
-			infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
+			//infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
 			var yearlen = e.orbitPeriod / 60 / 60;
-			infostring += "• Year length: " + Math.round(yearlen) + " Earth min"
+			//infostring += "• Year length: " + Math.round(yearlen) + " Earth min"
+			
+			var temp = e.temperature - 273.15;
+			temp = Math.round(100 * temp)/100;
+			infostring += "• Temperature: " + temp + "°C\n"
 			
 		}else if (e instanceof EntityBuilding){
 			

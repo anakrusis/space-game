@@ -23,6 +23,8 @@ class BodyPlanet extends EntityBody {
 		//this.buildingUUIDs = []; // the index into this object/array matches the terrain position of building
 		this.oceanUUID = null;
 		
+		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 100), 2 ) ) ) ;
+		//this.temperature -= 273.15; this.temperature *= 10; this.temperature += 273.15;
 		this.populateOreVeins();
 	}
 	

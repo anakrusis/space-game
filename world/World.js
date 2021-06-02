@@ -29,7 +29,7 @@ class World {
 		
 		//this.spawnEntity( new EntityOreVein(homePlanet.x, homePlanet.y, homePlanet.uuid, 24, 27) );
 		
-		var playerNation = new Nation(0, 0, homePlanet.uuid);
+		var playerNation = new Nation(homePlanet.getChunk().x, homePlanet.getChunk().y, homePlanet.uuid);
 		this.nations[playerNation.uuid] = playerNation;
 		
 		var capitalCity = homePlanet.spawnCity( playerNation );
@@ -39,7 +39,7 @@ class World {
 		// Other nations
 		for (var i = 0; i < 4; i++){
 			
-			var nat = new Nation(0, 0, homePlanet.uuid);
+			var nat = new Nation(homePlanet.getChunk().x, homePlanet.getChunk().y, homePlanet.uuid);
 			this.nations[nat.uuid] = nat;
 		
 			var natcap = homePlanet.spawnCity( nat );
@@ -62,16 +62,42 @@ class World {
 		
 	}
 	
+	// This function works by searching for planets within a 50 degree difference of the ideal temperature, i.e. ~15C
+	// If there are no planets which match this criterion within a chunk, it will move onto the chunk next to it.
+	
 	findHomePlanet(){
 		var cx = 0; var cy = 0;
 		while (true){
 			this.loadChunk(cx,cy);
 			var chunk = this.chunks[cx][cy];
 			
+			var idealTemp = 288 // almost 15 deg celcius
+			var nearestPlanet = null;
+			var nearestDiff;
+			
 			for ( var uuid in chunk.bodies ){
 				var b = chunk.bodies[uuid];
-				if (b instanceof BodyPlanet){ return b; }
+					
+				if (b instanceof BodyPlanet){ 
+					
+					if (nearestPlanet){
+						var diff = Math.abs( idealTemp - b.temperature );
+						if (diff < nearestDiff){
+							
+							nearestPlanet = b;
+							nearestDiff = diff;
+						}
+						
+					}else{
+						nearestPlanet = b;
+						nearestDiff = Math.abs( idealTemp - b.temperature );
+					}
+				}
 			}
+			if (nearestPlanet && nearestDiff < 50){
+				return nearestPlanet;
+			}
+			
 			cx += 1;
 		}
 	}

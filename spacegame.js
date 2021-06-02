@@ -72,11 +72,18 @@ function draw(){
 	
 	// chunk boundary lines are behind everything
 	var chunk = client.world.getPlayer().getChunk();
-	//var chunkx = tra_rot_x(chunk.x * CHUNK_DIM, chunk.y * CHUNK_DIM); 
-	//var chunky = tra_rot_y(chunk.x * CHUNK_DIM, chunk.y * CHUNK_DIM);
-	//stroke(128);
-	//noFill();
-	//square(chunkx, chunky, CHUNK_DIM * cam_zoom);
+
+	stroke(128);
+	noFill();
+	beginShape();
+	
+	var cx = chunk.x * CHUNK_DIM; var cy = chunk.y * CHUNK_DIM
+	vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
+	vertex( tra_rot_x( cx + CHUNK_DIM, cy ), tra_rot_y( cx + CHUNK_DIM, cy ) );
+	vertex( tra_rot_x( cx + CHUNK_DIM, cy + CHUNK_DIM ), tra_rot_y( cx + CHUNK_DIM, cy + CHUNK_DIM ) );
+	vertex( tra_rot_x( cx, cy + CHUNK_DIM ), tra_rot_y( cx, cy + CHUNK_DIM ) );
+	vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
+	endShape();
 
 	for ( var i = 0; i < 6; i++ ){
 				
@@ -146,60 +153,6 @@ var drawPointsTrailFromEntity = function(e, points){
 		}
 		endShape();
 	}
-}
-
-var drawEntity = function(e, scale){
-	if (!e){ return; };
-	if (e.isDead()){ return; };
-	if (!scale){ scale = 1; }
-	
-	if (e.filled){
-		fill(e.color[0], e.color[1], e.color[2]);
-	}else{
-		noFill();
-	}
-	if (selectedEntity == e){
-		stroke(255, 255 * (1 + Math.sin(framecount / 15)), 0);
-		strokeWeight(5);
-	}else{
-		stroke(e.color[0], e.color[1], e.color[2]);
-		strokeWeight(1);
-	}
-	var pts = e.getRenderPoints();
-	beginShape();
-	for (i = 0; i < pts.length; i += 2){
-		var px = pts[i]; var py = pts[i+1];
-		px = ((px - e.x) * scale) + e.x;  py = ((py - e.y) * scale) + e.y; 
-		vertex(tra_x(px), tra_y(py));
-	}
-	endShape(CLOSE);
-	
-	if (e instanceof BodyPlanet){
-		stroke(128);
-		strokeWeight(0.5 * cam_zoom);
-		for (var i = 0; i < e.terrainSize; i++){
-			if (e.tiles[ i ].hasRoad){
-				beginShape();
-				//console.log("e");
-				var slice = e.getAbsPointsSlice( i, i );
-				vertex(tra_x(slice[0]), tra_y(slice[1])); vertex(tra_x(slice[2]), tra_y(slice[3]));
-				endShape(CLOSE);
-			}
-		}
-		strokeWeight(1);
-	}
-/* 	if (e instanceof EntityBuilding){
-		var pts = e.getAbsolutePoints();
-		beginShape();
-		for (i = 0; i < pts.length; i += 2){
-			var px = pts[i]; var py = pts[i+1];
-			px = ((px - e.x) * scale) + e.x;  py = ((py - e.y) * scale) + e.y; 
-			vertex(tra_x(px), tra_y(py));
-		}
-		endShape(CLOSE);
-	} */
-	
-	strokeWeight(1);
 }
 
 var doTrajectoryStep = function(e, player){

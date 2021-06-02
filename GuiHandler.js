@@ -1,4 +1,4 @@
-TITLE_VERSION = "Space Game pre alpha 0.1.1c";
+TITLE_VERSION = "Space Game pre alpha 0.1.1d";
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -172,12 +172,12 @@ class GuiHandler {
 				
 				// Second, it will try to find an entity to select. All other actions will be skipped.
 				
+				MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), hoverEntity );
 				if (hoverEntity){
 					selectedEntity = hoverEntity; return;
 				}else{
 					selectedEntity = null;
 				}
-				MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), selectedEntity );
 				
 				// Then, it will make sure you are on the main screen, and if so, then you can modify the player's movement with the touch.
 				// TODO: Partition the screen into four quadrants to allow the same kind of control that WASD has!
