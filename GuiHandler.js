@@ -62,7 +62,7 @@ class GuiHandler {
 	}
 	
 	static onClick(){
-		for (var i = 0; i < this.elements.length; i++){
+		for (var i = this.elements.length - 1; i >= 0; i--){
 			var e = this.elements[i];
 			if (e.active){
 				e.click();
@@ -177,6 +177,7 @@ class GuiHandler {
 				}else{
 					selectedEntity = null;
 				}
+				MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), selectedEntity );
 				
 				// Then, it will make sure you are on the main screen, and if so, then you can modify the player's movement with the touch.
 				// TODO: Partition the screen into four quadrants to allow the same kind of control that WASD has!
