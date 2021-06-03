@@ -413,7 +413,7 @@ var update = function(){
 	if (cc){
 		for (var uuid in cc.bodies) {
 			var body = cc.bodies[uuid];
-			if (CollisionUtil.isColliding(cursorEntity, body) && body.canEntitiesCollide){
+			if (CollisionUtil.isColliding(cursorEntity, body) && body.canEntitiesCollide && !(body instanceof BodyOcean)){
 				hoverEntity = body; break;
 			}
 		}
