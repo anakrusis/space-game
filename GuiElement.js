@@ -299,19 +299,57 @@ class GuiTextEntry extends GuiElement {
 		super(x,y,width,40,parent);
 		this.patharray = patharray;
 		this.cursorpos = 0;
+		this.setting = "";
 	}
 	
 	onClick(){
 		
 		if (!selectedTextEntry){
 			selectedTextEntry = this;
+			this.setting = this.text;
 			//this.cursorpos = this.text.length - 1;
 		}
 	}
 	
+	commit(){
+		// Todo maybe make sure it's not All Spaces
+		if (this.setting != "" && this.setting != " "){
+			
+			path_to_data = window;
+			parent   = window;
+			
+			for (var i = 0; i < this.patharray.length - 1; i++){
+				var key = this.patharray[i];
+				
+				if (typeof path_to_data === "function"){
+					newfunc = path_to_data.bind( parent );
+					path_to_data = newfunc()[key];
+				}else{
+					parent       = path_to_data;
+					path_to_data = path_to_data[key];
+				}
+				
+			}
+			if (path_to_data){
+				// final item is the one which is being read
+				if (typeof path_to_data === "function"){
+					newfunc = path_to_data.bind( parent );
+					newfunc()[ this.patharray[ this.patharray.length - 1] ] = this.setting;
+				}else{
+					path_to_data[ this.patharray [ this.patharray.length - 1] ] = this.setting;
+				}
+			}
+		}
+		selectedTextEntry = null;
+	}
+	
 	onRender(){
 		
-		if (!selectedTextEntry){
+		if (selectedTextEntry){
+
+			this.text = this.setting;
+		
+		}else{
 			
 			path_to_data = window;
 			parent   = window;

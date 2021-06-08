@@ -133,7 +133,7 @@ GROUP_INFOBAR.ELM_ENTITYCNTR.onUpdate = function(){
 	if (e){ this.show(); } else { this.hide(); }
 }
 
-GROUP_INFOBAR.TXT_ENTITYNAME = new GuiTextEntry(0,0,300,40,GROUP_INFOBAR.ELM_ENTITYCNTR,[]);
+GROUP_INFOBAR.TXT_ENTITYNAME = new GuiTextEntry(0,0,290,40,GROUP_INFOBAR.ELM_ENTITYCNTR,[]);
 GROUP_INFOBAR.TXT_ENTITYNAME.onUpdate = function(){
 	//var e = null;
 	if (selectedEntity){
@@ -146,7 +146,7 @@ GROUP_INFOBAR.TXT_ENTITYNAME.onUpdate = function(){
 	}
 }
 
-GROUP_INFOBAR.ELM_ENTITYINFO = new GuiElement(0,0,300,40,GROUP_INFOBAR.ELM_ENTITYCNTR);
+GROUP_INFOBAR.ELM_ENTITYINFO = new GuiElement(0,0,290,40,GROUP_INFOBAR.ELM_ENTITYCNTR);
 GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 	var e = null;
 	if (selectedEntity){

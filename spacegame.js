@@ -63,7 +63,7 @@ function setup(){
 
 function draw(){
 	
-	if (GROUP_INFOBAR.active){
+	if (GROUP_INFOBAR.active && !(selectedTextEntry)){
 		update();
 	}
 	framecount++;
@@ -302,12 +302,27 @@ function touchStarted() {
 }
 
 function keyPressed() {
-	if (keyCode === 70){
-		fullscreen(!fullscreen());
-	}else if (keyCode === 80){
-		pathPredictEnabled = !pathPredictEnabled;
-	}else if (keyCode === 32){
-		PLANET_CAM = !PLANET_CAM;
+	
+	if (selectedTextEntry){
+		
+		if (keyCode === 8){
+			selectedTextEntry.setting = selectedTextEntry.setting.slice(0, -1);
+		}else if (keyCode === 13){
+			selectedTextEntry.commit();
+		}else{
+			selectedTextEntry.setting += String.fromCharCode(keyCode);
+		}
+		
+	}else{
+		
+		if (keyCode === 70){
+			fullscreen(!fullscreen());
+		}else if (keyCode === 80){
+			pathPredictEnabled = !pathPredictEnabled;
+		}else if (keyCode === 32){
+			PLANET_CAM = !PLANET_CAM;
+		}
+	
 	}
 }
 
