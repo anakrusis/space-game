@@ -307,10 +307,17 @@ function keyPressed() {
 		
 		if (keyCode === 8){
 			selectedTextEntry.setting = selectedTextEntry.setting.slice(0, -1);
+			backspaceTimer = BACKSPACE_TIMER_AMT;
 		}else if (keyCode === 13){
 			selectedTextEntry.commit();
-		}else{
-			selectedTextEntry.setting += String.fromCharCode(keyCode);
+		}else if((keyCode >= 48 && keyCode <= 90) || keyCode == 32) {
+			var ltr = String.fromCharCode(keyCode);
+			if (!shiftDown){
+				ltr = ltr.toLowerCase();
+			}
+			if (selectedTextEntry.setting.length < 27){
+				selectedTextEntry.setting += ltr;
+			}
 		}
 		
 	}else{

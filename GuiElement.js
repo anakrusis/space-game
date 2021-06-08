@@ -348,6 +348,13 @@ class GuiTextEntry extends GuiElement {
 		if (selectedTextEntry){
 
 			this.text = this.setting;
+			
+			if (framecount % 32 >= 16){
+				var cursorx = this.dispx + this.padding + ((this.setting.length % 28) * 6.5 * GUI_SCALE);
+				var cursory = this.dispy + this.padding + 2*GUI_SCALE + (10*GUI_SCALE*(this.lines - 1));
+				fill(255);
+				rect( cursorx, cursory, 6 * GUI_SCALE, 8 * GUI_SCALE);
+			}
 		
 		}else{
 			

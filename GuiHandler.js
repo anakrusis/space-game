@@ -12,6 +12,10 @@ options_buffer = {}; // This is used to buffer changes in the options menu
 // Each key is an array containing a set of strings referring to the path of the variable
 // and the value associated is the value assigned to said variable
 
+shiftDown = false;
+backspaceTimer = 0;
+BACKSPACE_TIMER_AMT = 20;
+
 selectedTextEntry = null;
 
 class GuiHandler {	
@@ -30,6 +34,22 @@ class GuiHandler {
 	}
 	
 	static update(){
+		
+		shiftDown = false;
+		if (keyIsDown(16)){
+			shiftDown = true;
+		}
+		if (keyIsDown(8)){
+			backspaceTimer--;
+			if (backspaceTimer <= 0){
+				
+				if (framecount % 4 == 0){
+					
+					selectedTextEntry.setting = selectedTextEntry.setting.slice(0, -1);
+					// = BACKSPACE_TIMER_AMT;
+				}
+			}
+		}
 		
 		for (var i = 0; i < this.elements.length; i++){
 			var e = this.elements[i];
