@@ -292,6 +292,56 @@ class GuiElement {
 	}
 }
 
+class GuiTextEntry extends GuiElement { 
+
+	constructor(x,y,width,height,parent,patharray){
+		
+		super(x,y,width,40,parent);
+		this.patharray = patharray;
+		this.cursorpos = 0;
+	}
+	
+	onClick(){
+		
+		if (!selectedTextEntry){
+			selectedTextEntry = this;
+			//this.cursorpos = this.text.length - 1;
+		}
+	}
+	
+	onRender(){
+		
+		if (!selectedTextEntry){
+			
+			path_to_data = window;
+			parent   = window;
+			
+			for (var i = 0; i < this.patharray.length - 1; i++){
+				var key = this.patharray[i];
+				
+				if (typeof path_to_data === "function"){
+					newfunc = path_to_data.bind( parent );
+					path_to_data = newfunc()[key];
+				}else{
+					parent       = path_to_data;
+					path_to_data = path_to_data[key];
+				}
+				
+			}
+			if (path_to_data){
+				// final item is the one which is being read
+				if (typeof path_to_data === "function"){
+					newfunc = path_to_data.bind( parent );
+					this.text = newfunc()[ this.patharray[ this.patharray.length - 1] ];
+				}else{
+					this.text = path_to_data[ this.patharray [ this.patharray.length - 1] ];
+				}
+			}
+		}
+	}
+
+}
+
 class GuiSlider extends GuiElement {
 	
 	constructor(x,y,width,height,parent,patharray, min, max){

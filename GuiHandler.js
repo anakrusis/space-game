@@ -12,6 +12,8 @@ options_buffer = {}; // This is used to buffer changes in the options menu
 // Each key is an array containing a set of strings referring to the path of the variable
 // and the value associated is the value assigned to said variable
 
+selectedTextEntry = null;
+
 class GuiHandler {	
 	static elements = []; // outermost parent elements here, child elements contained within..
 	
@@ -62,6 +64,9 @@ class GuiHandler {
 	}
 	
 	static onClick(){
+		
+		selectedTextEntry = null;
+		
 		for (var i = this.elements.length - 1; i >= 0; i--){
 			var e = this.elements[i];
 			if (e.active){

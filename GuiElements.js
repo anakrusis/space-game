@@ -43,7 +43,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-06-03"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-06-07"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -121,7 +121,32 @@ objectiveinfo.onUpdate = function(){
 	}
 }
 
-GROUP_INFOBAR.ELM_ENTITYINFO = new GuiElement(0,0,300,40,GROUP_INFOBAR);
+GROUP_INFOBAR.ELM_ENTITYCNTR = new GuiElement(0,0,300,40,GROUP_INFOBAR); GROUP_INFOBAR.ELM_ENTITYCNTR.autosize = true;
+GROUP_INFOBAR.ELM_ENTITYCNTR.onUpdate = function(){
+
+	var e = null;
+	if (selectedEntity){
+		e = selectedEntity;
+	}else if (hoverEntity){
+		e = hoverEntity;
+	}
+	if (e){ this.show(); } else { this.hide(); }
+}
+
+GROUP_INFOBAR.TXT_ENTITYNAME = new GuiTextEntry(0,0,300,40,GROUP_INFOBAR.ELM_ENTITYCNTR,[]);
+GROUP_INFOBAR.TXT_ENTITYNAME.onUpdate = function(){
+	//var e = null;
+	if (selectedEntity){
+		//e = selectedEntity;
+		this.patharray = ["selectedEntity","name"];
+		
+	}else if (hoverEntity){
+		//e = hoverEntity;
+		this.patharray = ["hoverEntity","name"];
+	}
+}
+
+GROUP_INFOBAR.ELM_ENTITYINFO = new GuiElement(0,0,300,40,GROUP_INFOBAR.ELM_ENTITYCNTR);
 GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 	var e = null;
 	if (selectedEntity){
@@ -132,7 +157,7 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 	
 	if (e){
 		// All entitys have names!!
-		var infostring = "" + e.name + "\n";
+		var infostring = "";
 		
 		if (e instanceof BodyPlanet){
 			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";

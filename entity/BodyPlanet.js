@@ -7,7 +7,7 @@ class BodyPlanet extends EntityBody {
 		//this.color = [192,192,192];
 		
 		var dirthue = RandomUtil.fromRangeF(0,0.1);
-		var dirtsat = RandomUtil.fromRangeF(0,0.5);
+		var dirtsat = RandomUtil.fromRangeF(-0.5,0.5);
 		
 		this.color = RandomUtil.hslToRgb(dirthue, dirtsat, 0.5);
 		
@@ -64,11 +64,11 @@ class BodyPlanet extends EntityBody {
 		
 		var grassPrevalence = 1 - (Math.abs( this.temperature - 288 ) / 50);
 		
-		var grassColor = RandomUtil.hslToRgb( hue, 0.8, 0.4 );
+		this.grassColor = RandomUtil.hslToRgb( hue, 0.8, 0.4 );
 		
-		var r = (grassColor[0] * grassPrevalence) + (this.color[0] * (1 - grassPrevalence));
-		var g = (grassColor[1] * grassPrevalence) + (this.color[1] * (1 - grassPrevalence));
-		var b = (grassColor[2] * grassPrevalence) + (this.color[2] * (1 - grassPrevalence));
+		var r = (this.grassColor[0] * grassPrevalence) + (this.color[0] * (1 - grassPrevalence));
+		var g = (this.grassColor[1] * grassPrevalence) + (this.color[1] * (1 - grassPrevalence));
+		var b = (this.grassColor[2] * grassPrevalence) + (this.color[2] * (1 - grassPrevalence));
 		
 		this.color = [r,g,b];
 		
