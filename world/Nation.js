@@ -9,6 +9,8 @@ class Nation {
 		
 		this.cityUUIDs = [];
 		this.capitalCityUUID = [];
+		
+		this.type = this.constructor.name;
 	}
 	
 	getCapitalCity(){

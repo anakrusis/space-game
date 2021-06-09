@@ -13,6 +13,8 @@ class World {
 		this.cities        = {};
 		
 		this.worldTime = 0;
+		
+		this.type = this.constructor.name;
 	}
 	
 	init(){

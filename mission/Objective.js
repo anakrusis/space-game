@@ -5,6 +5,8 @@ class Objective {
 	constructor(){
 		this.text = "Objective";
 		this.complete = false;
+		
+		this.type = this.constructor.name;
 	}
 	
 }

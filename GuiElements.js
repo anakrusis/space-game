@@ -55,7 +55,7 @@ BUTTON_MENU.onUpdate = function(){
 
 }
 BUTTON_MENU.onClick = function(){
-	GuiHandler.openWindow(GROUP_OPTIONS);
+	GuiHandler.openWindow(GROUP_MAINMENU);
 }
 
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
@@ -247,16 +247,63 @@ sorcebuton.onClick = function(){
 
 }
 
+// main menu
+
+var GROUP_MAINMENU = new GuiElement(0,0,300,500); GROUP_MAINMENU.autosize = true; GROUP_MAINMENU.autopos = "top"; 
+GROUP_MAINMENU.hide(); GROUP_MAINMENU.autocenterX = true; GROUP_MAINMENU.autocenterY = true;
+
+//var menu_title = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_title.text = "Space Game";
+
+var menu_resume = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_resume.text = "Resume Game";
+menu_resume.onClick = function(){
+	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+}
+var menu_slcntr = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_slcntr.autosize = true; menu_slcntr.autopos = "left";
+var menu_save = new GuiElement(0,0,147.5,40,menu_slcntr); menu_save.text = "Save Game";
+menu_save.onClick = function(){
+	
+	storeItem("world", server.world);
+	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+}
+var menu_load = new GuiElement(0,0,147.5,40,menu_slcntr); menu_load.text = "Load Game";
+menu_load.onClick = function(){
+	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+	drawEnabled = false;
+	//var jsonworld = localStorage.world; //
+	jsonworld = getItem("world");
+	
+/* 	function apply(o, c){
+    if(o && c && typeof c == 'object'){
+        for(var p in c){
+            if (c.hasOwnProperty(p)){
+                o[p] = c[p];
+            }
+        }
+    }
+    return o;
+	};
+	
+	var world = apply({}, jsonworld); */
+	WorldLoader.loadWorld(jsonworld);
+	//server.world = world;
+}
+var menu_option = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_option.text = "Settings...";
+menu_option.onClick = function(){
+	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_OPTIONS);
+}
+
+// Settings menu
+
 var GROUP_OPTIONS = new GuiElement(0,0,500,500); GROUP_OPTIONS.autosize = true; GROUP_OPTIONS.autopos = "top"; GROUP_OPTIONS.hide(); GROUP_OPTIONS.autocenterX = true; GROUP_OPTIONS.autocenterY = true;
 
-var options_title = new GuiElement(0,0,500,40,GROUP_OPTIONS); options_title.text = "Options";
+var options_title = new GuiElement(0,0,500,40,GROUP_OPTIONS); options_title.text = "Settings";
 
-var options_guiscale = new GuiSlider(0,0,300,40,GROUP_OPTIONS,["GUI_SCALE","SQUIDWARD"], 0.5, 2); options_guiscale.text = "Gui scale: ";
+var options_guiscale = new GuiSlider(0,0,320,40,GROUP_OPTIONS,["GUI_SCALE","SQUIDWARD"], 0.5, 2); options_guiscale.text = "Gui scale: ";
 options_guiscale.onUpdate = function(){
 	this.text = "Gui scale: " + Math.round(this.setting * 100)/100;
 }
 
-var options_mouse = new GuiSlider(0,0,300,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY","SQUIDWARD"], 0.5, 2); options_mouse.text = "Gui scale: ";
+var options_mouse = new GuiSlider(0,0,320,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY","SQUIDWARD"], 0.5, 2); options_mouse.text = "Gui scale: ";
 options_mouse.onUpdate = function(){
 	this.text = "Mouse wheel sensitivity: " + Math.round(this.setting * 100)/100;
 }
@@ -265,7 +312,7 @@ var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr
 
 var options_back = new GuiElement(0,0,100,40,options_btncntr); options_back.text = "Back";
 options_back.onClick = function(){
-	GROUP_OPTIONS.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+	GROUP_OPTIONS.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
 }
 var options_apply = new GuiElement(0,0,100,40,options_btncntr); options_apply.text = "Apply";
 options_apply.onClick = function(){

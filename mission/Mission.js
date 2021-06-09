@@ -23,6 +23,8 @@ class Mission {
 		this.infobarblurb = "Mission";
 		
 		this.iconColor = [255,255,255];
+		
+		this.type = this.constructor.name;
 	}
 	
 	getIcon(){

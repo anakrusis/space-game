@@ -44,6 +44,8 @@ class Chunk {
 			}
 		}
 		
+		this.type = this.constructor.name;
+		
 /* 		       // Every star gets potentially up to 4 planets
         var planetcount = 0;
         var orbitDistanceInterval = 12000;

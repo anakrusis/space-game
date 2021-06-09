@@ -24,6 +24,8 @@ class Entity {
 		this.hidden = false;
 		
 		this.forceVectors = [];
+		
+		this.type = this.constructor.name;
 	}
 	
 	isDead(){

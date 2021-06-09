@@ -22,6 +22,8 @@ class City {
 		// I guess every city is like a centralized command economy because its simpler to program lmao
 		
 		this.availableMissions = [];
+		
+		this.type = this.constructor.name;
 	}
 	
 	getChunk(){

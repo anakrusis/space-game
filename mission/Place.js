@@ -7,6 +7,7 @@ class Place {
 		
 		this.name = obj.name;
 		this.uuid = obj.uuid;
+		this.type = this.constructor.name;
 		
 		if (obj instanceof BodyPlanet){
 			

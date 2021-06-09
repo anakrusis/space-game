@@ -9,6 +9,8 @@ class Tile {
 		this.buildingUUID = null;
 		this.oreVeinUUID  = null;
 		this.hasRoad      = false;
+		
+		this.type = this.constructor.name;
 	}
 	
 	getBuilding(){

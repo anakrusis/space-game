@@ -15,6 +15,8 @@ var dir_history = [];
 var trajectoryBuffer = [[],[]];
 var traj_pointer = 0;
 
+var drawEnabled = true;
+
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
@@ -80,56 +82,58 @@ function draw(){
 	
 	background(13,0,13);
 	
-	// chunk boundary lines are behind everything
-	var chunk = client.world.getPlayer().getChunk();
+	if ( drawEnabled ){
+		// chunk boundary lines are behind everything
+		var chunk = client.world.getPlayer().getChunk();
 
-	stroke(128);
-	noFill();
-	beginShape();
-	
-	var cx = chunk.x * CHUNK_DIM; var cy = chunk.y * CHUNK_DIM
-	vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
-	vertex( tra_rot_x( cx + CHUNK_DIM, cy ), tra_rot_y( cx + CHUNK_DIM, cy ) );
-	vertex( tra_rot_x( cx + CHUNK_DIM, cy + CHUNK_DIM ), tra_rot_y( cx + CHUNK_DIM, cy + CHUNK_DIM ) );
-	vertex( tra_rot_x( cx, cy + CHUNK_DIM ), tra_rot_y( cx, cy + CHUNK_DIM ) );
-	vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
-	endShape();
+		stroke(128);
+		noFill();
+		beginShape();
+		
+		var cx = chunk.x * CHUNK_DIM; var cy = chunk.y * CHUNK_DIM
+		vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
+		vertex( tra_rot_x( cx + CHUNK_DIM, cy ), tra_rot_y( cx + CHUNK_DIM, cy ) );
+		vertex( tra_rot_x( cx + CHUNK_DIM, cy + CHUNK_DIM ), tra_rot_y( cx + CHUNK_DIM, cy + CHUNK_DIM ) );
+		vertex( tra_rot_x( cx, cy + CHUNK_DIM ), tra_rot_y( cx, cy + CHUNK_DIM ) );
+		vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
+		endShape();
 
-	for ( var i = 0; i < 6; i++ ){
-				
-		// entities not confined to chunk
-		for ( var uuid in client.world.entities ){
-			var e = client.world.entities[uuid];
-			if (e.isOnScreen() && e.renderPriority == i){
-				e.render();
+		for ( var i = 0; i < 6; i++ ){
+					
+			// entities not confined to chunk
+			for ( var uuid in client.world.entities ){
+				var e = client.world.entities[uuid];
+				if (e.isOnScreen() && e.renderPriority == i){
+					e.render();
+				}
+			}
+			
+			// entities confined to chunk
+		
+			for ( var uuid in chunk.bodies ){
+				var b = chunk.bodies[uuid];
+				//if (b.isOnScreen() && b.renderPriority == i){
+				if (b.renderPriority == i){
+					
+					b.render();
+				}
 			}
 		}
 		
-		// entities confined to chunk
-	
-		for ( var uuid in chunk.bodies ){
-			var b = chunk.bodies[uuid];
-			//if (b.isOnScreen() && b.renderPriority == i){
-			if (b.renderPriority == i){
-				
-				b.render();
-			}
+		fill(255,0,0);
+		circle(tra_rot_x(cursorAbsX, cursorAbsY), tra_rot_y(cursorAbsX, cursorAbsY), 5);
+		
+		if (PLANET_CAM){
+			translate(width/2, height/2);
+			rotate(-cam_rot);
+			rotate(-HALF_PI);
+			translate(-width/2, -height/2);
 		}
+		
+		GuiHandler.drawCityLabels();
+		
+		resetMatrix();
 	}
-	
-	fill(255,0,0);
-	circle(tra_rot_x(cursorAbsX, cursorAbsY), tra_rot_y(cursorAbsX, cursorAbsY), 5);
-	
-	if (PLANET_CAM){
-		translate(width/2, height/2);
-		rotate(-cam_rot);
-		rotate(-HALF_PI);
-		translate(-width/2, -height/2);
-	}
-	
-	GuiHandler.drawCityLabels();
-	
-	resetMatrix()
 	
 	GuiHandler.update();
 	GuiHandler.render();
