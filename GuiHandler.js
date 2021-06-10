@@ -143,13 +143,13 @@ class GuiHandler {
 				textAlign(RIGHT);
 				
 				citystring = city.name + " →";
-				if (client.world.player.getNation().getCapitalCity() == city){
+				if (client.world.getPlayer().getNation().getCapitalCity() == city){
 					citystring = "⌂ " + citystring;
 				}
 			}else{
 				textAlign(LEFT);
 				citystring = "← " + city.name;
-				if (client.world.player.getNation().getCapitalCity() == city){
+				if (client.world.getPlayer().getNation().getCapitalCity() == city){
 					citystring = citystring + " ⌂";
 				}
 			}

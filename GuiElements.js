@@ -12,7 +12,7 @@ for (var i = 0; i < 9; i++){
 	
 	he.onRender = function(){
 		
-		var plyr = client.world.player; var itemstk = client.world.player.inventory.get(this.index);
+		var plyr = client.world.getPlayer(); var itemstk = client.world.getPlayer().inventory.get(this.index);
 		if (itemstk){
 			
 			
@@ -60,13 +60,13 @@ BUTTON_MENU.onClick = function(){
 
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 playerstatus.onUpdate = function(){
-	var infostring = "$" + client.world.player.money;
+	var infostring = "$" + client.world.getPlayer().money;
 	this.text = infostring;
 }
 
 var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 missioninfo.onUpdate = function(){
-	var mission = client.world.player.currentMission;
+	var mission = client.world.getPlayer().currentMission;
 	if (mission){
 		var infostring = mission.infobarblurb;
 		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
@@ -89,7 +89,7 @@ missioninfo.onUpdate = function(){
 
 var objectiveinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 objectiveinfo.onUpdate = function(){
-	var mission = client.world.player.currentMission;
+	var mission = client.world.getPlayer().currentMission;
 	if (mission){
 		this.text = "";
 		
@@ -262,13 +262,13 @@ var menu_slcntr = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_slcntr.autosiz
 var menu_save = new GuiElement(0,0,147.5,40,menu_slcntr); menu_save.text = "Save Game";
 menu_save.onClick = function(){
 	
-	storeItem("world", server.world);
+	//storeItem("world", server.world);
 	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 var menu_load = new GuiElement(0,0,147.5,40,menu_slcntr); menu_load.text = "Load Game";
 menu_load.onClick = function(){
 	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
-	drawEnabled = false;
+	//drawEnabled = false;
 	//var jsonworld = localStorage.world; //
 	jsonworld = getItem("world");
 	
@@ -285,6 +285,7 @@ menu_load.onClick = function(){
 	
 	var world = apply({}, jsonworld); */
 	WorldLoader.loadWorld(jsonworld);
+	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null;
 	//server.world = world;
 }
 var menu_option = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_option.text = "Settings...";

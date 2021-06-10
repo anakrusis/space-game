@@ -393,7 +393,7 @@ var update = function(){
 		else if (keyIsDown(83)) { // down
 			if (player.boostForce.magnitude > 0) {
 				//server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
-				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "player", "boostForce", "magnitude" );
+				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 				trajectory = [[],[]]; dir_history = [];
 			}
 			
@@ -403,11 +403,11 @@ var update = function(){
 		}
 		
 		if (keyIsDown(65)) { // left
-			server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+			server.onUpdateRequest( player.dir - 0.1, "world", "getPlayer", "dir" );
 			trajectory = [[],[]]; dir_history = [];
 		}
 		if (keyIsDown(68)) { // right
-			server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+			server.onUpdateRequest( player.dir + 0.1, "world", "getPlayer", "dir" );
 			trajectory = [[],[]]; dir_history = [];
 		}
 		

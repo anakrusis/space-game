@@ -148,13 +148,14 @@ class World {
 		if (this.worldTime - this.playerLastDeathTime == this.RESPAWN_INTERVAL){
 			
 			selectedEntity = null;
-			this.player.dead = false; this.player.velocity = 0; 
-			this.player.boostForce = new ForceVector(0,0); this.player.forceVectors = [];
+			var p = this.getPlayer();
+			p.dead = false; p.velocity = 0; 
+			p.boostForce = new ForceVector(0,0); p.forceVectors = [];
 			
-			this.player.moveToSpawnPoint();
+			p.moveToSpawnPoint();
 			
-			if (this.player.currentMission){
-				this.player.currentMission.onFail();
+			if (p.currentMission){
+				p.currentMission.onFail();
 			}
         }
 		
@@ -163,13 +164,14 @@ class World {
 	}
 	// temporary single player function
 	getPlayer(){
-		for ( var uuid in this.entities ){
+		return this.player;
+/* 		for ( var uuid in this.entities ){
 			var e = this.entities[uuid];
 			if (e instanceof EntityPlayer){
 				return e;
 			}
 		}
-		return null;
+		return null; */
 	}
 	
 	getChunk(x,y){

@@ -63,9 +63,10 @@ class BodyPlanet extends EntityBody {
 		
 		var hue = 0.15 + (this.humidity * 0.40);
 		
-		var grassPrevalence = 1 - (Math.abs( this.temperature - 288 ) / 50);
+		var grassPrevalence = 1 - (Math.abs( this.temperature - 288 ) / 40);
+		grassPrevalence = Math.max(0,grassPrevalence);
 		
-		this.grassColor = RandomUtil.hslToRgb( hue, 1, 0.4 );
+		this.grassColor = RandomUtil.hslToRgb( hue, 0.9, 0.4 );
 		
 		var r = (this.grassColor[0] * grassPrevalence) + (this.color[0] * (1 - grassPrevalence));
 		var g = (this.grassColor[1] * grassPrevalence) + (this.color[1] * (1 - grassPrevalence));
