@@ -160,5 +160,6 @@ class ForceVector {
 	constructor(magnitude, dir){
 		this.magnitude = magnitude;
 		this.dir       = dir;
+		this.type = this.constructor.name;
 	}
 }

@@ -15,8 +15,11 @@ class WorldLoader {
 	// sw = source world, dw = dest world
 	static loadWorld(sw){
 		
-		var dw = new World();
-		server.newWorld = dw;
+		server.world = this.loadObject(sw);
+		return;
+		
+		//var dw = new World();
+		//server.newWorld = dw;
 	
 		for ( var i = 0; i < sw.chunks.length; i++ ){
 			
@@ -62,22 +65,13 @@ class WorldLoader {
 			dw.nations[dn.uuid] = dn;
 		}
 		
-		// Source and destination player
-		
-		var sp = sw.player; var dp = new EntityPlayer();
-		for (var property in sp){
-			dp[property] = sp[property];
+		dw.entities = {};
+		for (var uuid in sw.entities){
+			var sourceentity = sw.entities[uuid];
+			dw.entities[uuid] = this.loadObject(sourceentity);
 		}
 		
-		// Source and destination inventory
-	
-		var sinv = sp.inventory; var dinv = new Inventory();
-		for (var property in sinv){
-			dinv[property] = sinv[property];
-		}
-		dp.inventory = dinv;
-		
-		dw.player = dp;
+		dw.playerUUID = sw.playerUUID;
 			
 		//this.loadObject(world, server.newWorld);
 		//for (var property in world){
@@ -88,6 +82,9 @@ class WorldLoader {
 		
 			//}
 		//}
+		dw.loadedChunksX = sw.loadedChunksX;
+		dw.loadedChunksY = sw.loadedChunksY;
+		
 		server.world = dw;
 	}
 	
@@ -145,8 +142,12 @@ class WorldLoader {
 			
 		} else if ( typeof srcobj == 'object' && ( srcobj != null ) ){
 			
-			var p = eval(srcobj.type); //console.log(p);
-			var destobj = new p();
+			if ( srcobj.type ){
+				var p = eval(srcobj.type); //console.log(p);
+				var destobj = new p();
+			} else {
+				var destobj = {};
+			}
 			
 			for (var property in srcobj){
 				

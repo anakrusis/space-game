@@ -12,6 +12,8 @@ for (var i = 0; i < 9; i++){
 	
 	he.onRender = function(){
 		
+		if (!client.world.getPlayer()){ return; }
+		
 		var plyr = client.world.getPlayer(); var itemstk = client.world.getPlayer().inventory.get(this.index);
 		if (itemstk){
 			
@@ -60,12 +62,16 @@ BUTTON_MENU.onClick = function(){
 
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 playerstatus.onUpdate = function(){
+	if (!client.world.getPlayer()){ return; }
 	var infostring = "$" + client.world.getPlayer().money;
 	this.text = infostring;
 }
 
 var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 missioninfo.onUpdate = function(){
+	
+	if (!client.world.getPlayer()){ this.hide(); return; }
+	
 	var mission = client.world.getPlayer().currentMission;
 	if (mission){
 		var infostring = mission.infobarblurb;
@@ -89,6 +95,9 @@ missioninfo.onUpdate = function(){
 
 var objectiveinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 objectiveinfo.onUpdate = function(){
+	
+	if (!client.world.getPlayer()){ this.hide(); return; }
+	
 	var mission = client.world.getPlayer().currentMission;
 	if (mission){
 		this.text = "";

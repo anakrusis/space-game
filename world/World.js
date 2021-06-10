@@ -58,9 +58,11 @@ class World {
 		}
 		
 		// Generates player now
-		this.player = new EntityPlayer(7500, 8192, 0)
-		this.player.nationUUID = playerNation.uuid;
-		this.spawnEntity( this.player );
+		var player = new EntityPlayer(7500, 8192, 0)
+		player.nationUUID = playerNation.uuid;
+		this.spawnEntity( player );
+		
+		this.playerUUID = player.uuid;
 		
 		//this.player.inventory.add( new ItemStack( Items.ITEM_IRON, 4 ) );
 		
@@ -165,7 +167,7 @@ class World {
 	}
 	// temporary single player function
 	getPlayer(){
-		return this.player;
+		return this.entities[this.playerUUID];
 /* 		for ( var uuid in this.entities ){
 			var e = this.entities[uuid];
 			if (e instanceof EntityPlayer){
