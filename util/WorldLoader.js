@@ -50,17 +50,6 @@ class WorldLoader {
 			dw.cities[srccity.uuid] = this.loadObject(srccity);;
 		}
 		
-		// Missions 
-		
-		for ( var cityuuid in sw.cities ){
-			var destcity = dw.cities[cityuuid];
-			
-			for (var i = 0; i < srccity.availableMissions.length; i++){
-				
-				//destcity.availableMissions[i] = this.loadMission( srccity.availableMissions[i] );
-			}
-		}
-		
 		// Source and destination nation
 		
 		for ( var nationuuid in sw.nations ){

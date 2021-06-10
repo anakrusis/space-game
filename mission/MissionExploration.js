@@ -6,6 +6,8 @@ class MissionExploration extends Mission {
 		
 		var sorcecity = server.world.cities[ this.sourceCityUUID ];
 		
+		if (!sorcecity){ return; }
+		
 		this.distance = CollisionUtil.euclideanDistance( sorcecity.getSpaceport().x, sorcecity.getSpaceport().y, body.x, body.y );
 		this.reward = 10 * Math.round ( this.distance / 300 );
 		

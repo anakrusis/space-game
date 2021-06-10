@@ -19,12 +19,16 @@ class ObjectiveBringItemToPlace extends Objective {
 		
 		//var dest = server.world.cities[ destinationUUID ];
 		var pn;
-		if (place.type == "building"){
-			pn = place.name + " in " + place.get().getCity().name;
+		if (place){
+			if (place.placetype == "building"){
+				pn = place.name + " in " + place.get().getCity().name;
+			}
 		}
 		
 		var itemobj = Items.items[itemid];
-		this.text = "Bring " + quantity + " " + itemobj.name + " to " + pn;
+		if (itemobj){
+			this.text = "Bring " + quantity + " " + itemobj.name + " to " + pn;
+		}
 		
 		this.item = itemid;
 		this.quantity = quantity;
@@ -40,12 +44,14 @@ class ObjectiveGoToPlace extends Objective {
 	constructor(place){
 		super();
 		
-		if (place.type == "building"){
+		if (!place){ return; }
+		
+		if (place.placetype == "building"){
 			
 			this.text = "Go to " + place.name + " in " + place.get().getCity().name;
 			
 		}else
-		if (place.type == "planet"){
+		if (place.placetype == "planet"){
 			
 			this.text = "Land on planet " + place.name;
 			

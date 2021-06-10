@@ -5,32 +5,34 @@ class Place {
 	
 	constructor( obj ){
 		
-		this.name = obj.name;
-		this.uuid = obj.uuid;
-		this.type = this.constructor.name;
-		
-		if (obj instanceof BodyPlanet){
+		if (obj){
+			this.name = obj.name;
+			this.uuid = obj.uuid;
+			this.type = this.constructor.name;
 			
-			this.type = "planet";
-			this.chunkx = obj.chunkx; this.chunky = obj.chunky;
+			if (obj instanceof BodyPlanet){
+				
+				this.placetype = "planet";
+				this.chunkx = obj.chunkx; this.chunky = obj.chunky;
+				
+			}
 			
-		}
-		
-		if (obj instanceof EntityBuilding){
+			if (obj instanceof EntityBuilding){
 
-			this.type = "building";
-			
+				this.placetype = "building";
+				
+			}
 		}
 	}
 	
 	get(){
 		
-		if (this.type == "planet"){
+		if (this.placetype == "planet"){
 			
 			return server.world.chunks[this.chunkx][this.chunky].bodies[this.uuid];
 		}
 		
-		if (this.type == "building"){
+		if (this.placetype == "building"){
 			
 			return server.world.entities[this.uuid];
 		}

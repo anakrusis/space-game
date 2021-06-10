@@ -17,9 +17,9 @@ for (var i = 0; i < 9; i++){
 			
 			
 			var scale = 18;
-			var pts = itemstk.item.getRelRenderPoints();
+			var pts = itemstk.getItem().getRelRenderPoints();
 			noFill()
-			stroke(itemstk.item.color[0], itemstk.item.color[1], itemstk.item.color[2]);
+			stroke(itemstk.getItem().color[0], itemstk.getItem().color[1], itemstk.getItem().color[2]);
 			beginShape();
 			for (i = 0; i < pts.length; i += 2){
 				var px = (pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 

@@ -13,6 +13,8 @@ class MissionDelivery extends Mission {
 		var srce = server.world.cities[ this.sourceCityUUID ];
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		
+		if (!dest){ return; }
+		
 		if (this.item == "passengers"){
 			
 			this.desc = "The city of " + dest.name + " is awaiting the arrival of " + item.name + ".\n";
@@ -42,12 +44,13 @@ class MissionDelivery extends Mission {
 		
 		this.infobarblurb = this.getSourceCity().name + " to " + this.getDestinationCity().name;
 		
-		this.iconColor = this.item.color;
+		this.iconColor = item.color;
 	}
 	
 	getIcon(){
 		
-		return this.item.getRelRenderPoints();
+		var i = Items.items[this.item];
+		return i.getRelRenderPoints();
 	}
 	
 	getDestinationCity(){
