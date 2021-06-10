@@ -104,7 +104,7 @@ class City {
 				var mission = this.availableMissions[i];
 				
 				if (mission instanceof MissionDelivery){
-					if (mission.item != Items.ITEM_PASSENGERS){
+					if (mission.item != "passengers"){
 						
 						if (this.resources.totalAmount( mission.item ) <= 0){
 							
@@ -121,7 +121,7 @@ class City {
 			for (var i = 0; i < this.availableMissions.length; i++){
 				var mission = this.availableMissions[i];
 				
-				if (mission.item == Items.ITEM_PASSENGERS){
+				if (mission.item == "passengers"){
 					passenger_mission_found = true; break;
 				}
 			}
@@ -131,20 +131,20 @@ class City {
 				while (randomcity == this){
 					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 				}
-				var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_PASSENGERS, 20);
+				var m = new MissionDelivery(this.uuid, randomcity.uuid, "passengers", 20);
 				this.availableMissions.push(m);
 			}
 			
 			// Adds delivery missions if there is a surplus of certain items in the citys inventory, 
 			// and no existing missions that already plan on delivering it
 			
-			var food_amt = this.resources.totalAmount( Items.ITEM_FOOD );
+			var food_amt = this.resources.totalAmount( "food" );
 			if (food_amt > 0){
 				
 				var food_mission_present = false;
 				for (var i = 0; i < this.availableMissions.length; i++){
 					var mission = this.availableMissions[i];
-					if (mission.item == Items.ITEM_FOOD){
+					if (mission.item == "food"){
 						food_mission_present = true;
 					}
 				}
@@ -155,18 +155,18 @@ class City {
 					while (randomcity == this){
 						randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 					}
-					var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_FOOD, food_amt);
+					var m = new MissionDelivery(this.uuid, randomcity.uuid, "food", food_amt);
 					this.availableMissions.push(m);
 				}
 			
 			}
-			var iron_amt = this.resources.totalAmount( Items.ITEM_IRON );
+			var iron_amt = this.resources.totalAmount( "iron" );
 			if (iron_amt > 0){
 				
 				var iron_mission_present = false;
 				for (var i = 0; i < this.availableMissions.length; i++){
 					var mission = this.availableMissions[i];
-					if (mission.item == Items.ITEM_IRON){
+					if (mission.item == "iron"){
 						iron_mission_present = true;
 					}
 				}
@@ -177,7 +177,7 @@ class City {
 					while (randomcity == this){
 						randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 					}
-					var m = new MissionDelivery(this.uuid, randomcity.uuid, Items.ITEM_IRON, iron_amt);
+					var m = new MissionDelivery(this.uuid, randomcity.uuid, "iron", iron_amt);
 					this.availableMissions.push(m);
 				}
 			

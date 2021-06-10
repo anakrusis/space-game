@@ -4,14 +4,16 @@ class MissionDelivery extends Mission {
 			
 		//this.reward = 500;
 		this.timeRemaining = 3600;
-		this.item = item; this.quantity = quantity;	
+		this.item = item; this.quantity = quantity;
+		
+		var item = Items.items[this.item];
 			
 		this.destinationCityUUID = destinationCityUUID;
 		
 		var srce = server.world.cities[ this.sourceCityUUID ];
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		
-		if (item == Items.ITEM_PASSENGERS){
+		if (this.item == "passengers"){
 			
 			this.desc = "The city of " + dest.name + " is awaiting the arrival of " + item.name + ".\n";
 			this.failtext = "The passengers did not reach their destination! This is an atrocity!";
@@ -34,7 +36,7 @@ class MissionDelivery extends Mission {
 		
 		// displayed on the select menu and confirmation screen
 		
-		this.displaytext  = this.item.name + " (" + this.quantity + ")\n";
+		this.displaytext  = item.name + " (" + this.quantity + ")\n";
 		this.displaytext += this.getSourceCity().name + " ➔ " + this.getDestinationCity().name;
 		this.displaytext += "\n$" + this.reward;
 		

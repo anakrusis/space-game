@@ -1,15 +1,10 @@
-// Wrapper for the registry of all items
-class Items {
-	static items = [];
-}
-
 // Individual item types and their behaviors
 class Item {
 	constructor( name ){
 		this.name = name;
 		this.maxStackSize = 99;
 		this.color = [255, 255, 255];
-		Items.items.push(this);
+		//Items.items.push(this);
 	}
 	
 	getRelRenderPoints(){
@@ -24,11 +19,15 @@ class Item {
 
 class ItemStack {
 	
-	constructor(item,amount){
-		this.item = item;
+	constructor(itemid, amount){
+		this.item = itemid;
 		this.amount = amount;
 		
 		this.type = this.constructor.name;
+	}
+	
+	getItem(){
+		return Items.items[this.item];
 	}
 }
 

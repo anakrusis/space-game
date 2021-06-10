@@ -13,7 +13,7 @@ class Objective {
 
 class ObjectiveBringItemToPlace extends Objective {
 	
-	constructor( item, quantity, place ){
+	constructor( itemid, quantity, place ){
 		
 		super();
 		
@@ -23,9 +23,10 @@ class ObjectiveBringItemToPlace extends Objective {
 			pn = place.name + " in " + place.get().getCity().name;
 		}
 		
-		this.text = "Bring " + quantity + " " + item.name + " to " + pn;
+		var itemobj = Items.items[itemid];
+		this.text = "Bring " + quantity + " " + itemobj.name + " to " + pn;
 		
-		this.item = item;
+		this.item = itemid;
 		this.quantity = quantity;
 		this.place = place;
 		//this.destinationUUID = destinationUUID;

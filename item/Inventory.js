@@ -5,6 +5,8 @@ class Inventory {
 	constructor(size){
 		this.size = size; // amount of slots in the inventory
 		this.stacks = [];
+		
+		this.type = this.constructor.name;
 	}
 	
 	add(itemstack){

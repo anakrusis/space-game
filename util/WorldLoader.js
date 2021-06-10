@@ -42,12 +42,12 @@ class WorldLoader {
 		
 		for ( var cityuuid in sw.cities ){
 			
-			var srccity = sw.cities[cityuuid]; var destcity = new City();
-			for (var property in srccity){
+			var srccity = sw.cities[cityuuid]; //var destcity = new City();
+/* 			for (var property in srccity){
 				destcity[property] = srccity[property];
-			}
+			} */
 			
-			dw.cities[destcity.uuid] = destcity;
+			dw.cities[srccity.uuid] = this.loadObject(srccity);;
 		}
 		
 		// Missions 
@@ -146,22 +146,32 @@ class WorldLoader {
 		
 		if ( Array.isArray( srcobj ) ){
 			
+			var destobj = [];
 			
-		}
-		
-		var p = eval(srcobj.type); //console.log(p);
-		var destobj = new p();
-		
-		for (var property in srcobj){
+			for (var i = 0; i < srcobj.length; i++){
+				
+				destobj[i] = this.loadObject(srcobj[i]);
+				
+			}
 			
-			//console.log(property);
-			//destobj[property] = srcobj[property];
+		} else if ( typeof srcobj == 'object' && ( srcobj != null ) ){
 			
-			//if (typeof srcobj[property] == 'object' && srcobj[property] != null){
+			var p = eval(srcobj.type); //console.log(p);
+			var destobj = new p();
 			
-			destobj[property] = this.loadObject(srcobj[property]);
-			
-			//}
+			for (var property in srcobj){
+				
+				//console.log(property);
+				//destobj[property] = srcobj[property];
+				
+				//if (typeof srcobj[property] == 'object' && srcobj[property] != null){
+				
+				destobj[property] = this.loadObject(srcobj[property]);
+				
+				//}
+			}
+		}else{
+			return srcobj;
 		}
 		
 		return destobj;
