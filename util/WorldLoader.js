@@ -18,6 +18,18 @@ class WorldLoader {
 	static loadWorld(sw){
 		
 		var dw = this.loadObject(sw);
+		
+		// I'm not sure why but loadWorld() pollutes the server.world with a bunch of corrupt OreVein entities
+		// so this gets rid of them by deleting entitys without a proper X position (wich is initialized in all good entities)
+		
+		for ( var uuid in server.world.entities ){
+		
+			var e = server.world.entities[uuid];	
+			if ( e.x != 0 && !e.x ){
+				delete server.world.entities[uuid];
+			}
+		}
+		
 		return dw;
 	}
 	

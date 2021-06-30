@@ -271,6 +271,7 @@ var menu_slcntr = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_slcntr.autosiz
 var menu_save = new GuiElement(0,0,147.5,40,menu_slcntr); menu_save.text = "Save Game";
 menu_save.onClick = function(){
 	
+	server.world.datestamp = new Date(Date.now());
 	storeItem("world", server.world);
 	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
@@ -279,7 +280,7 @@ menu_load.onClick = function(){
 	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	//drawEnabled = false;
 	//var jsonworld = localStorage.world; //
-	var jsonworld = getItem("world");
+	
 	
 /* 	function apply(o, c){
     if(o && c && typeof c == 'object'){
@@ -293,12 +294,26 @@ menu_load.onClick = function(){
 	};
 	
 	var world = apply({}, jsonworld); */
+	var jsonworld = getItem("world");
 	var w = WorldLoader.loadWorld(jsonworld);
 /* 	server.world = 
 	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null; */
 	//server.world = world;
 	
-	GROUP_LOAD.BTN_WORLD.world = w; GROUP_LOAD.BTN_WORLD.text = "$" + w.getPlayer().money;
+	GROUP_LOAD.BTN_WORLD.world = w;
+	var worldinfo = "";
+	
+	var worlddate = new Date( w.datestamp );
+	worldinfo += "Last saved " + worlddate.getFullYear() + "-" + worlddate.getMonth() + "-" + worlddate.getDate();
+	worldinfo += " " + worlddate.getHours() + ":" + worlddate.getMinutes() + "\n";
+	
+	/* worldinfo += "Home Planet " + w.getPlayer().getNation().getCapitalCity().getPlanet().name; */
+	var playernation = w.nations[w.getPlayer().nationUUID];
+	var playercity = w.cities[ playernation.capitalCityUUID ];
+	worldinfo += "Home city " + playercity.name + " of the " + playernation.name + " Nation\n";
+	worldinfo += "$" + w.getPlayer().money;
+	
+	GROUP_LOAD.BTN_WORLD.text = worldinfo;
 	
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_LOAD);
 }
@@ -309,13 +324,36 @@ menu_option.onClick = function(){
 
 // World loading menu
 
-var GROUP_LOAD = new GuiElement(0,0,300,500); GROUP_LOAD.autosize = true; GROUP_LOAD.autopos = "top"; GROUP_LOAD.hide(); GROUP_LOAD.autocenterX = true; GROUP_LOAD.autocenterY = true;
-GROUP_LOAD.ELM_TITLE = new GuiElement(0,0,300,40,GROUP_LOAD); GROUP_LOAD.ELM_TITLE.text = "Load World";
-GROUP_LOAD.BTN_WORLD = new GuiElement(0,0,300,40,GROUP_LOAD);
+var GROUP_LOAD = new GuiElement(0,0,500,500); GROUP_LOAD.autosize = true; GROUP_LOAD.autopos = "top"; GROUP_LOAD.hide(); GROUP_LOAD.autocenterX = true; GROUP_LOAD.autocenterY = true;
+GROUP_LOAD.ELM_TITLE = new GuiElement(0,0,500,40,GROUP_LOAD); GROUP_LOAD.ELM_TITLE.text = "Load World";
+GROUP_LOAD.BTN_WORLD = new GuiElement(0,0,500,40,GROUP_LOAD);
+GROUP_LOAD.BTN_WORLD.onClick = function(){
+
+	GuiHandler.openWindow(GROUP_LOAD_CONFIRM);
+}
 
 GROUP_LOAD.BTN_BACK = new GuiElement(0,0,100,40,GROUP_LOAD); GROUP_LOAD.BTN_BACK.text = "Back";
 GROUP_LOAD.BTN_BACK.onClick = function(){
 	GROUP_LOAD.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
+}
+
+var GROUP_LOAD_CONFIRM = new GuiElement(0,0,300,500); GROUP_LOAD_CONFIRM.autosize = true; GROUP_LOAD_CONFIRM.autopos = "top"; GROUP_LOAD_CONFIRM.hide(); GROUP_LOAD_CONFIRM.autocenterX = true; GROUP_LOAD_CONFIRM.autocenterY = true;
+GROUP_LOAD_CONFIRM.ELM_BODY = new GuiElement(0,0,300,40,GROUP_LOAD_CONFIRM); GROUP_LOAD_CONFIRM.ELM_BODY.text = "Are you sure you want to load this world?\nAny unsaved progress in the current world will be lost!";
+
+GROUP_LOAD_CONFIRM.ELM_CNTR = new GuiElement(0,0,700,64, GROUP_LOAD_CONFIRM); GROUP_LOAD_CONFIRM.ELM_CNTR.autosize = true;  GROUP_LOAD_CONFIRM.ELM_CNTR.autopos = "left";
+
+GROUP_LOAD_CONFIRM.BTN_YES = new GuiElement(0,0,148,40,GROUP_LOAD_CONFIRM.ELM_CNTR); GROUP_LOAD_CONFIRM.BTN_YES.text = "OK";
+GROUP_LOAD_CONFIRM.BTN_YES.onClick = function(){
+	
+	server.world = GROUP_LOAD.BTN_WORLD.world;
+	
+	GROUP_LOAD_CONFIRM.hide(); GROUP_LOAD.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null;
+
+}
+GROUP_LOAD_CONFIRM.BTN_NO = new GuiElement(0,0,148,40,GROUP_LOAD_CONFIRM.ELM_CNTR); GROUP_LOAD_CONFIRM.BTN_NO.text = "Back";
+GROUP_LOAD_CONFIRM.BTN_NO.onClick = function(){
+	GROUP_LOAD_CONFIRM.hide(); GuiHandler.openWindow(GROUP_LOAD);
 }
 
 // Settings menu
