@@ -279,7 +279,7 @@ menu_load.onClick = function(){
 	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	//drawEnabled = false;
 	//var jsonworld = localStorage.world; //
-	jsonworld = getItem("world");
+	var jsonworld = getItem("world");
 	
 /* 	function apply(o, c){
     if(o && c && typeof c == 'object'){
@@ -293,13 +293,29 @@ menu_load.onClick = function(){
 	};
 	
 	var world = apply({}, jsonworld); */
-	WorldLoader.loadWorld(jsonworld);
-	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null;
+	var w = WorldLoader.loadWorld(jsonworld);
+/* 	server.world = 
+	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null; */
 	//server.world = world;
+	
+	GROUP_LOAD.BTN_WORLD.world = w; GROUP_LOAD.BTN_WORLD.text = "$" + w.getPlayer().money;
+	
+	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_LOAD);
 }
 var menu_option = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_option.text = "Settings...";
 menu_option.onClick = function(){
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_OPTIONS);
+}
+
+// World loading menu
+
+var GROUP_LOAD = new GuiElement(0,0,300,500); GROUP_LOAD.autosize = true; GROUP_LOAD.autopos = "top"; GROUP_LOAD.hide(); GROUP_LOAD.autocenterX = true; GROUP_LOAD.autocenterY = true;
+GROUP_LOAD.ELM_TITLE = new GuiElement(0,0,300,40,GROUP_LOAD); GROUP_LOAD.ELM_TITLE.text = "Load World";
+GROUP_LOAD.BTN_WORLD = new GuiElement(0,0,300,40,GROUP_LOAD);
+
+GROUP_LOAD.BTN_BACK = new GuiElement(0,0,100,40,GROUP_LOAD); GROUP_LOAD.BTN_BACK.text = "Back";
+GROUP_LOAD.BTN_BACK.onClick = function(){
+	GROUP_LOAD.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
 }
 
 // Settings menu

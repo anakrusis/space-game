@@ -10,8 +10,7 @@ class EntityPlayer extends EntityShip {
 		this.money = 0;
 		
 		// Physical properties
-		this.boostForce = new ForceVector(0,0); // this is a buffer which pushes onto the forces array a boost value per tick
-		this.lastBoostForce = new ForceVector(0,0); // last tick's, for reference
+		this.boostForce = new ForceVector("Boost",0,0); // this is a buffer which pushes onto the forces array a boost value per tick
 	
 		this.currentMission = null;
 	}
@@ -49,6 +48,18 @@ class EntityPlayer extends EntityShip {
 		
 	}
 	
+	getBoostForce(){
+		for (i = 0; i < this.forceVectors.length; i++){
+			
+			if (this.forceVectors[i].name == "Boost"){
+				return this.forceVectors[i];
+			}
+		}
+		if (this.boostForce){ return this.boostForce }
+		return null;
+		//return this.forceVectors[ this.boostForceIndex ];
+	}
+	
 	update(){
 		if (this.nationUUID){
 			this.color = this.getNation().color;
@@ -64,7 +75,7 @@ class EntityPlayer extends EntityShip {
 /* 		this.lastxvel = this.xvel; this.lastyvel = this.yvel;
 		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
 		//this.forceVectors.push(this.boostForce);
-		this.boostForce.dir = this.dir;
+		this.getBoostForce().dir = this.dir;
 		super.update();
 		
 		this.angvel = this.dir - this.lastdir;

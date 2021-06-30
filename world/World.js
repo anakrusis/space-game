@@ -153,7 +153,7 @@ class World {
 			selectedEntity = null;
 			var p = this.getPlayer();
 			p.dead = false; p.velocity = 0; 
-			p.boostForce = new ForceVector(0,0); p.forceVectors = [];
+			p.boostForce = new ForceVector("Boost",0,0); p.forceVectors = [];
 			
 			p.moveToSpawnPoint();
 			

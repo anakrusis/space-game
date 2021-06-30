@@ -60,7 +60,7 @@ class MissionHandler {
 				
 				if (cobj instanceof ObjectiveBringItemToPlace){
 				
-					if (cobj.place.type == "building"){
+					if (cobj.place.placetype == "building"){
 			
 						var building = cobj.place.get();
 						
@@ -75,7 +75,7 @@ class MissionHandler {
 				
 				if (cobj instanceof ObjectiveGoToPlace){
 					
-					if (cobj.place.type == "building"){
+					if (cobj.place.placetype == "building"){
 			
 						var building = cobj.place.get();
 						

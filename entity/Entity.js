@@ -184,14 +184,14 @@ class Entity {
                             var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
 							//this.x -= forceMagnitude * Math.cos(angleFromCenter);
                             //this.y -= forceMagnitude * Math.sin(angleFromCenter);
-							this.forceVectors.push ( new ForceVector( 0 - forceMagnitude, angleFromCenter ) );
+							this.forceVectors.push ( new ForceVector( "Gravity", 0 - forceMagnitude, angleFromCenter ) );
 						
 						// BodyOcean enacts a buoyant force slightly stronger than gravity to slowly push entities up
                         }else if (body instanceof BodyOcean){
 							
 							forceMagnitude = 0.07;
 							var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
-							this.forceVectors.push ( new ForceVector( forceMagnitude, angleFromCenter ) );
+							this.forceVectors.push ( new ForceVector( "Buoyancy", forceMagnitude, angleFromCenter ) );
 						}
                     }
 				}

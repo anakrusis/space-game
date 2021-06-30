@@ -157,7 +157,8 @@ class CollisionUtil{
 }
 
 class ForceVector {
-	constructor(magnitude, dir){
+	constructor(name, magnitude, dir){
+		this.name = name;
 		this.magnitude = magnitude;
 		this.dir       = dir;
 		this.type = this.constructor.name;
