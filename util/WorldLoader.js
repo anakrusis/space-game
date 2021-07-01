@@ -14,6 +14,28 @@ class WorldLoader {
 		ItemStack
 	};
 	
+	// will export a json string
+	static saveWorld( sw ) {
+			
+		server.world.datestamp = new Date(Date.now());
+		var d = JSON.stringify(server.world); var p = JSON.parse(d);
+		
+		var worldclone = this.loadWorld( p ); console.log(worldclone);
+		
+		for (var chunk of worldclone.getLoadedChunks()){
+
+			for (var uuid in chunk.bodies){
+		
+				var body = chunk.bodies[uuid];
+				if (!( body instanceof BodyPlanet )){ continue; }
+				
+				body.tiles = [];
+			}
+		}
+			
+		return JSON.stringify(worldclone);
+	}
+	
 	// sw = source world, dw = dest world
 	static loadWorld(sw){
 		
@@ -27,6 +49,51 @@ class WorldLoader {
 			var e = server.world.entities[uuid];	
 			if ( e.x != 0 && !e.x ){
 				delete server.world.entities[uuid];
+			}
+		}
+		
+		// Reinstating tile objects in situations where they are empty
+		
+		for (var chunk of dw.getLoadedChunks()){
+
+			for (var uuid in chunk.bodies){
+		
+				var body = chunk.bodies[uuid];
+				if (!( body instanceof BodyPlanet )){ continue; }
+				if (body.tiles.length > 0){ continue; }
+				
+				body.tiles = [];
+				for ( var i = 0; i < body.terrainSize; i++){
+					
+					// Checks if tiles have road
+					var tile = new Tile( i, body.terrain[i] );
+					if ( body.roads[i] ){
+						tile.hasRoad = true;
+					}
+					
+					// Checks if any ore veins or buildings have a spot on the tile
+					for ( var entityuuid in dw.entities ) {
+						
+						var e = dw.entities[entityuuid];
+						if ( (!(e instanceof EntityOreVein)) && (!(e instanceof EntityBuilding)) ){ continue; }
+						
+						var startindex = e.startindex; var endindex = e.endindex;
+						if (endindex < startindex) { 
+							endindex -= body.terrainSize;
+						}
+						
+						for ( var q = startindex; q <= endindex; q++) {
+							
+							if (q == i){
+								
+								if (e instanceof EntityOreVein){  tile.oreVeinUUID  = e.uuid; }
+								if (e instanceof EntityBuilding){ tile.buildingUUID = e.uuid; }
+							}
+						}
+					}
+					
+					body.tiles[i] = tile;
+				}
 			}
 		}
 		
@@ -52,8 +119,13 @@ class WorldLoader {
 		} else if ( typeof srcobj == 'object' && ( srcobj != null ) ){
 			
 			if ( srcobj.type ){
-				var p = eval(srcobj.type); //console.log(p);
+				
+				// We remove all non alphanumeric characters so that when eval goes to evaluate the Class name there is no possibility for funny bisnis 
+				
+				var typestring = srcobj.type.replace(/\W/g, '')
+				var p = eval(typestring); //console.log(p);
 				var destobj = new p();
+				
 			} else {
 				var destobj = {};
 			}

@@ -323,10 +323,7 @@ GROUP_SAVE.BTN_BACK.onClick = function(){
 GROUP_SAVE.BTN_EXPORT = new GuiElement(0,0,220,40,GROUP_SAVE.ELM_CNTR); GROUP_SAVE.BTN_EXPORT.text = "Export to clipboard";
 GROUP_SAVE.BTN_EXPORT.onClick = function(){
 
-	
-	server.world.datestamp = new Date(Date.now());
-	var worlddata = JSON.stringify(server.world);
-	console.log(worlddata);
+	var worlddata = WorldLoader.saveWorld( server.world );
 	
 	var promise = navigator.clipboard.writeText(worlddata);
 	
@@ -358,7 +355,7 @@ GROUP_LOAD.BTN_IMPORT.onClick = function(){
 			
 			var obj = JSON.parse(text);
 			var w = WorldLoader.loadWorld(obj);
-			console.log(w);
+			//console.log(w);
 			
 			GROUP_LOAD.BTN_WORLD.world = w;
 			GuiHandler.openWindow(GROUP_LOAD_CONFIRM);

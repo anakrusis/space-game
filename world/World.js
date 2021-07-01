@@ -215,12 +215,17 @@ class World {
 		
 		var month = (1 + worlddate.getMonth()).toString();
 		month = month.length > 1 ? month : '0' + month;
-
 		var day = worlddate.getDate().toString();
 		day = day.length > 1 ? day : '0' + day;
 		
 		worldinfo += "Last saved " + worlddate.getFullYear() + "-" + month + "-" + day;
-		worldinfo += " " + worlddate.getHours() + ":" + worlddate.getMinutes() + "\n";
+		
+		var hour = worlddate.getHours().toString();
+		hour = hour.length > 1 ? hour : '0' + hour;
+		var minute = worlddate.getMinutes().toString();
+		minute = minute.length > 1 ? minute : '0' + minute;
+		
+		worldinfo += " " + hour + ":" + minute + "\n";
 		
 		var playernation = this.nations[this.getPlayer().nationUUID];
 		var playercity = this.cities[ playernation.capitalCityUUID ];

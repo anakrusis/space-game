@@ -14,6 +14,7 @@ class BodyPlanet extends EntityBody {
 		
 		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
 		this.tiles = [];
+		this.roads = [];
 		this.generateTerrain();
 		this.hasOcean  = false;
 		
@@ -190,6 +191,7 @@ class BodyPlanet extends EntityBody {
 			// now creating the tile for the planet
 			var tile = new Tile( i, octsum );
 			this.tiles.push(tile);
+			this.roads.push[false];
 		}
 		
 		var noise2;
@@ -330,6 +332,7 @@ class BodyPlanet extends EntityBody {
 			this.spawnBuilding( newbuilding, city );
 			
 			this.tiles[relIndex].hasRoad = true;
+			this.roads[relIndex] = true;
 		}
 		city.centerIndex = cityCenterIndex;
 		server.world.cities[city.uuid] = city;
