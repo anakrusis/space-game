@@ -206,4 +206,27 @@ class World {
 		this.loadedChunksX.push(chunkx);
 		this.loadedChunksY.push(chunky);
 	}
+	
+	getInfoString(){
+			
+		var worldinfo = "";
+	
+		var worlddate = new Date( this.datestamp );
+		
+		var month = (1 + worlddate.getMonth()).toString();
+		month = month.length > 1 ? month : '0' + month;
+
+		var day = worlddate.getDate().toString();
+		day = day.length > 1 ? day : '0' + day;
+		
+		worldinfo += "Last saved " + worlddate.getFullYear() + "-" + month + "-" + day;
+		worldinfo += " " + worlddate.getHours() + ":" + worlddate.getMinutes() + "\n";
+		
+		var playernation = this.nations[this.getPlayer().nationUUID];
+		var playercity = this.cities[ playernation.capitalCityUUID ];
+		worldinfo += "Home city " + playercity.name + " of the " + playernation.name + " Nation\n";
+		worldinfo += "$" + this.getPlayer().money;
+		
+		return worldinfo;
+	}
 }

@@ -45,7 +45,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-06-10"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-07-01"
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -271,9 +271,9 @@ var menu_slcntr = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_slcntr.autosiz
 var menu_save = new GuiElement(0,0,147.5,40,menu_slcntr); menu_save.text = "Save Game";
 menu_save.onClick = function(){
 	
-	server.world.datestamp = new Date(Date.now());
-	storeItem("world", server.world);
-	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
+	//server.world.datestamp = new Date(Date.now());
+	//storeItem("world", server.world);
+	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_SAVE);
 }
 var menu_load = new GuiElement(0,0,147.5,40,menu_slcntr); menu_load.text = "Load Game";
 menu_load.onClick = function(){
@@ -301,25 +301,36 @@ menu_load.onClick = function(){
 	//server.world = world;
 	
 	GROUP_LOAD.BTN_WORLD.world = w;
-	var worldinfo = "";
-	
-	var worlddate = new Date( w.datestamp );
-	worldinfo += "Last saved " + worlddate.getFullYear() + "-" + worlddate.getMonth() + "-" + worlddate.getDate();
-	worldinfo += " " + worlddate.getHours() + ":" + worlddate.getMinutes() + "\n";
-	
-	/* worldinfo += "Home Planet " + w.getPlayer().getNation().getCapitalCity().getPlanet().name; */
-	var playernation = w.nations[w.getPlayer().nationUUID];
-	var playercity = w.cities[ playernation.capitalCityUUID ];
-	worldinfo += "Home city " + playercity.name + " of the " + playernation.name + " Nation\n";
-	worldinfo += "$" + w.getPlayer().money;
-	
-	GROUP_LOAD.BTN_WORLD.text = worldinfo;
+	GROUP_LOAD.BTN_WORLD.text = w.getInfoString();
 	
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_LOAD);
 }
 var menu_option = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_option.text = "Settings...";
 menu_option.onClick = function(){
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_OPTIONS);
+}
+
+// World saving menu
+
+var GROUP_SAVE = new GuiElement(0,0,500,500); GROUP_SAVE.autosize = true; GROUP_SAVE.autopos = "top"; GROUP_SAVE.hide(); GROUP_SAVE.autocenterX = true; GROUP_SAVE.autocenterY = true;
+GROUP_SAVE.ELM_TITLE = new GuiElement(0,0,500,40,GROUP_SAVE); GROUP_SAVE.ELM_TITLE.text = "Save World";
+
+GROUP_SAVE.ELM_CNTR = new GuiElement(0,0,700,64, GROUP_SAVE); GROUP_SAVE.ELM_CNTR.autosize = true;  GROUP_SAVE.ELM_CNTR.autopos = "left";
+GROUP_SAVE.BTN_BACK = new GuiElement(0,0,100,40,GROUP_SAVE.ELM_CNTR); GROUP_SAVE.BTN_BACK.text = "Back";
+GROUP_SAVE.BTN_BACK.onClick = function(){
+	GROUP_SAVE.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
+}
+GROUP_SAVE.BTN_EXPORT = new GuiElement(0,0,220,40,GROUP_SAVE.ELM_CNTR); GROUP_SAVE.BTN_EXPORT.text = "Export to clipboard";
+GROUP_SAVE.BTN_EXPORT.onClick = function(){
+
+	
+	server.world.datestamp = new Date(Date.now());
+	var worlddata = JSON.stringify(server.world);
+	console.log(worlddata);
+	
+	var promise = navigator.clipboard.writeText(worlddata);
+	
+	GROUP_SAVE.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
 }
 
 // World loading menu
@@ -332,11 +343,35 @@ GROUP_LOAD.BTN_WORLD.onClick = function(){
 	GuiHandler.openWindow(GROUP_LOAD_CONFIRM);
 }
 
-GROUP_LOAD.BTN_BACK = new GuiElement(0,0,100,40,GROUP_LOAD); GROUP_LOAD.BTN_BACK.text = "Back";
+GROUP_LOAD.ELM_CNTR = new GuiElement(0,0,700,64, GROUP_LOAD); GROUP_LOAD.ELM_CNTR.autosize = true;  GROUP_LOAD.ELM_CNTR.autopos = "left";
+
+GROUP_LOAD.BTN_BACK = new GuiElement(0,0,100,40,GROUP_LOAD.ELM_CNTR); GROUP_LOAD.BTN_BACK.text = "Back";
 GROUP_LOAD.BTN_BACK.onClick = function(){
 	GROUP_LOAD.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
 }
+GROUP_LOAD.BTN_IMPORT = new GuiElement(0,0,240,40,GROUP_LOAD.ELM_CNTR); GROUP_LOAD.BTN_IMPORT.text = "Import from clipboard";
+GROUP_LOAD.BTN_IMPORT.onClick = function(){
+	
+	var jsonworld;
+	navigator.clipboard.readText().then(
+		text => {
+			
+			var obj = JSON.parse(text);
+			var w = WorldLoader.loadWorld(obj);
+			console.log(w);
+			
+			GROUP_LOAD.BTN_WORLD.world = w;
+			GuiHandler.openWindow(GROUP_LOAD_CONFIRM);
+			
+		} 
+	);
+/* 	const text = await navigator.clipboard.readText();
+	var w = WorldLoader.loadWorld(text);
+	GROUP_LOAD.BTN_WORLD.world = w;
+	GuiHandler.openWindow(GROUP_LOAD_CONFIRM); */
+}
 
+// confirmation menu for world loading
 var GROUP_LOAD_CONFIRM = new GuiElement(0,0,300,500); GROUP_LOAD_CONFIRM.autosize = true; GROUP_LOAD_CONFIRM.autopos = "top"; GROUP_LOAD_CONFIRM.hide(); GROUP_LOAD_CONFIRM.autocenterX = true; GROUP_LOAD_CONFIRM.autocenterY = true;
 GROUP_LOAD_CONFIRM.ELM_BODY = new GuiElement(0,0,300,40,GROUP_LOAD_CONFIRM); GROUP_LOAD_CONFIRM.ELM_BODY.text = "Are you sure you want to load this world?\nAny unsaved progress in the current world will be lost!";
 
