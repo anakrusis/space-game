@@ -11,7 +11,8 @@ class WorldLoader {
 		Objective,
 		Place,
 		Inventory,
-		ItemStack
+		ItemStack,
+		ForceVector
 	};
 	
 	// will export a json string
@@ -123,7 +124,17 @@ class WorldLoader {
 				// We remove all non alphanumeric characters so that when eval goes to evaluate the Class name there is no possibility for funny bisnis 
 				
 				var typestring = srcobj.type.replace(/\W/g, '')
-				var p = eval(typestring); //console.log(p);
+				var p = eval(typestring); 
+				
+				// We ensure that only permissible base classes are used in the world construction
+				var perm = false;
+				for ( var classname in this.acceptedBaseClasses ){
+					var cl = this.acceptedBaseClasses[classname];
+					
+					if ( new p() instanceof cl){ perm = true; break; }
+				}
+				if (!perm){ console.log("Non-allowed class found: " + typestring); return null; }
+				
 				var destobj = new p();
 				
 			} else {
