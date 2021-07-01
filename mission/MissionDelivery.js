@@ -70,6 +70,7 @@ class MissionDelivery extends Mission {
 		super.onSuccess();
 		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
+		MissionHandler.inPlaceForDelivery = false;
 	}
 	
 	onCancel(){

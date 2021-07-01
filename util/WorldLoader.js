@@ -21,7 +21,7 @@ class WorldLoader {
 		server.world.datestamp = new Date(Date.now());
 		var d = JSON.stringify(server.world); var p = JSON.parse(d);
 		
-		var worldclone = this.loadWorld( p ); console.log(worldclone);
+		var worldclone = this.loadWorld( p ); //console.log(worldclone);
 		
 		for (var chunk of worldclone.getLoadedChunks()){
 
@@ -34,7 +34,7 @@ class WorldLoader {
 			}
 		}
 			
-		return JSON.stringify(worldclone);
+		return worldclone;
 	}
 	
 	// sw = source world, dw = dest world

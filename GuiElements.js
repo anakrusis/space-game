@@ -271,34 +271,34 @@ var menu_slcntr = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_slcntr.autosiz
 var menu_save = new GuiElement(0,0,147.5,40,menu_slcntr); menu_save.text = "Save Game";
 menu_save.onClick = function(){
 	
-	//server.world.datestamp = new Date(Date.now());
-	//storeItem("world", server.world);
+	var jsonworld = getItem("world");
+	if (!jsonworld){ 
+
+		GROUP_SAVE.BTN_WORLD.world = null;
+		GROUP_SAVE.BTN_WORLD.text = "Save world to empty slot...\n";
+		GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_SAVE);
+		return; 
+	}
+	
+	var w = WorldLoader.loadWorld(jsonworld);
+	
+	GROUP_SAVE.BTN_WORLD.world = w;
+	GROUP_SAVE.BTN_WORLD.text = "Overwrite world: \n" + w.getInfoString();
+
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_SAVE);
 }
 var menu_load = new GuiElement(0,0,147.5,40,menu_slcntr); menu_load.text = "Load Game";
 menu_load.onClick = function(){
-	//GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
-	//drawEnabled = false;
-	//var jsonworld = localStorage.world; //
-	
-	
-/* 	function apply(o, c){
-    if(o && c && typeof c == 'object'){
-        for(var p in c){
-            if (c.hasOwnProperty(p)){
-                o[p] = c[p];
-            }
-        }
-    }
-    return o;
-	};
-	
-	var world = apply({}, jsonworld); */
 	var jsonworld = getItem("world");
+	if (!jsonworld){ 
+
+		GROUP_LOAD.BTN_WORLD.world = null;
+		GROUP_LOAD.BTN_WORLD.text = "No world file found!\n";
+		GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_LOAD);
+		return; 
+	}
+	
 	var w = WorldLoader.loadWorld(jsonworld);
-/* 	server.world = 
-	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null; */
-	//server.world = world;
 	
 	GROUP_LOAD.BTN_WORLD.world = w;
 	GROUP_LOAD.BTN_WORLD.text = w.getInfoString();
@@ -315,6 +315,20 @@ menu_option.onClick = function(){
 var GROUP_SAVE = new GuiElement(0,0,500,500); GROUP_SAVE.autosize = true; GROUP_SAVE.autopos = "top"; GROUP_SAVE.hide(); GROUP_SAVE.autocenterX = true; GROUP_SAVE.autocenterY = true;
 GROUP_SAVE.ELM_TITLE = new GuiElement(0,0,500,40,GROUP_SAVE); GROUP_SAVE.ELM_TITLE.text = "Save World";
 
+GROUP_SAVE.BTN_WORLD = new GuiElement(0,0,500,40,GROUP_SAVE);
+GROUP_SAVE.BTN_WORLD.onClick = function(){
+	
+	if ( !this.world ){ 
+		
+		var worlddata = WorldLoader.saveWorld( server.world );
+		storeItem("world", worlddata);
+		GROUP_SAVE_CONFIRM.hide(); GuiHandler.openWindow(GROUP_SAVE_SUCCESS);
+		
+		return; 
+	}
+	GuiHandler.openWindow(GROUP_SAVE_CONFIRM);
+}
+
 GROUP_SAVE.ELM_CNTR = new GuiElement(0,0,700,64, GROUP_SAVE); GROUP_SAVE.ELM_CNTR.autosize = true;  GROUP_SAVE.ELM_CNTR.autopos = "left";
 GROUP_SAVE.BTN_BACK = new GuiElement(0,0,100,40,GROUP_SAVE.ELM_CNTR); GROUP_SAVE.BTN_BACK.text = "Back";
 GROUP_SAVE.BTN_BACK.onClick = function(){
@@ -325,9 +339,38 @@ GROUP_SAVE.BTN_EXPORT.onClick = function(){
 
 	var worlddata = WorldLoader.saveWorld( server.world );
 	
-	var promise = navigator.clipboard.writeText(worlddata);
+	var promise = navigator.clipboard.writeText(JSON.stringify(worlddata));
 	
-	GROUP_SAVE.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
+	GuiHandler.openWindow(GROUP_SAVE_SUCCESS);
+}
+
+// confirmation menu for world overwriting saving
+var GROUP_SAVE_CONFIRM = new GuiElement(0,0,300,500); GROUP_SAVE_CONFIRM.autosize = true; GROUP_SAVE_CONFIRM.autopos = "top"; GROUP_SAVE_CONFIRM.hide(); GROUP_SAVE_CONFIRM.autocenterX = true; GROUP_SAVE_CONFIRM.autocenterY = true;
+GROUP_SAVE_CONFIRM.ELM_BODY = new GuiElement(0,0,300,40,GROUP_SAVE_CONFIRM); GROUP_SAVE_CONFIRM.ELM_BODY.text = "Are you sure you want to overwrite this world?\nThis action cannot be undone!";
+
+GROUP_SAVE_CONFIRM.ELM_CNTR = new GuiElement(0,0,700,64, GROUP_SAVE_CONFIRM); GROUP_SAVE_CONFIRM.ELM_CNTR.autosize = true;  GROUP_SAVE_CONFIRM.ELM_CNTR.autopos = "left";
+
+GROUP_SAVE_CONFIRM.BTN_YES = new GuiElement(0,0,148,40,GROUP_SAVE_CONFIRM.ELM_CNTR); GROUP_SAVE_CONFIRM.BTN_YES.text = "OK";
+GROUP_SAVE_CONFIRM.BTN_YES.onClick = function(){
+	
+	var worlddata = WorldLoader.saveWorld( server.world );
+	storeItem("world", worlddata);
+	GROUP_SAVE_CONFIRM.hide(); GuiHandler.openWindow(GROUP_SAVE_SUCCESS);
+
+}
+GROUP_SAVE_CONFIRM.BTN_NO = new GuiElement(0,0,148,40,GROUP_SAVE_CONFIRM.ELM_CNTR); GROUP_SAVE_CONFIRM.BTN_NO.text = "Back";
+GROUP_SAVE_CONFIRM.BTN_NO.onClick = function(){
+	GROUP_SAVE_CONFIRM.hide(); GuiHandler.openWindow(GROUP_SAVE);
+}
+
+// world saved successfully popup
+
+var GROUP_SAVE_SUCCESS = new GuiElement(0,0,300,500); GROUP_SAVE_SUCCESS.autosize = true; GROUP_SAVE_SUCCESS.autopos = "top"; GROUP_SAVE_SUCCESS.hide(); GROUP_SAVE_SUCCESS.autocenterX = true; GROUP_SAVE_SUCCESS.autocenterY = true;
+GROUP_SAVE_SUCCESS.ELM_BODY = new GuiElement(0,0,300,40,GROUP_SAVE_SUCCESS); GROUP_SAVE_SUCCESS.ELM_BODY.text = "World saved successfully!";
+GROUP_SAVE_SUCCESS.BTN_YES = new GuiElement(0,0,148,40,GROUP_SAVE_SUCCESS); GROUP_SAVE_SUCCESS.BTN_YES.text = "OK";
+GROUP_SAVE_SUCCESS.BTN_YES.onClick = function(){
+	GROUP_SAVE.hide(); GROUP_SAVE_SUCCESS.hide();
+	GuiHandler.openWindow(GROUP_MAINMENU);
 }
 
 // World loading menu
@@ -337,6 +380,7 @@ GROUP_LOAD.ELM_TITLE = new GuiElement(0,0,500,40,GROUP_LOAD); GROUP_LOAD.ELM_TIT
 GROUP_LOAD.BTN_WORLD = new GuiElement(0,0,500,40,GROUP_LOAD);
 GROUP_LOAD.BTN_WORLD.onClick = function(){
 
+	if ( !this.world ){ return; }
 	GuiHandler.openWindow(GROUP_LOAD_CONFIRM);
 }
 
