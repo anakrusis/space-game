@@ -16,12 +16,12 @@ class EntityPlayer extends EntityShip {
 	}
 	
 	render(){
-		
-		updateTrajectory(this);
 
 		stroke(this.color[0] / 2, this.color[1] / 2, this.color[2] / 2);
+		this.drawPointsTrailFromEntity(predictFuturePoints(this));
 		
-		drawPointsTrailFromEntity(this, predictFuturePoints(this));
+		stroke(255);
+		this.drawPointsTrailFromEntity(this.predictPoints2());
 		
 		if (touches.length == 1){
 		
@@ -35,8 +35,8 @@ class EntityPlayer extends EntityShip {
 					angle -= cam_rot;
 				}
 				 
-				var rotx = rot_x( angle + client.world.player.dir, 300, 300 ) + width/2;
-				var roty = rot_y( angle + client.world.player.dir, 300, 300 ) + height/2;
+				var rotx = rot_x( angle + client.world.getPlayer().dir, 300, 300 ) + width/2;
+				var roty = rot_y( angle + client.world.getPlayer().dir, 300, 300 ) + height/2;
 				
 				line( width/2, height/2, rotx, roty );
 				

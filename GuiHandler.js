@@ -244,11 +244,11 @@ class GuiHandler {
 				} 
 				// left
 				if ( abs_angle > PI + (1/4)*PI && abs_angle < (3/2)*PI + (1/4)*PI ){
-					server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
+					server.onUpdateRequest( player.dir - 0.1, "world", "getPlayer", "dir" );
 				} 
 				// right
 				if ( abs_angle > HALF_PI/2 && abs_angle < 3 * HALF_PI/2 ){
-					server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
+					server.onUpdateRequest( player.dir + 0.1, "world", "getPlayer", "dir" );
 				}
 				if ( abs_angle > 3 * HALF_PI/2 && abs_angle < PI + (1/4)*PI) {
 					

@@ -149,110 +149,15 @@ function draw(){
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);
 }
 
-var drawPointsTrailFromEntity = function(e, points){
-		// This renders the trail in front of the player predicting where it will be in the next 500 ticks
-	if (!e.isDead()){
-		var fx = e.x; var fy = e.y;
-		var futurePointsX = points[0]; var futurePointsY = points[1];
-		
-		noFill();
-		beginShape();
-		for (var i = 0; i < futurePointsX.length; i+=1){
-			
-			fx = futurePointsX[i]; fy = futurePointsY[i];
-			
-			vertex(tra_rot_x(fx,fy),tra_rot_y(fx,fy));
-			
-		}
-		endShape();
-	}
-}
-
-var doTrajectoryStep = function(e, player){
-	
-	e.boostForce.dir = e.dir;
-	
-	e.update();
-
-	e.boostForce = player.boostForce; 
-	e.forceVectors.push(e.boostForce);
-	
-	//futurePointsX.push(e.x); futurePointsY.push(e.y);
-	
-/* 	e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
-	e.forceVectors.push(e.boostForce);
-	
-	e.update();
-	
-	if (e.isDead() || e.grounded){ 
-		return;
-	} */
-	
-	trajectory[0].push(e.x); trajectory[1].push(e.y); dir_history.push(e.dir);
-}
-
-var updateTrajectory = function(player){
-	
-	if (!pathPredictEnabled){ 
-		trajectory = [[],[]]; return; 
-	}
-	
-	if ( framecount % 600 == 0 ){
-		trajectory = [[],[]];
-	}
-	
-	var lastx = trajectory[0][ trajectory[0].length - 1 ];
-	var lasty = trajectory[1][ trajectory[1].length - 1 ];
-	var lastdir = dir_history[ dir_history.length - 1 ]
-	
-	if (!lastx){
-		traj_pointer = 0;
-		
-		lastx = player.x;
-		lasty = player.y;
-		lastdir = player.dir;
-	}
-	
-	trajPredictor.x = lastx; trajPredictor.y = lasty; trajPredictor.dir = lastdir;
-	
-	//trajPredictor.boostForce = player.boostForce; trajPredictor.boostForce.dir = trajPredictor.dir;
-	//trajPredictor.forceVectors.push(trajPredictor.boostForce);
-	
-	//var e = new Entity(lastx, lasty, lastdir );
-	
-	if (trajectory[0].length < 1000){
-		
-		for (var i = 0; i < 5; i++){
-			doTrajectoryStep(trajPredictor, player);
-			traj_pointer++;
-		}
-		
-	}else{
-		doTrajectoryStep(trajPredictor, player);
-	}
-	
-	trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
-	
-/* 	if (trajectory[0].length < 500){
-		//
-		
-	}else{
-		//trajectory[0].splice(125); trajectory[1].splice(125); dir_history.splice(125);
-		//trajectory[0].length = 500; trajectory[1].length = 500; dir_history.length = 500;
-		
-		trajectory[0].shift(); trajectory[1].shift(); dir_history.shift();
-	} */
-}
-
 var predictDerivativePoints = function(player){
 	if (!pathPredictEnabled){ return [[],[]]; }
 	
-	var nearbody = player.getNearestBody();
+/* 	var nearbody = player.getNearestBody(); */
 	
 	var futurePointsX = [];
 	var futurePointsY = [];
 	
-	var angacc = player.angacc;
+/* 	var angacc = player.angacc;
 	var angvel = player.angvel;
 	var vel = player.velocity;
 	var x   = player.x; var y = player.y;
@@ -271,7 +176,7 @@ var predictDerivativePoints = function(player){
 		y += vel * Math.sin( dir );
 		
 		futurePointsX.push(x); futurePointsY.push(y);
-	}
+	} */
 	return [futurePointsX, futurePointsY];
 }
 
