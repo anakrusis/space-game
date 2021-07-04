@@ -38,7 +38,8 @@ class EntityShip extends Entity {
 		
 		var cx = this.x; var cy = this.y; var cdir = this.dir;
 		var fv = [];
-		var boost = null; var grav = null; // there are pointers to named forces in fv. they can be modified without affecting the real ships values
+		// there are pointers to named forces in fv. they can be modified without affecting the real ships values
+		var boost = null; var grav = null; var buoy = null;
 		
 		// fv is a deep copy of the ship's set of forces at any given moment.
 		// While iterating to make a copy, it also identifys the boost force and the gravity force if present
@@ -47,7 +48,8 @@ class EntityShip extends Entity {
 			var nf = new ForceVector( f.name, f.magnitude, f.dir );
 			
 			if (f.name == "Boost")  { boost = nf }
-			if (f.name == "Gravity"){ grav = nf }
+			if (f.name == "Gravity") { grav = nf }
+			if (f.name == "Buoyancy"){ buoy = nf }
 
 			fv.push( nf );
 		}
@@ -59,6 +61,8 @@ class EntityShip extends Entity {
 			futurePointsX.push(cx); futurePointsY.push(cy);
 			
 			if (boost){ boost.dir = cdir; }
+			
+			// force handler
 			
 			var magnitudeSum = 0;
 			for (var force of fv){
@@ -73,11 +77,9 @@ class EntityShip extends Entity {
 				var forcex = Math.cos(force.dir); var forcey = Math.sin(force.dir);
 				forcesXSum += forcex * magratio; forcesYSum += forcey * magratio;
 				
-				//this.velocity += 0.001 * force.magnitude;
 				cx += force.magnitude * Math.cos(force.dir);
 				cy += force.magnitude * Math.sin(force.dir);
 			}
-			//forcesXSum /= this.forceVectors.length; forcesYSum /= this.forceVectors.length;
 			var avgDirection = Math.atan2(forcesYSum, forcesXSum);
 			if (avgDirection && !this.grounded){
 				cdir = avgDirection;
@@ -98,9 +100,26 @@ class EntityShip extends Entity {
 				grav.magnitude = 0 - forceMagnitude; grav.dir = angleFromCenter;
 			}
 			
+			// Below the surface of the planet? no more predicting
 			var ind = CollisionUtil.indexFromPosition( cx, cy, nearbody );
 			if (distance < nearbody.radius + nearbody.terrain[ind] ){
 				break;
+			}
+			
+			// Enacting the buoyancy force
+			if ( nearbody.oceanUUID != null && distance < nearbody.radius ){
+				var forceMagnitude = 0.07;
+				var angleFromCenter = Math.atan2(cy - nearbody.getY(), cx - nearbody.getX());
+				if (!buoy){
+					buoy = new ForceVector("Buoyancy", forceMagnitude, angleFromCenter);
+					fv.push(buoy);
+				}
+				buoy.magnitude = forceMagnitude; buoy.dir = angleFromCenter;
+			// Stopping the buoyancy force
+			}else{
+				if (buoy){
+					buoy.magnitude = 0;
+				}
 			}
 		}
 		

@@ -155,7 +155,7 @@ class BodyPlanet extends EntityBody {
 		}
 		
 		for (var i = 0; i < lod; i++){
-			points = this.LODPass(points);
+			//points = this.LODPass(points);
 		}
 		
 		return points;
