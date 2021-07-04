@@ -34,6 +34,7 @@ class EntityShip extends Entity {
 		var futurePointsX = [];
 		var futurePointsY = [];
 		var nearbody = this.getNearestBody();
+		var bgr = nearbody.getGravityBody()
 		
 		var cx = this.x; var cy = this.y; var cdir = this.dir;
 		var fv = [];
@@ -43,19 +44,21 @@ class EntityShip extends Entity {
 		// While iterating to make a copy, it also identifys the boost force and the gravity force if present
 		for (var p = 0; p < this.forceVectors.length; p++){
 			var f = this.forceVectors[p];
+			var nf = new ForceVector( f.name, f.magnitude, f.dir );
 			
-			if (f.name == "Boost")  { boost = f }
-			if (f.name == "Gravity"){ grav = f }
+			if (f.name == "Boost")  { boost = nf }
+			if (f.name == "Gravity"){ grav = nf }
 
-			fv.push( new ForceVector( f.name, f.magnitude, f.dir ) );
-		
+			fv.push( nf );
 		}
+		
+		//console.log(boost);
 	
-		for (var q = 0; q < 10; q++){
+		for (var q = 0; q < 1000; q++){
 			
 			futurePointsX.push(cx); futurePointsY.push(cy);
 			
-			boost.dir = cdir;
+			if (boost){ boost.dir = cdir; }
 			
 			var magnitudeSum = 0;
 			for (var force of fv){
@@ -75,15 +78,30 @@ class EntityShip extends Entity {
 				cy += force.magnitude * Math.sin(force.dir);
 			}
 			//forcesXSum /= this.forceVectors.length; forcesYSum /= this.forceVectors.length;
-			avgDirection = Math.atan2(forcesYSum, forcesXSum);
+			var avgDirection = Math.atan2(forcesYSum, forcesXSum);
 			if (avgDirection && !this.grounded){
 				cdir = avgDirection;
 			}
 			
+			var distance = CollisionUtil.euclideanDistance(cx, cy, bgr.getX(), bgr.getY());
 			
+			// Gravity simulation
+			if (grav){
+				var annulusPosition = (-1 / (bgr.getRadius() - nearbody.getRadius())) * ( distance - nearbody.getRadius() ) + 1;
+				var forceMagnitude;
+				if (nearbody instanceof BodyStar){
+					forceMagnitude = 0.05 * annulusPosition;
+				}else{
+					forceMagnitude = 0.05 * annulusPosition;
+				}
+				var angleFromCenter = Math.atan2(cy - bgr.getY(), cx - bgr.getX());
+				grav.magnitude = 0 - forceMagnitude; grav.dir = angleFromCenter;
+			}
 			
-/* 			x += this.boostForce.magnitude * Math.cos(this.boostForce.dir);
-			y += this.boostForce.magnitude * Math.sin(this.boostForce.dir); */
+			var ind = CollisionUtil.indexFromPosition( cx, cy, nearbody );
+			if (distance < nearbody.radius + nearbody.terrain[ind] ){
+				break;
+			}
 		}
 		
 		return [futurePointsX, futurePointsY];

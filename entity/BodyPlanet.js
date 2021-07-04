@@ -29,6 +29,7 @@ class BodyPlanet extends EntityBody {
 		// Referential properties
 		this.starUUID = starUUID;
 		this.oceanUUID = null;
+		this.gravUUID = null;
 		
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 100), 2 ) ) ) ;
 		this.calculateHumidity();

@@ -1,3 +1,5 @@
+var pts;
+
 class EntityPlayer extends EntityShip {
 	constructor(x, y, dir){
 		super(x,y,dir);
@@ -18,10 +20,11 @@ class EntityPlayer extends EntityShip {
 	render(){
 
 		stroke(this.color[0] / 2, this.color[1] / 2, this.color[2] / 2);
-		this.drawPointsTrailFromEntity(predictFuturePoints(this));
+		//this.drawPointsTrailFromEntity(predictFuturePoints(this));
 		
-		stroke(255);
-		this.drawPointsTrailFromEntity(this.predictPoints2());
+		//stroke(255);
+		pts = this.predictPoints2();
+		this.drawPointsTrailFromEntity(pts);
 		
 		if (touches.length == 1){
 		
@@ -76,6 +79,8 @@ class EntityPlayer extends EntityShip {
 		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
 		//this.forceVectors.push(this.boostForce);
 		this.getBoostForce().dir = this.dir;
+		//pts = this.predictPoints2();
+		
 		super.update();
 		
 		this.angvel = this.dir - this.lastdir;

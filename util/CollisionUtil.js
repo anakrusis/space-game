@@ -69,8 +69,48 @@ class CollisionUtil{
         return messyIndex;
 	}
 	
+	static messyIndexFromPosition(x,y,body){
+		var terrsize = body.terrainSize;
+
+        // If the player is halfway between terrainPoints 3 and 4, then it will be 3.5,
+        // (for example)
+        var messyIndex;
+        var cleanIndex;
+        var messyDifference;
+        var currentHeight;
+        var nextHeight;
+
+        var interpolatedHeight;
+
+        var angle = Math.atan2(y - body.y, x - body.x);
+        var bodydir = body.dir;
+
+        // This maps the value to between -pi and pi
+        bodydir += Math.PI;
+        bodydir %= 2 * Math.PI;
+        bodydir -= Math.PI;
+
+        angle -= bodydir;
+
+        // I was just being safe here in fear of the dreaded IndexOutOfBoundsException
+        angle += Math.PI;
+        angle %= 2 * Math.PI;
+        angle -= Math.PI;
+
+        if (angle < 0){
+            messyIndex = angle * ((0.5 * terrsize) / Math.PI) + terrsize;
+        }else{
+            messyIndex = angle * ((0.5 * terrsize) / Math.PI);
+        }
+        return messyIndex;
+	}
+	
 	static indexFromEntityAngle(entity, body){
 		return Math.floor( this.messyIndexFromEntityAngle(entity,body) );
+	}
+	
+	static indexFromPosition(x,y,body){
+		return Math.floor( this.messyIndexFromPosition(x,y,body) );
 	}
 	
 	// Todo make some of this redundant code into functions

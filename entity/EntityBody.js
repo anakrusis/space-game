@@ -10,6 +10,8 @@ class EntityBody extends Entity {
 		this.terrain = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 		this.canEntitiesCollide = false;
 		
+		this.gravUUID = null;
+		
 		this.explored = false;
 	}
 	
@@ -90,4 +92,8 @@ class EntityBody extends Entity {
 	}
 	
 	getRadius(){ return this.radius; }
+	
+	getGravityBody(){
+		return server.world.chunks[this.getChunk().x][this.getChunk().y].bodies[this.gravUUID];
+	}
 }

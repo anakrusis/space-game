@@ -92,6 +92,7 @@ class Chunk {
 			
 			var bgr = new BodyGravityRadius(body.x, body.y, body.dir, body.radius*10, body.uuid);
 			this.spawnBody(bgr);
+			body.gravUUID = bgr.uuid;
 		}
 	}
 	
