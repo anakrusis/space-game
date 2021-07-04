@@ -45,7 +45,7 @@ for (var i = 0; i < 9; i++){
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
-var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n2021-07-01"
+var tittle = new GuiElement(0,0,300,40,GROUP_INFOBAR); tittle.text = TITLE_VERSION + "\n" + BUILD_DATE;
 tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
@@ -63,8 +63,32 @@ BUTTON_MENU.onClick = function(){
 var playerstatus = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 playerstatus.onUpdate = function(){
 	if (!client.world.getPlayer()){ return; }
-	var infostring = "$" + client.world.getPlayer().money;
+	
+	var infostring = "Speed: \n" //+ client.world.getPlayer().getBoostForce().magnitude + "\n"
+	infostring += "$" + client.world.getPlayer().money;
 	this.text = infostring;
+}
+
+playerstatus.onRender = function(){
+	var x = this.dispx + 65;
+	var y = this.dispy + this.padding + 3;
+	var w = 220 * client.world.getPlayer().getBoostForce().magnitude / 10;
+	rect(x,y,w,10);
+	
+	blendMode(DIFFERENCE);
+	fill(255); noStroke();
+	for (var i = 0; i <= 10; i++){
+		var dx = x + ( i / 10 * 220 );
+		var dy = y + 3;
+		
+		if (i == 5 || i == 0 || i == 10){ 
+			rect(dx,dy-3,2,8);
+		}else{
+			rect(dx,dy,2,2);
+		}
+	}	
+	
+	blendMode(BLEND);
 }
 
 var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 

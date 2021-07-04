@@ -1,4 +1,5 @@
-TITLE_VERSION = "Space Game pre alpha 0.1.1d";
+TITLE_VERSION = "Space Game pre alpha 0.1.1e";
+BUILD_DATE = "2021-07-03"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -240,7 +241,9 @@ class GuiHandler {
 				
 				// forward
 				if ( abs_angle < HALF_PI/2 || abs_angle > (3/2)*PI + (1/4)*PI ){
-					server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+					if (player.boostForce.magnitude < 10) {
+						server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+					}
 				} 
 				// left
 				if ( abs_angle > PI + (1/4)*PI && abs_angle < (3/2)*PI + (1/4)*PI ){
