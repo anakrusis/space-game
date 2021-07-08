@@ -23,8 +23,10 @@ class EntityPlayer extends EntityShip {
 		//this.drawPointsTrailFromEntity(predictFuturePoints(this));
 		
 		//stroke(255);
-		pts = this.predictPoints2();
-		this.drawPointsTrailFromEntity(pts);
+		if (!this.grounded){
+			pts = this.predictPoints2();
+			this.drawPointsTrailFromEntity(pts);
+		}
 		
 		if (touches.length == 1){
 		

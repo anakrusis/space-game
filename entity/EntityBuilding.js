@@ -129,6 +129,6 @@ class EntityBuilding extends Entity {
 	}
 	
 	isOnScreen(){
-		return super.isOnScreen() && cam_zoom > MAX_INTERPLANETARY_ZOOM;
+		return super.isOnScreen() && buildingDrawEnabled && cam_zoom > MAX_INTERPLANETARY_ZOOM;
 	}
 }

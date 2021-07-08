@@ -6,7 +6,7 @@ var singletouchtimer = 0;
 var cursorAbsX; var cursorAbsY;
 var bypassGameClick = false; // gui boolean for when a gui element is clicked, not to trigger anything in game world
 
-var pathPredictEnabled = true;
+var pathPredictEnabled = true; var buildingDrawEnabled = true;
 var trajPredictor = new Entity(0,0,0); 
     trajPredictor.boostForce = new ForceVector(0,0);
 var trajectory = [[],[]];
@@ -22,7 +22,7 @@ MAX_ZOOM  = 100;
 
 MIN_CITY_TEXT_ZOOM = 0.04; // anything smaller than this will not render city label names
 
-MAX_INTERPLANETARY_ZOOM = 0.333; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
+MAX_INTERPLANETARY_ZOOM = 0.5; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
 MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
 // anything smaller than this will only render stars (no planets)
 
@@ -51,6 +51,7 @@ function setup(){
 	
 	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
+	textFont("Courier");
 	
 	server = new Server();
 	server.init(); server.world.init();
@@ -142,7 +143,6 @@ function draw(){
 	
 	stroke(255); fill(255);
 	textSize(16 * GUI_SCALE);
-	textFont("Courier");
 	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
 	textSize(16);
 	
@@ -237,8 +237,9 @@ function keyPressed() {
 			pathPredictEnabled = !pathPredictEnabled;
 		}else if (keyCode === 32){
 			PLANET_CAM = !PLANET_CAM;
+		}else if (keyCode === 66){
+			buildingDrawEnabled = !buildingDrawEnabled;	
 		}
-	
 	}
 }
 

@@ -4,6 +4,7 @@ class BodyPlanet extends EntityBody {
 		
 		// Core properties
 		this.name = Nymgen.newName();
+		this.icon = "🪐"
 		//this.color = [192,192,192];
 		
 		var dirthue = RandomUtil.fromRangeF(0,0.1);
@@ -17,6 +18,20 @@ class BodyPlanet extends EntityBody {
 		this.roads = [];
 		this.generateTerrain();
 		this.hasOcean  = false;
+		this.forms = [[]];
+		
+		for (var i = 0; i < this.terrainSize; i++){
+			var angle = 0 + (i * (2 * Math.PI) / this.terrainSize);
+
+			var pointx = rot_x(angle, this.radius + this.terrain[i], 0.0);
+			var pointy = rot_y(angle, this.radius + this.terrain[i], 0.0);
+			
+			this.forms[0].push(pointx); this.forms[0].push(pointy);
+		}
+		
+		for (var j = 1; j <= 8; j++){
+			this.forms[j] = this.LODPass( this.forms[j-1] );
+		}
 		
 		// Physics properties
 		this.canEntitiesCollide = true;
@@ -83,9 +98,11 @@ class BodyPlanet extends EntityBody {
 	
 	render(){
 		
-		var orbitbody = new EntityBody(this.getStar().x, this.getStar().y, 0, this.getOrbitDistance());
-		orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
-		orbitbody.render();
+		if ( cam_zoom < MAX_INTERPLANETARY_ZOOM ){
+			var orbitbody = new EntityBody(this.getStar().x, this.getStar().y, 0, this.getOrbitDistance());
+			orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
+			orbitbody.render();
+		}
 		
 		//stroke(0, 128, 0); noFill();
 		//circle( tra_x(this.getStar().x), tra_y(this.getStar().y), this.getOrbitDistance() * 2 * cam_zoom )
@@ -108,6 +125,14 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	LODPass( points ){
+		
+		var points2 = [];
+		
+		for (var i = 0; i < points.length; i++){
+			points2[i] = points[i];
+		}
+		points = points2;
+		
 		var amt = 4
 		for (var i = 2; i < points.length; i += amt){
 			
@@ -136,11 +161,14 @@ class BodyPlanet extends EntityBody {
 	getRenderPoints(){
 		var index = server.world.getPlayer().terrainIndex;
 		
-		var fov = Math.round ( 500 / cam_zoom );
+		var fov = Math.round ( 500 / cam_zoom ); var half = Math.floor(this.terrainSize / 2);
+		//fov = Math.min(fov, half);
 		
-		if ( fov > this.terrainSize / 2 || !PLANET_CAM ) { var points = super.getRenderPoints(); }
+		if ( fov > this.terrainSize / 2 ) { 
 		
-		else{
+			var points = this.getLODPoints();
+		
+		}else{
 			
 			// This removes the remainder from the start and end indices of the "pizza slice" of terrain to draw
 			// If the remainder is left on, then the terrain appears to "tremble" or "bubble" due to the resampling caused by the LOD function immediately afterwards
@@ -149,13 +177,9 @@ class BodyPlanet extends EntityBody {
 			var start = ( index - fov ) - ((index - fov) % exp);
 			var finsh = ( index + fov ) - ((index + fov) % exp);
 			
-			var points = this.getAbsPointsSlice( start, finsh, 0 );
+			var points = this.getLODSlice( start, finsh, 0 );
 			points.unshift( this.y ); points.unshift( this.x ); 
 		
-		}
-		
-		for (var i = 0; i < lod; i++){
-			//points = this.LODPass(points);
 		}
 		
 		return points;

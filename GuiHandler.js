@@ -206,37 +206,11 @@ class GuiHandler {
 				}
 				
 				// Then, it will make sure you are on the main screen, and if so, then you can modify the player's movement with the touch.
-				// TODO: Partition the screen into four quadrants to allow the same kind of control that WASD has!
+				// The screen is partitioned into four quadrants based on the players facing direction.
 				
 				if (!GROUP_INFOBAR.active){ return; };
 				
 				var abs_angle = Math.atan2( cursorAbsY - player.y, cursorAbsX - player.x );
-				
-/* 				if ( PLANET_CAM ){
-				
-					var rel_angle = abs_angle - cam_rot - HALF_PI// - (player.dir % HALF_PI);
-				
-				} else {
-					
-					var rel_angle = abs_angle;
-				}
-				
-				rel_angle = rel_angle % PI; */
-				
-				//console.log(rel_angle);
-				
-/* 				if ( rel_angle > -HALF_PI/2 && rel_angle < HALF_PI/2){
-					server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
-				} 
-				else if ( rel_angle > HALF_PI/2 && rel_angle < HALF_PI ){
-					server.onUpdateRequest( player.dir + 0.1, "world", "player", "dir" );
-				}
-				else if ( rel_angle > -HALF_PI && rel_angle < -HALF_PI/2 ){
-					server.onUpdateRequest( player.dir - 0.1, "world", "player", "dir" );
-				} */
-				
-				//var angle = Math.atan2(touches[0].y - tra_y(player.y) , touches[0].x - tra_x(player.x));
-				
 				abs_angle = loopyMod(abs_angle - player.dir, PI*2);
 				
 				// forward

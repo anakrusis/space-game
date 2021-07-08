@@ -134,7 +134,7 @@ class EntityShip extends Entity {
 			
 			noFill();
 			beginShape();
-			for (var i = 0; i < futurePointsX.length; i+=1){
+			for (var i = 0; i < futurePointsX.length; i+=10){
 				
 				fx = futurePointsX[i]; fy = futurePointsY[i];
 				
