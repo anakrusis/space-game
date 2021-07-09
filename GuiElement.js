@@ -34,8 +34,6 @@ class GuiElement {
 		}else{
 			GuiHandler.elements.push(this);
 		}
-		
-		this.ticksExisted = 0;
 	}
 	
 	// update() contains most of the auto positioning of text boxes and things, it is an outer layer to the 
@@ -45,9 +43,6 @@ class GuiElement {
 		if (this.onUpdate){
 			this.onUpdate();
 		}
-		
-		// this solves a problem with the text entry boxes 
-		if (!this.text){ this.text = ""; }
 		
 /* 		var xsum = this.dispx + this.padding;
 		var ysum = this.dispy + this.padding;
@@ -208,20 +203,6 @@ class GuiElement {
 			var e  = this.children[i];
 			e.update();
 		}
-		
-		if (this.lasttext != this.text || this.lastdispx != this.dispx || this.lastdispy != this.dispy || this.lastvisible != this.visible){
-			//if (this.ticksExisted > 0){
-				GuiHandler.redrawFlag = true;
-				this.render();
-			//}
-		}
-		
-		this.lastvisible  = this.visible;
-		this.lastdispx    = this.dispx;
-		this.lastdispy    = this.dispy;
-		this.lasttext     = this.text;
-		
-		this.ticksExisted++;
 	}
 	
 	// This is blank by default so each GUI element can have unique per-tick behaviors
@@ -260,21 +241,16 @@ class GuiElement {
 	// This is recursive, and it goes from a top parent element through all the children of the tree
 	render(){
 		if (!this.visible) { return; }
-		//console.log(" ah" );
 		
-		//
-		//guiBuffer.scale(GUI_SCALE);
-		newElementBuffer.clear();
-		
-		newElementBuffer.fill(0);
-		newElementBuffer.stroke(255);
+		fill(0);
+		stroke(255);
 			
-		newElementBuffer.rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
+		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
-		newElementBuffer.fill(255);
-		if (this.text && this.text != ""){
+		fill(255);
+		if (this.text != ""){
 			//textWrap(LINE)
-			newElementBuffer.text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
 		}
 		if (this.onRender){
 			this.onRender();
@@ -284,10 +260,7 @@ class GuiElement {
 			var e  = this.children[i];
 			e.render();
 		}
-		
-		guiBuffer.image( newElementBuffer, 0, 0 );
-		//newElementBuffer.resetMatrix()
-		//guiBuffer.resetMatrix()	
+
 	}
 	
 	// Same deal, this is empty so each element can have custom rendering stuff
@@ -297,10 +270,6 @@ class GuiElement {
 	
 	// Likewise for the following methods
 	show(){
-		//if (this.ticksExisted > 0){
-			//this.render();
-		//}
-		
 		this.visible = true;
 		for (var i = 0; i < this.children.length; i++){
 			var e  = this.children[i];
@@ -315,13 +284,6 @@ class GuiElement {
 	}
 	
 	hide(){
-		
-		//if (this.ticksExisted > 0){
-			//guiBuffer.clear();
-			//this.render();
-			//GuiHandler.redrawFlag = true;
-		//}
-		
 		this.visible = false;
 		for (var i = 0; i < this.children.length; i++){
 			var e  = this.children[i];
@@ -464,12 +426,12 @@ class GuiSlider extends GuiElement {
 	}
 	
 	onRender(){
-		newElementBuffer.fill(0);
-		newElementBuffer.rect( this.dispx, this.dispy + 30, this.dispwidth, this.dispheight - 30 );
+		fill(0);
+		rect( this.dispx, this.dispy + 30, this.dispwidth, this.dispheight - 30 );
 		
 		var coeff = (this.setting - this.min) / ( this.max - this.min );
-		newElementBuffer.fill(255);
-		newElementBuffer.rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
+		fill(255);
+		rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
 		
 	}
 	

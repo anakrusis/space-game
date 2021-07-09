@@ -16,14 +16,11 @@ var trajectoryBuffer = [[],[]];
 var traj_pointer = 0;
 
 var drawEnabled = true;
-guiBuffer = null; 
-newElementBuffer = null;
 
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
 MIN_CITY_TEXT_ZOOM = 0.04; // anything smaller than this will not render city label names
-MAX_CITY_TEXT_ZOOM = 4.00;
 
 MAX_INTERPLANETARY_ZOOM = 0.5; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
 MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
@@ -52,15 +49,9 @@ function setup(){
 	document.documentElement.style.overflow = 'hidden';  // firefox, chrome
     document.body.scroll = "no"; // ie only
 	
-	createCanvas(windowWidth, windowHeight); // main canvas for final render
-	guiBuffer = createGraphics(windowWidth, windowWidth); // full gui 
-	newElementBuffer = createGraphics(windowWidth, windowWidth); // new elements being added
-	
+	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
 	textFont("Courier");
-	newElementBuffer.textFont("Courier");
-	
-	
 	
 	server = new Server();
 	server.init(); server.world.init();
@@ -70,7 +61,6 @@ function setup(){
 	update(); update(); update(); // I guess it takes three ticks to position everything correctly (including the camera and player)
 	
 	GuiHandler.init();
-	guiBuffer.scale(GUI_SCALE);
 	//settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-02", mainelement);	
 }
 

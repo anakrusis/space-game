@@ -20,20 +20,20 @@ for (var i = 0; i < 9; i++){
 			
 			var scale = 18;
 			var pts = itemstk.getItem().getRelRenderPoints();
-			newElementBuffer.noFill()
-			newElementBuffer.stroke(itemstk.getItem().color[0], itemstk.getItem().color[1], itemstk.getItem().color[2]);
-			newElementBuffer.beginShape();
+			noFill()
+			stroke(itemstk.getItem().color[0], itemstk.getItem().color[1], itemstk.getItem().color[2]);
+			beginShape();
 			for (i = 0; i < pts.length; i += 2){
 				var px = (pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
 				var py = (-pts[i])   * scale + this.dispy - this.padding + this.height/2 + 4;
-				newElementBuffer.vertex(px,py);
+				vertex(px,py);
 			}
-			newElementBuffer.endShape(CLOSE);
+			endShape(CLOSE);
 			
-			newElementBuffer.stroke(255);
-			newElementBuffer.textAlign(RIGHT);
-			newElementBuffer.text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
-			newElementBuffer.textAlign(LEFT);
+			stroke(255);
+			textAlign(RIGHT);
+			text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
+			textAlign(LEFT);
 			
 			//this.text = itemstk.item.name;
 			
@@ -548,13 +548,13 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 		
 		var scale = 18;
 		var pts = selectedMission.getIcon();
-		newElementBuffer.noFill()
-		newElementBuffer.stroke(selectedMission.iconColor[0], selectedMission.iconColor[1], selectedMission.iconColor[2]);
+		noFill()
+		stroke(selectedMission.iconColor[0], selectedMission.iconColor[1], selectedMission.iconColor[2]);
 		beginShape();
 		for (i = 0; i < pts.length; i += 2){
 			var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
 			var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
-			newElementBuffer.vertex(px,py);
+			vertex(px,py);
 		}
 		endShape(CLOSE);
 	}
@@ -645,15 +645,15 @@ GROUP_MISSION_SELECT.onShow = function(){
 			
 			var scale = 18;
 			var pts = this.mission.getIcon();
-			newElementBuffer.noFill()
-			newElementBuffer.stroke(this.mission.iconColor[0], this.mission.iconColor[1], this.mission.iconColor[2]);
-			newElementBuffer.beginShape();
+			noFill()
+			stroke(this.mission.iconColor[0], this.mission.iconColor[1], this.mission.iconColor[2]);
+			beginShape();
 			for (i = 0; i < pts.length; i += 2){
 				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
 				var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
-				newElementBuffer.vertex(px,py);
+				vertex(px,py);
 			}
-			newElementBuffer.endShape(CLOSE);
+			endShape(CLOSE);
 		}
 	}
 	

@@ -20,7 +20,6 @@ BACKSPACE_TIMER_AMT = 20;
 selectedTextEntry = null;
 
 class GuiHandler {	
-	static redrawFlag = false;
 	static elements = []; // outermost parent elements here, child elements contained within..
 	
 	static init(){
@@ -33,7 +32,6 @@ class GuiHandler {
 			MOUSE_SENSITIVITY = getItem("MOUSE_SENSITIVITY");
 		}
 		
-		//initGUI();
 	}
 	
 	static update(){
@@ -100,37 +98,21 @@ class GuiHandler {
 	
 	static render(){
 		
-		//guiBuffer.scale(GUI_SCALE);
+		scale(GUI_SCALE);
 		
-		if (this.redrawFlag){
-			
-			guiBuffer.clear();
-			
-			for (var i = 0; i < this.elements.length; i++){
-				var e = this.elements[i];
-				e.render();
-			}
-			this.redrawFlag = false;
-		}
-		//guiBuffer.scale(GUI_SCALE);
-	
-/* 		for (var i = 0; i < this.elements.length; i++){
+		for (var i = 0; i < this.elements.length; i++){
 			var e = this.elements[i];
-			//e.render();
-		} */
-		image(guiBuffer, 0, 0);
+			e.render();
+		}
 		
-		//guiBuffer.resetMatrix()
+		resetMatrix()
 	}
 	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.
 	static drawCityLabels(){
-		
-		if (cam_zoom < MIN_CITY_TEXT_ZOOM || cam_zoom > MAX_CITY_TEXT_ZOOM){ return; };
-		
 		for (key in client.world.cities){
 			
-			
+			if (cam_zoom < MIN_CITY_TEXT_ZOOM){ break; };
 			
 			var city = client.world.cities[key]; var nation = city.getNation();
 			var centerslice = city.getPlanet().getAbsPointsSlice( city.centerIndex, city.centerIndex );
