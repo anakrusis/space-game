@@ -260,8 +260,6 @@ class GuiElement {
 	// This is recursive, and it goes from a top parent element through all the children of the tree
 	render(){
 		if (!this.visible) { return; }
-		
-		GuiHandler.redrawFlag = true;
 		//console.log(" ah" );
 		
 		//
@@ -466,12 +464,12 @@ class GuiSlider extends GuiElement {
 	}
 	
 	onRender(){
-		fill(0);
-		rect( this.dispx, this.dispy + 30, this.dispwidth, this.dispheight - 30 );
+		newElementBuffer.fill(0);
+		newElementBuffer.rect( this.dispx, this.dispy + 30, this.dispwidth, this.dispheight - 30 );
 		
 		var coeff = (this.setting - this.min) / ( this.max - this.min );
-		fill(255);
-		rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
+		newElementBuffer.fill(255);
+		newElementBuffer.rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
 		
 	}
 	

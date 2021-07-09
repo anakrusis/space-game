@@ -60,6 +60,8 @@ function setup(){
 	textFont("Courier");
 	newElementBuffer.textFont("Courier");
 	
+	
+	
 	server = new Server();
 	server.init(); server.world.init();
 	//server.world = new World();
@@ -68,6 +70,7 @@ function setup(){
 	update(); update(); update(); // I guess it takes three ticks to position everything correctly (including the camera and player)
 	
 	GuiHandler.init();
+	guiBuffer.scale(GUI_SCALE);
 	//settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-02", mainelement);	
 }
 

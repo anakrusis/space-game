@@ -100,7 +100,7 @@ class GuiHandler {
 	
 	static render(){
 		
-		guiBuffer.scale(GUI_SCALE);
+		//guiBuffer.scale(GUI_SCALE);
 		
 		if (this.redrawFlag){
 			
@@ -120,7 +120,7 @@ class GuiHandler {
 		} */
 		image(guiBuffer, 0, 0);
 		
-		guiBuffer.resetMatrix()
+		//guiBuffer.resetMatrix()
 	}
 	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.
