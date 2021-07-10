@@ -154,10 +154,11 @@ class EntityBody extends Entity {
 	
 	isOnScreen(){
 		//var tx = tra_x(this.x); var ty = tra_y(this.y);
-		var ind = client.world.getPlayer().getTerrainIndex();
+		//var ind = client.world.getPlayer().getTerrainIndex();
+		var ind = CollisionUtil.indexFromEntityAngle( client.world.getPlayer(), this );
 		var slice = this.getAbsPointsSlice( ind, ind );
 		var tx = tra_x(slice[0]); var ty = tra_y(slice[1]);
-		//return ((tx > -(100*cam_zoom) && tx < width+(100*cam_zoom)) && (ty > -(100*cam_zoom) && ty < height+(100*cam_zoom)));
-		return true;
+		return ((tx > -(100*cam_zoom) && tx < width+(100*cam_zoom)) && (ty > -(100*cam_zoom) && ty < height+(100*cam_zoom)));
+		//return true;
 	}
 }

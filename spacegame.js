@@ -20,18 +20,13 @@ var drawEnabled = true;
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
 
-MAX_CITY_TEXT_ZOOM = 5.00;
-
-MAX_INTERPLANETARY_ZOOM = 0.5; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
-
 MIN_CITY_TEXT_ZOOM = 0.04; // anything smaller than this will not render city label names
 
+MAX_INTERPLANETARY_ZOOM = 0.5; // anything larger than this will only render a single planet (the planet the player is nearest to/in the gravity radius of)
 MAX_INTERSTELLAR_ZOOM   = 0.001; // anything larger than this will render a whole star system and its planets but no buildings/small details(TODO)
 // anything smaller than this will only render stars (no planets)
 
 MIN_ZOOM  = 0.001;
-
-RENDER_SCALE = 1;
 
 function loopyMod(x, m) {
 	return (x % m + m) % m;
@@ -55,19 +50,8 @@ function setup(){
     document.body.scroll = "no"; // ie only
 	
 	createCanvas(windowWidth, windowHeight);
-	
-/* 	let canvasElement = createCanvas(windowWidth, windowHeight).elt;
-	let context = canvasElement.getContext('2d');
-    context.mozImageSmoothingEnabled = false;
-    context.webkitImageSmoothingEnabled = false;
-    context.msImageSmoothingEnabled = false;
-    context.imageSmoothingEnabled = false; */
-	
-	//context.scale(0.5, 0.5);
-	
 	frameRate(60);
 	textFont("Courier");
-	textSize(16);
 	
 	server = new Server();
 	server.init(); server.world.init();
@@ -99,12 +83,7 @@ function draw(){
 	
 	background(13,0,13);
 	
-	//fill(13,0,13);
-	//rect(0,0,width/RENDER_SCALE,height/RENDER_SCALE);
-	
 	if ( drawEnabled ){
-		//scale(1 / RENDER_SCALE);
-		
 		// chunk boundary lines are behind everything
 		var chunk = client.world.getPlayer().getChunk();
 
@@ -119,12 +98,26 @@ function draw(){
 		vertex( tra_rot_x( cx, cy + CHUNK_DIM ), tra_rot_y( cx, cy + CHUNK_DIM ) );
 		vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
 		endShape();
-		
-		var renderqueue = getRenderQueue(chunk);
-		for ( var i = 0; i < 6; i++ ){
-			for ( var j = 0; j < renderqueue[i].length; j++){
 
-				renderqueue[i][j].render();
+		for ( var i = 0; i < 6; i++ ){
+					
+			// entities not confined to chunk
+			for ( var uuid in client.world.entities ){
+				var e = client.world.entities[uuid];
+				if (e.isOnScreen() && e.renderPriority == i){
+					e.render();
+				}
+			}
+			
+			// entities confined to chunk
+		
+			for ( var uuid in chunk.bodies ){
+				var b = chunk.bodies[uuid];
+				if (b.isOnScreen() && b.renderPriority == i){
+				//if (b.renderPriority == i){
+					
+					b.render();
+				}
 			}
 		}
 		
@@ -141,10 +134,6 @@ function draw(){
 		GuiHandler.drawCityLabels();
 		
 		resetMatrix();
-		
-		//let c = get(0,0,width/RENDER_SCALE,height/RENDER_SCALE);
-		//c.resize(width,height);
-		//image(c,0,0,width,height);
 	}
 	
 	GuiHandler.update();
@@ -152,35 +141,12 @@ function draw(){
 	
 	GuiHandler.handleTouches();
 	
-	stroke(255); //fill(255);
-	
+	stroke(255); fill(255);
+	textSize(16 * GUI_SCALE);
 	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
+	textSize(16);
 	
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);
-}
-
-var getRenderQueue = function(chunk){
-	renderqueue = [[],[],[],[],[],[]];
-	
-	// entities not confined to chunk
-	for ( var uuid in client.world.entities ){
-		var e = client.world.entities[uuid];
-		if (e.isOnScreen()){
-			//e.render();
-			renderqueue[e.renderPriority].push(e);
-		}
-	}
-	// entities confined to chunk
-
-	for ( var uuid in chunk.bodies ){
-		var b = chunk.bodies[uuid];
-		//if (b.isOnScreen()){
-			
-			renderqueue[b.renderPriority].push(b);
-			//b.render();
-		//}
-	}
-	return renderqueue;
 }
 
 var predictDerivativePoints = function(player){

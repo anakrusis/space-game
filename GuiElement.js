@@ -21,7 +21,6 @@ class GuiElement {
 		
 		this.autocenterX = false; // will center to middle of screen (best for popup windows, or also some HUD stuff)
 		this.autocenterY = false;
-		this.ticksShowing = 0;
 		
 		this.text = "";
 		this.disptext = "";
@@ -204,12 +203,6 @@ class GuiElement {
 			var e  = this.children[i];
 			e.update();
 		}
-		
-		if (this.visible){
-			this.ticksShowing++;
-		}else{
-			this.ticksShowing = 0;
-		}
 	}
 	
 	// This is blank by default so each GUI element can have unique per-tick behaviors
@@ -247,25 +240,18 @@ class GuiElement {
 	
 	// This is recursive, and it goes from a top parent element through all the children of the tree
 	render(){
-		if (!this.visible || this.ticksShowing < 4) { return; }
+		if (!this.visible) { return; }
 		
 		fill(0);
 		stroke(255);
 			
 		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
-		noStroke();
 		fill(255);
 		if (this.text != ""){
 			//textWrap(LINE)
-			if (this.lines <= 1){
-				text( this.text, this.dispx + this.padding, this.dispy + this.padding * 3 );
-			}else{
-				text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
-			}
-			
+			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
 		}
-		stroke(255);
 		if (this.onRender){
 			this.onRender();
 		}
