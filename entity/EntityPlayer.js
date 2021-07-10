@@ -10,6 +10,7 @@ class EntityPlayer extends EntityShip {
 		this.renderPriority = 5;
 		this.inventory = new Inventory(9);
 		this.money = 0;
+		this.history = new History();
 		
 		// Physical properties
 		this.boostForce = new ForceVector("Boost",0,0); // this is a buffer which pushes onto the forces array a boost value per tick

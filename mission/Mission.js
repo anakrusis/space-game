@@ -70,14 +70,18 @@ class Mission {
 	}
 	
 	onFail(){
-		GROUP_MISSION_FAIL.children[1].text = this.failtext; server.world.getPlayer().currentMission = null;
+		var p = server.world.getPlayer();
+		GROUP_MISSION_FAIL.children[1].text = this.failtext; p.currentMission = null;
+		p.history.events.push( new EventMissionFail( new Date(), this ) );
 		GuiHandler.openWindow(GROUP_MISSION_FAIL);
 	}
 	
 	onSuccess(){
-		server.world.getPlayer().money += this.reward;
+		var p = server.world.getPlayer();
+		p.money += this.reward;
 		
-		GROUP_MISSION_SUCCESS.children[1].text = this.successtext; server.world.getPlayer().currentMission = null;
+		GROUP_MISSION_SUCCESS.children[1].text = this.successtext; p.currentMission = null;
+		p.history.events.push( new EventMissionSuccess( new Date(), this ) );
 		GuiHandler.openWindow(GROUP_MISSION_SUCCESS);
 	}
 	

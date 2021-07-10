@@ -15,6 +15,7 @@ class World {
 		this.worldTime = 0;
 		
 		this.type = this.constructor.name;
+		this.history = new History();
 	}
 	
 	init(){

@@ -15,7 +15,7 @@ class EntityBody extends Entity {
 		this.explored = false;
 	}
 	
-	render(){
+	render(){;
 		
 		super.render();
 		

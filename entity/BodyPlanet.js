@@ -109,7 +109,7 @@ class BodyPlanet extends EntityBody {
 		
 		super.render();
 		
-		stroke(128);
+/* 		stroke(128);
 		strokeWeight(0.5 * cam_zoom);
 		for (var i = 0; i < this.terrainSize; i++){
 			if (this.tiles[ i ].hasRoad){
@@ -121,7 +121,7 @@ class BodyPlanet extends EntityBody {
 				endShape(CLOSE);
 			}
 		}
-		strokeWeight(1);
+		strokeWeight(1); */
 	}
 	
 	LODPass( points ){

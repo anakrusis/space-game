@@ -15,6 +15,7 @@ class GuiElement {
 		
 		this.active = true;
 		this.visible = true;
+		this.ticksShown = 0;
 		
 		this.autopos = "top"; // float property
 		this.autosize = false; // will fill up to the size of its children elements
@@ -203,6 +204,12 @@ class GuiElement {
 			var e  = this.children[i];
 			e.update();
 		}
+		
+		if (this.visible){
+			this.ticksShown++;
+		}else{
+			this.ticksShown = 0;
+		}
 	}
 	
 	// This is blank by default so each GUI element can have unique per-tick behaviors
@@ -240,13 +247,14 @@ class GuiElement {
 	
 	// This is recursive, and it goes from a top parent element through all the children of the tree
 	render(){
-		if (!this.visible) { return; }
+		if (!this.visible || this.ticksShown < 3) { return; }
 		
 		fill(0);
 		stroke(255);
 			
 		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
+		noStroke();
 		fill(255);
 		if (this.text != ""){
 			//textWrap(LINE)
@@ -427,6 +435,7 @@ class GuiSlider extends GuiElement {
 	
 	onRender(){
 		fill(0);
+		stroke(255);
 		rect( this.dispx, this.dispy + 30, this.dispwidth, this.dispheight - 30 );
 		
 		var coeff = (this.setting - this.min) / ( this.max - this.min );

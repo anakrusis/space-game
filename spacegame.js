@@ -98,6 +98,8 @@ function draw(){
 		vertex( tra_rot_x( cx, cy + CHUNK_DIM ), tra_rot_y( cx, cy + CHUNK_DIM ) );
 		vertex( tra_rot_x( cx, cy ), tra_rot_y( cx, cy ) );
 		endShape();
+		
+		var bodies = 0;
 
 		for ( var i = 0; i < 6; i++ ){
 					
@@ -117,6 +119,8 @@ function draw(){
 				//if (b.renderPriority == i){
 					
 					b.render();
+					
+					bodies++;
 				}
 			}
 		}
@@ -144,6 +148,7 @@ function draw(){
 	stroke(255); fill(255);
 	textSize(16 * GUI_SCALE);
 	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
+	text("br: " + bodies, width - ( 75 * GUI_SCALE ), 32 * GUI_SCALE);
 	textSize(16);
 	
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);

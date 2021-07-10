@@ -30,9 +30,9 @@ class BuildingFarm extends EntityBuilding {
 		// This part over here is making the fake "fence" of the farm which is really just a line parallel to the surface of the planet moved up a unit
 		var planetslice = this.getPlanet().getAbsPointsSlice(this.startindex, this.endindex, 1);
 		
-		abspoints.push(planetslice[0], planetslice[1]);
-		abspoints.push(planetslice[2], planetslice[3]);
 		abspoints.push(planetslice[4], planetslice[5]);
+		abspoints.push(planetslice[2], planetslice[3]);
+		abspoints.push(planetslice[0], planetslice[1]);
 		
 		abspoints.push(rot_x(this.dir,relpoints[i],relpoints[ relpoints.length - 2 ]) + this.x);
 		abspoints.push(rot_y(this.dir,relpoints[i],relpoints[ relpoints.length - 1 ]) + this.y);

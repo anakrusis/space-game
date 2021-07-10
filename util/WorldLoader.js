@@ -12,7 +12,8 @@ class WorldLoader {
 		Place,
 		Inventory,
 		ItemStack,
-		ForceVector
+		ForceVector,
+		History
 	};
 	
 	// will export a json string
