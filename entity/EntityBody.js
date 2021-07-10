@@ -151,4 +151,13 @@ class EntityBody extends Entity {
 	getGravityBody(){
 		return server.world.chunks[this.getChunk().x][this.getChunk().y].bodies[this.gravUUID];
 	}
+	
+	isOnScreen(){
+		//var tx = tra_x(this.x); var ty = tra_y(this.y);
+		var ind = client.world.getPlayer().getTerrainIndex();
+		var slice = this.getAbsPointsSlice( ind, ind );
+		var tx = tra_x(slice[0]); var ty = tra_y(slice[1]);
+		//return ((tx > -(100*cam_zoom) && tx < width+(100*cam_zoom)) && (ty > -(100*cam_zoom) && ty < height+(100*cam_zoom)));
+		return true;
+	}
 }

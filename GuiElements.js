@@ -291,8 +291,8 @@ var menu_resume = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_resume.text = 
 menu_resume.onClick = function(){
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
-var menu_slcntr = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_slcntr.autosize = true; menu_slcntr.autopos = "left";
-var menu_save = new GuiElement(0,0,147.5,40,menu_slcntr); menu_save.text = "Save Game";
+GROUP_MAINMENU.ELM_CNTR1 = new GuiElement(0,0,300,40,GROUP_MAINMENU); GROUP_MAINMENU.ELM_CNTR1.autosize = true; GROUP_MAINMENU.ELM_CNTR1.autopos = "left";
+var menu_save = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR1); menu_save.text = "Save Game";
 menu_save.onClick = function(){
 	
 	var jsonworld = getItem("world");
@@ -311,7 +311,7 @@ menu_save.onClick = function(){
 
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_SAVE);
 }
-var menu_load = new GuiElement(0,0,147.5,40,menu_slcntr); menu_load.text = "Load Game";
+var menu_load = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR1); menu_load.text = "Load Game";
 menu_load.onClick = function(){
 	var jsonworld = getItem("world");
 	if (!jsonworld){ 
@@ -329,8 +329,14 @@ menu_load.onClick = function(){
 	
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_LOAD);
 }
-var menu_option = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_option.text = "Settings...";
-menu_option.onClick = function(){
+GROUP_MAINMENU.ELM_CNTR2 = new GuiElement(0,0,300,40,GROUP_MAINMENU); GROUP_MAINMENU.ELM_CNTR2.autosize = true; GROUP_MAINMENU.ELM_CNTR2.autopos = "left";
+
+GROUP_MAINMENU.BTN_SETTINGS = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR2); GROUP_MAINMENU.BTN_SETTINGS.text = "Settings...";
+GROUP_MAINMENU.BTN_SETTINGS.onClick = function(){
+	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_OPTIONS);
+}
+GROUP_MAINMENU.BTN_HISTORY = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR2); GROUP_MAINMENU.BTN_HISTORY.text = "History";
+GROUP_MAINMENU.BTN_HISTORY.onClick = function(){
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_OPTIONS);
 }
 

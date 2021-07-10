@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.1e";
-BUILD_DATE = "2021-07-03"
+BUILD_DATE = "2021-07-09"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -54,7 +54,7 @@ class GuiHandler {
 		
 		for (var i = 0; i < this.elements.length; i++){
 			var e = this.elements[i];
-			if (true){
+			if (e.active){
 				e.update();
 			}
 		}
@@ -110,9 +110,16 @@ class GuiHandler {
 	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.
 	static drawCityLabels(){
+		
+		if (cam_zoom < MIN_CITY_TEXT_ZOOM || cam_zoom > MAX_CITY_TEXT_ZOOM){ return; };
+		
+		var homecity = client.world.getPlayer().getNation().getCapitalCity();
+		
+		noStroke();
+		
+		//textSize(24);
+		
 		for (key in client.world.cities){
-			
-			if (cam_zoom < MIN_CITY_TEXT_ZOOM){ break; };
 			
 			var city = client.world.cities[key]; var nation = city.getNation();
 			var centerslice = city.getPlanet().getAbsPointsSlice( city.centerIndex, city.centerIndex );
@@ -124,7 +131,7 @@ class GuiHandler {
 			var radius = 20 + (16 * cam_zoom);
 			centerx += ( radius * Math.cos(angle)); centery += ( radius * Math.sin(angle));
 			
-			stroke( nation.color[0], nation.color[1], nation.color[2] ); 
+			//stroke( nation.color[0], nation.color[1], nation.color[2] ); 
 			fill  ( nation.color[0], nation.color[1], nation.color[2] );
 			
 			push();
@@ -141,16 +148,16 @@ class GuiHandler {
 			if (angle > Math.PI / 2 && angle < (3 * Math.PI)/2){
 				angle -= Math.PI ;
 				angle = loopyMod( angle, Math.PI*2 );
-				textAlign(RIGHT);
+				//textAlign(RIGHT);
 				
 				citystring = city.name + " →";
-				if (client.world.getPlayer().getNation().getCapitalCity() == city){
+				if (homecity == city){
 					citystring = "⌂ " + citystring;
 				}
 			}else{
-				textAlign(LEFT);
+				//textAlign(LEFT);
 				citystring = "← " + city.name;
-				if (client.world.getPlayer().getNation().getCapitalCity() == city){
+				if (homecity == city){
 					citystring = citystring + " ⌂";
 				}
 			}
@@ -160,12 +167,12 @@ class GuiHandler {
 			}
 			
 			rotate(angle);
+			//textSize(24);
 			
-			textSize(24);
-			text(citystring, 0, 0);
+			//text(citystring, 0, 0);
 			
 			pop();
-			textAlign(LEFT);
+			//textAlign(LEFT);
 		}
 	}
 	
