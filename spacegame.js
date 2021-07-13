@@ -56,8 +56,8 @@ function setup(){
 	
 	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
-	//textFont("Courier");
-	pixelDensity(0.5);
+	textFont("Courier"); textSize(32);
+	pixelDensity(1);
 	noSmooth();
 	
 	server = new Server();
@@ -150,7 +150,7 @@ function draw(){
 			translate(-width/2, -height/2);
 		}
 		
-		//GuiHandler.drawCityLabels();
+		GuiHandler.drawCityLabels();
 		
 		resetMatrix();
 	}
@@ -162,7 +162,7 @@ function draw(){
 	
 	stroke(255); fill(255);
 	textSize(16 * GUI_SCALE);
-	//text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
+	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
 	//text("br: " + bodies, width - ( 75 * GUI_SCALE ), 32 * GUI_SCALE);
 	textSize(16);
 	
@@ -259,7 +259,9 @@ function keyPressed() {
 			PLANET_CAM = !PLANET_CAM;
 		}else if (keyCode === 66){
 			buildingDrawEnabled = !buildingDrawEnabled;	
-		}
+		}else if (keyCode === 84){
+			FANCY_TEXT = !FANCY_TEXT;
+		}	
 	}
 }
 

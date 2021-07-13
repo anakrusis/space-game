@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.1e";
-BUILD_DATE = "2021-07-10"
+BUILD_DATE = "2021-07-13"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -7,6 +7,7 @@ document.title = TITLE_VERSION;
 GUI_SCALE = 1.5;
 MOUSE_SENSITIVITY = 1;
 PLANET_CAM = true; cam_rot = 0;
+FANCY_TEXT = true; LORES_MODE = false;
 
 lasttouches = [];
 options_buffer = {}; // This is used to buffer changes in the options menu
@@ -58,6 +59,12 @@ class GuiHandler {
 				e.update();
 			}
 		}
+		if (LORES_MODE && FANCY_TEXT){ GUI_SCALE = 2; }
+		
+		if (this.lastLoresMode != LORES_MODE){
+			pixelDensity( LORES_MODE ? 0.5 : 1 );
+		}
+		this.lastLoresMode = LORES_MODE;
 	}
 	
 	static openWindow( element ){
@@ -99,6 +106,8 @@ class GuiHandler {
 	static render(){
 		
 		scale(GUI_SCALE);
+		fill(0);
+		stroke(255);
 		
 		for (var i = 0; i < this.elements.length; i++){
 			var e = this.elements[i];

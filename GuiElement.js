@@ -175,27 +175,27 @@ class GuiElement {
 		this.lwn = length_without_newlines;
 		
 		this.lines2 = Math.floor(length_without_newlines / 30) + 1 */
-		
-/* 		var lines = 1;
-		var linepos = 0;
-		for (var i = 0; i < this.text.length; i++){
-			
-			//console.log(this.text.slice(i,i+2));
-			if (this.text.slice(i, i+1) == "\n"){
-				lines++;
-				linepos = 0;
-			}
-			
-			if ((linepos+1) % (this.dispwidth/10) == 0){
+		if (!FANCY_TEXT){
+			var lines = 0;
+			var linepos = 0;
+			for (var i = 0; i < this.text.length; i++){
 				
-				lines++;
-				linepos = 0;
-				//var txt2 = txt1.slice(0, 3) + "\n" + txt1.slice(3);
+				//console.log(this.text.slice(i,i+2));
+				if (this.text.slice(i, i+1) == "\n"){
+					lines++;
+					linepos = 0;
+				}
+				
+				if ((linepos+1) % (this.dispwidth/10) == 0){
+					
+					lines++;
+					linepos = 0;
+					//var txt2 = txt1.slice(0, 3) + "\n" + txt1.slice(3);
+				}
+				linepos++;
 			}
-			linepos++;
+			this.lines = lines;
 		}
-		
-		this.lines = lines; */
 		
 		var h = (16 * this.lines) + this.padding*6;
 		this.dispheight = Math.max(this.dispheight, h);
@@ -249,51 +249,63 @@ class GuiElement {
 	render(){
 		if (!this.visible || this.ticksShown < 3) { return; }
 		
-		fill(0);
-		stroke(255);
+		//if (!FANCY_TEXT){
+			fill(0);
+			stroke(255);
+		//}
 			
 		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
-		noStroke();
-		fill(255);
-		this.lines = 0;
+		//if (!FANCY_TEXT){
+			noStroke();
+			fill(255);
+		//}
+		
 		if (this.text != ""){
 			//this.text = this.text.toUpperCase();
 			//textWrap(LINE)
-			//text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
-			
-			var dx = this.dispx + this.padding; var dy = this.dispy + this.padding;
-			
-			var SOURCE_SIZE = 8;
-			var DEST_SIZE = 16;
-			var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_SIZE ) ;
-			
-			while ( i < this.text.length ){
+			//
+			if (!FANCY_TEXT){
+				text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+				
+			}else{
+				this.lines = 0;
+				var dx = this.dispx + this.padding; var dy = this.dispy + this.padding;
+				
+				var SOURCE_SIZE = 8;
+				var DEST_SIZE = 16;
+				var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_SIZE ) ;
+				
+				while ( i < this.text.length ){
 
 
-				var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
-				
-				if ( c != 32 ){
-				//image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight])
-					image(FONT, dx, dy, DEST_SIZE, DEST_SIZE, cx * SOURCE_SIZE, cy * SOURCE_SIZE, SOURCE_SIZE, SOURCE_SIZE);
-				}
-				
-				dx += Math.ceil( DEST_SIZE * 1 ); column++;
-				
-				if (c == 32){
-					var f = this.text.substring(i+1); var f2 = f.split(" ");
+					var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
 					
-					if ( column + (f2[0].length) > this.maxcolumns ){ 
+					if ( c != 32 ){
+					//image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight])
+						image(FONT, dx, dy, DEST_SIZE, DEST_SIZE, cx * SOURCE_SIZE, cy * SOURCE_SIZE, SOURCE_SIZE, SOURCE_SIZE);
+					}
+					
+					dx += Math.ceil( DEST_SIZE * 1 ); column++;
+					
+					if (c == 32){
+						var f = this.text.substring(i+1); var tospace = f.split(" "); var tonl = f.split("\n");
+						
+						var f2 = ( tospace[0].length < tonl[0].length ) ? tospace : tonl;
+						
+						if ( column + (f2[0].length) > this.maxcolumns ){ 
+							dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
+							column = 0; this.lines++;
+						}
+					}else if (this.text.substring(i,i+1) == "\n"){
 						dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
 						column = 0; this.lines++;
 					}
-				}else if (this.text.substring(i,i+1) == "\n"){
-					dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
-					column = 0; this.lines++;
+					i++;
 				}
-				i++;
 			}
-			
+		}else{
+			this.lines = 0;
 		}
 		if (this.onRender){
 			this.onRender();
@@ -428,6 +440,36 @@ class GuiTextEntry extends GuiElement {
 		}
 	}
 
+}
+
+class GuiCheckbox extends GuiElement {
+	constructor(width,parent,patharray){
+		super(0,0,width,60,parent);
+		this.patharray = patharray;
+		this.setting = window[ this.patharray[0] ];
+		this.originalsetting = this.setting;
+	}
+	
+	onClick(){
+		this.setting = !this.setting;
+		options_buffer[ this.patharray ] = this.setting;
+	}
+	onShow(){
+		this.setting = window[ this.patharray[0] ];
+	}
+	onRender(){
+		fill(0);
+		stroke(255);
+		var topleftX = this.dispx + this.dispwidth - this.dispheight;
+		var topleftY = this.dispy + this.padding;
+		var w = this.dispheight - this.padding;
+		var h = this.dispheight - 2 * this.padding;
+		rect( topleftX, topleftY, w, h);
+		
+		if (this.setting){
+			line(topleftX, topleftY, topleftX + w, topleftY + h);
+		}
+	}
 }
 
 class GuiSlider extends GuiElement {

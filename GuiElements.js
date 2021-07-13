@@ -70,15 +70,17 @@ playerstatus.onUpdate = function(){
 }
 
 playerstatus.onRender = function(){
-	var x = this.dispx + 65;
+	var offset = FANCY_TEXT ? 102 : 65;
+	var x = this.dispx + offset;
 	var y = this.dispy + this.padding + 3;
-	var w = 220 * client.world.getPlayer().getBoostForce().magnitude / 10;
+	var barwidth = FANCY_TEXT ? 175 : 220;
+	var w = barwidth * client.world.getPlayer().getBoostForce().magnitude / 10;
 	rect(x,y,w,10);
 	
 	blendMode(DIFFERENCE);
 	fill(255); noStroke();
 	for (var i = 0; i <= 10; i++){
-		var dx = x + ( i / 10 * 220 );
+		var dx = x + ( i / 10 * barwidth );
 		var dy = y + 3;
 		
 		if (i == 5 || i == 0 || i == 10){ 
@@ -89,9 +91,10 @@ playerstatus.onRender = function(){
 	}	
 	
 	blendMode(BLEND);
+	//if (FANCY_TEXT){ fill(0); stroke(255); }
 }
 
-var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+/* var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 missioninfo.onUpdate = function(){
 	
 	if (!client.world.getPlayer()){ this.hide(); return; }
@@ -115,7 +118,7 @@ missioninfo.onUpdate = function(){
 	}else{
 		this.hide();
 	}
-}
+} */
 
 var objectiveinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 objectiveinfo.onUpdate = function(){
@@ -125,6 +128,18 @@ objectiveinfo.onUpdate = function(){
 	var mission = client.world.getPlayer().currentMission;
 	if (mission){
 		this.text = "";
+		
+		var infostring = mission.infobarblurb;
+		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
+		var missiontime_sec = ~~((mission.timeRemaining /60) % 60 );
+		
+		var outtime = ""
+		outtime += "" + missiontime_min + ":" + (missiontime_sec < 10 ? "0" : "");
+		outtime += "" + missiontime_sec;
+		
+		infostring += " (" + outtime + ")" + "\n\n";
+		
+		this.text += infostring;
 		
 		for (var i = 0; i < mission.objectives.length; i++){
 			
@@ -501,6 +516,7 @@ var options_mouse = new GuiSlider(0,0,400,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY",
 options_mouse.onUpdate = function(){
 	this.text = "Zoom sensitivity: " + Math.round(this.setting * 100)/100;
 }
+var options_lores = new GuiCheckbox(200,GROUP_OPTIONS,["LORES_MODE","SQUIDWARD"]); options_lores.text = "Low res mode: ";
 
 var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true;  options_btncntr.autopos = "left";
 
@@ -655,7 +671,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	this.children = [];
 	
-	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
+	var tittle = new GuiElement(0,0,400,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
 	
 	var selectedCity = selectedEntity.getCity();
 	var missions = selectedCity.getAvailableMissions();
@@ -666,7 +682,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	for (mission of missions){		
 		
-		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = mission.displaytext; button.mission = mission;
+		var button = new GuiElement(0,0,400,40,GROUP_MISSION_SELECT); button.text = mission.displaytext; button.mission = mission;
 		button.onClick = function(){
 			selectedMission = this.mission;
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);

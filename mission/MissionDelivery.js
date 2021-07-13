@@ -19,7 +19,7 @@ class MissionDelivery extends Mission {
 			
 			this.desc = "The city of " + dest.name + " is awaiting the arrival of " + item.name + ".\n";
 			this.failtext = "The passengers did not reach their destination! This is an atrocity!";
-			this.successtext = "The " + item.name + " were safely brought to the city of\n" + dest.name + "!\nGreat work!";
+			this.successtext = "The " + item.name + " were safely brought to the city of" + dest.name + "!\nGreat work!";
 			
 		}else{
 		
@@ -39,7 +39,7 @@ class MissionDelivery extends Mission {
 		// displayed on the select menu and confirmation screen
 		
 		this.displaytext  = item.name + " (" + this.quantity + ")\n";
-		this.displaytext += this.getSourceCity().name + " ➔ " + this.getDestinationCity().name;
+		this.displaytext += this.getSourceCity().name + " > " + this.getDestinationCity().name;
 		this.displaytext += "\n$" + this.reward;
 		
 		this.infobarblurb = this.getSourceCity().name + " to " + this.getDestinationCity().name;
