@@ -33,7 +33,7 @@ class HistoryEvent {
 	}
 	
 	getInfoText(){
-		return "No info text found for this event!";
+		return this.getDateText() + "\nNo info text found for this event!";
 	}	
 }
 
@@ -43,12 +43,17 @@ class EventMissionFail extends HistoryEvent {
 		this.mission = mission;
 	}
 	
-
+	getInfoText(){
+		return "Mission Failed\nDate: " + this.getDateText() + "\n" + this.mission.displaytext; 
+	}
 }
 
 class EventMissionSuccess extends HistoryEvent {
 	constructor( date, mission ){
 		super(date);
 		this.mission = mission;
+	}
+	getInfoText(){
+		return "Mission Completed\nDate: " + this.getDateText() + "\n" + this.mission.displaytext; 
 	}
 }

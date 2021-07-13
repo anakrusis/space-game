@@ -13,7 +13,8 @@ class WorldLoader {
 		Inventory,
 		ItemStack,
 		ForceVector,
-		History
+		History,
+		HistoryEvent
 	};
 	
 	// will export a json string

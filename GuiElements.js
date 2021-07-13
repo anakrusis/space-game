@@ -371,7 +371,12 @@ GROUP_HISTORY.ELM_MISSIONCNTR.onShow = function(){
 		var element = new GuiElement(0,0,300,40,GROUP_HISTORY.ELM_MISSIONCNTR); element.text = "No missions completed!";
 		return;
 	}
-	
+	for (var i = 0; i < e.length; i++){
+		var ev = e[i];
+		if (ev){
+			var element = new GuiElement(0,0,300,40,GROUP_HISTORY.ELM_MISSIONCNTR); element.text = ev.getInfoText();
+		}
+	}
 }
 
 GROUP_HISTORY.BTN_BACK = new GuiElement(0,0,100,40,GROUP_HISTORY); GROUP_HISTORY.BTN_BACK.text = "Back";
