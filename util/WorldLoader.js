@@ -100,6 +100,11 @@ class WorldLoader {
 			}
 		}
 		
+		var e = dw.getPlayer().history.events;
+		for (var i = 0; i < e.length; i++){
+			e[i].date = new Date(e[i].date);
+		}
+		
 		return dw;
 	}
 	
