@@ -46,7 +46,7 @@ function windowResized() {
 }
 
 function preload(){
-	FONT = loadImage("font.png");
+	FONT = loadImage("font8drawn.png");
 }
 
 function setup(){
@@ -57,7 +57,8 @@ function setup(){
 	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
 	//textFont("Courier");
-	pixelDensity(1);
+	pixelDensity(0.5);
+	noSmooth();
 	
 	server = new Server();
 	server.init(); server.world.init();
@@ -67,6 +68,14 @@ function setup(){
 	update(); update(); update(); // I guess it takes three ticks to position everything correctly (including the camera and player)
 	
 	GuiHandler.init();
+	
+	let canvasElement = createCanvas(windowWidth, windowHeight).elt;
+	let context = canvasElement.getContext('2d');
+    context.mozImageSmoothingEnabled = false;
+    context.webkitImageSmoothingEnabled = false;
+    context.msImageSmoothingEnabled = false;
+    context.imageSmoothingEnabled = false;
+	
 	//settings = QuickSettings.create(0, 0, "Space Game 0.0.1 2021-04-02", mainelement);	
 }
 
@@ -141,7 +150,7 @@ function draw(){
 			translate(-width/2, -height/2);
 		}
 		
-		GuiHandler.drawCityLabels();
+		//GuiHandler.drawCityLabels();
 		
 		resetMatrix();
 	}
@@ -153,8 +162,8 @@ function draw(){
 	
 	stroke(255); fill(255);
 	textSize(16 * GUI_SCALE);
-	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
-	text("br: " + bodies, width - ( 75 * GUI_SCALE ), 32 * GUI_SCALE);
+	//text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
+	//text("br: " + bodies, width - ( 75 * GUI_SCALE ), 32 * GUI_SCALE);
 	textSize(16);
 	
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);

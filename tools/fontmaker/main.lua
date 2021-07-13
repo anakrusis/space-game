@@ -1,7 +1,8 @@
-FONT_SIZE = 24
+FONT_SIZE = 16
 
 function love.load()
-	font = love.graphics.setNewFont( "COURIER.TTF", FONT_SIZE );
+	font = love.graphics.setNewFont( "RobotoMono-Regular.TTF", FONT_SIZE );
+	font:setFilter("nearest", "nearest");
 	love.graphics.setDefaultFilter( "nearest", "nearest", 0 )
 end
 

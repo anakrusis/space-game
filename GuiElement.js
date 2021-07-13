@@ -176,7 +176,7 @@ class GuiElement {
 		
 		this.lines2 = Math.floor(length_without_newlines / 30) + 1 */
 		
-		var lines = 1;
+/* 		var lines = 1;
 		var linepos = 0;
 		for (var i = 0; i < this.text.length; i++){
 			
@@ -195,9 +195,9 @@ class GuiElement {
 			linepos++;
 		}
 		
-		this.lines = lines;
+		this.lines = lines; */
 		
-		var h = 22 * this.lines;
+		var h = (16 * this.lines) + this.padding*6;
 		this.dispheight = Math.max(this.dispheight, h);
 		
 		for (var i = 0; i < this.children.length; i++){
@@ -256,22 +256,42 @@ class GuiElement {
 		
 		noStroke();
 		fill(255);
+		this.lines = 0;
 		if (this.text != ""){
+			//this.text = this.text.toUpperCase();
 			//textWrap(LINE)
 			//text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
 			
-			for ( i = 0; i < this.text.length; i++){
-				
-				
-				var SOURCE_SIZE = 24;
-				var DEST_SIZE = 16;
+			var dx = this.dispx + this.padding; var dy = this.dispy + this.padding;
+			
+			var SOURCE_SIZE = 8;
+			var DEST_SIZE = 16;
+			var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_SIZE ) ;
+			
+			while ( i < this.text.length ){
+
+
 				var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
 				
-				var dx = this.dispx + this.padding + ( i * DEST_SIZE / 2 );
-				var dy = this.dispy + this.padding;
-				
+				if ( c != 32 ){
 				//image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight])
-				image(FONT, dx, dy, DEST_SIZE, DEST_SIZE, cx * SOURCE_SIZE, cy * SOURCE_SIZE, SOURCE_SIZE, SOURCE_SIZE);
+					image(FONT, dx, dy, DEST_SIZE, DEST_SIZE, cx * SOURCE_SIZE, cy * SOURCE_SIZE, SOURCE_SIZE, SOURCE_SIZE);
+				}
+				
+				dx += Math.ceil( DEST_SIZE * 1 ); column++;
+				
+				if (c == 32){
+					var f = this.text.substring(i+1); var f2 = f.split(" ");
+					
+					if ( column + (f2[0].length) > this.maxcolumns ){ 
+						dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
+						column = 0; this.lines++;
+					}
+				}else if (this.text.substring(i,i+1) == "\n"){
+					dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
+					column = 0; this.lines++;
+				}
+				i++;
 			}
 			
 		}

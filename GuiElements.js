@@ -196,16 +196,16 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
 			
 			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
-			//infostring += "• Day length: " + Math.round(daylen) + " Earth min.\n"
+			//infostring += "= Day length: " + Math.round(daylen) + " Earth min.\n"
 			var yearlen = e.orbitPeriod / 60 / 60;
-			//infostring += "• Year length: " + Math.round(yearlen) + " Earth min"
+			//infostring += "= Year length: " + Math.round(yearlen) + " Earth min"
 			
 			var temp = e.temperature - 273.15;
 			temp = Math.round(100 * temp)/100;
-			infostring += "• Temperature: " + temp + "°C\n"
+			infostring += "= Temp: " + temp + "°C\n"
 			
 			var hum = Math.round(e.humidity * 100);
-			infostring += "• Humidity: " + hum + "%\n"
+			infostring += "= Humidity: " + hum + "%\n"
 			
 		}else if (e instanceof EntityBuilding){
 			
@@ -497,9 +497,9 @@ options_guiscale.onUpdate = function(){
 	this.text = "Gui scale: " + Math.round(this.setting * 100)/100;
 }
 
-var options_mouse = new GuiSlider(0,0,320,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY","SQUIDWARD"], 0.5, 2); options_mouse.text = "Gui scale: ";
+var options_mouse = new GuiSlider(0,0,400,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY","SQUIDWARD"], 0.5, 2); options_mouse.text = "Gui scale: ";
 options_mouse.onUpdate = function(){
-	this.text = "Mouse wheel sensitivity: " + Math.round(this.setting * 100)/100;
+	this.text = "Zoom sensitivity: " + Math.round(this.setting * 100)/100;
 }
 
 var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true;  options_btncntr.autopos = "left";
