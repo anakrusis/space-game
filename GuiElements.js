@@ -94,7 +94,7 @@ playerstatus.onRender = function(){
 	//if (FANCY_TEXT){ fill(0); stroke(255); }
 }
 
-/* var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
+var missioninfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 missioninfo.onUpdate = function(){
 	
 	if (!client.world.getPlayer()){ this.hide(); return; }
@@ -118,7 +118,7 @@ missioninfo.onUpdate = function(){
 	}else{
 		this.hide();
 	}
-} */
+}
 
 var objectiveinfo = new GuiElement(0,0,300,40,GROUP_INFOBAR); 
 objectiveinfo.onUpdate = function(){
@@ -129,7 +129,7 @@ objectiveinfo.onUpdate = function(){
 	if (mission){
 		this.text = "";
 		
-		var infostring = mission.infobarblurb;
+/* 		var infostring = mission.infobarblurb;
 		var missiontime_min = ~~((mission.timeRemaining /60) / 60) ;
 		var missiontime_sec = ~~((mission.timeRemaining /60) % 60 );
 		
@@ -139,7 +139,7 @@ objectiveinfo.onUpdate = function(){
 		
 		infostring += " (" + outtime + ")" + "\n\n";
 		
-		this.text += infostring;
+		this.text += infostring; */
 		
 		for (var i = 0; i < mission.objectives.length; i++){
 			
@@ -671,7 +671,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	this.children = [];
 	
-	var tittle = new GuiElement(0,0,400,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
+	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
 	
 	var selectedCity = selectedEntity.getCity();
 	var missions = selectedCity.getAvailableMissions();
@@ -682,7 +682,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	for (mission of missions){		
 		
-		var button = new GuiElement(0,0,400,40,GROUP_MISSION_SELECT); button.text = mission.displaytext; button.mission = mission;
+		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = mission.displaytext; button.mission = mission;
 		button.onClick = function(){
 			selectedMission = this.mission;
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);

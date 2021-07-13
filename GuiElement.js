@@ -197,7 +197,11 @@ class GuiElement {
 			this.lines = lines;
 		}
 		
-		var h = (16 * this.lines) + this.padding*6;
+		if (FANCY_TEXT){
+			var h = (16 * this.lines) + this.padding*6;
+		}else{
+			var h = 22 * this.lines + this.padding*5;
+		}
 		this.dispheight = Math.max(this.dispheight, h);
 		
 		for (var i = 0; i < this.children.length; i++){

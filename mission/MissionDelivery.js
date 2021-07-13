@@ -39,7 +39,7 @@ class MissionDelivery extends Mission {
 		// displayed on the select menu and confirmation screen
 		
 		this.displaytext  = item.name + " (" + this.quantity + ")\n";
-		this.displaytext += this.getSourceCity().name + " > " + this.getDestinationCity().name;
+		this.displaytext += this.getSourceCity().name + " ➔ " + this.getDestinationCity().name;
 		this.displaytext += "\n$" + this.reward;
 		
 		this.infobarblurb = this.getSourceCity().name + " to " + this.getDestinationCity().name;

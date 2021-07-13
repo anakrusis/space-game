@@ -46,7 +46,7 @@ function windowResized() {
 }
 
 function preload(){
-	FONT = loadImage("font8drawn.png");
+	//FONT = loadImage("font8drawn.png");
 }
 
 function setup(){
@@ -260,7 +260,7 @@ function keyPressed() {
 		}else if (keyCode === 66){
 			buildingDrawEnabled = !buildingDrawEnabled;	
 		}else if (keyCode === 84){
-			FANCY_TEXT = !FANCY_TEXT;
+			//FANCY_TEXT = !FANCY_TEXT;
 		}	
 	}
 }
