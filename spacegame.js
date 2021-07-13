@@ -16,6 +16,7 @@ var trajectoryBuffer = [[],[]];
 var traj_pointer = 0;
 
 var drawEnabled = true;
+var FONT = null;
 
 CHUNK_DIM = 524288; // both width and height of the chunks are equal. this could technically be very large.
 MAX_ZOOM  = 100;
@@ -44,6 +45,10 @@ function windowResized() {
 
 }
 
+function preload(){
+	FONT = loadImage("font.png");
+}
+
 function setup(){
 
 	document.documentElement.style.overflow = 'hidden';  // firefox, chrome
@@ -51,7 +56,8 @@ function setup(){
 	
 	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
-	textFont("Courier");
+	//textFont("Courier");
+	pixelDensity(1);
 	
 	server = new Server();
 	server.init(); server.world.init();

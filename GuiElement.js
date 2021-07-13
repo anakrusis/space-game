@@ -258,7 +258,22 @@ class GuiElement {
 		fill(255);
 		if (this.text != ""){
 			//textWrap(LINE)
-			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+			//text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+			
+			for ( i = 0; i < this.text.length; i++){
+				
+				
+				var SOURCE_SIZE = 24;
+				var DEST_SIZE = 16;
+				var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
+				
+				var dx = this.dispx + this.padding + ( i * DEST_SIZE / 2 );
+				var dy = this.dispy + this.padding;
+				
+				//image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight])
+				image(FONT, dx, dy, DEST_SIZE, DEST_SIZE, cx * SOURCE_SIZE, cy * SOURCE_SIZE, SOURCE_SIZE, SOURCE_SIZE);
+			}
+			
 		}
 		if (this.onRender){
 			this.onRender();

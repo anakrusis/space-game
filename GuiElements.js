@@ -359,7 +359,6 @@ GROUP_HISTORY.ELM_MISSIONCNTR.onShow = function(){
 	
 }
 
-
 GROUP_HISTORY.BTN_BACK = new GuiElement(0,0,100,40,GROUP_HISTORY); GROUP_HISTORY.BTN_BACK.text = "Back";
 GROUP_HISTORY.BTN_BACK.onClick = function(){
 	GROUP_HISTORY.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
