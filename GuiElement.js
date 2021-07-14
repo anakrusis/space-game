@@ -20,6 +20,8 @@ class GuiElement {
 		this.autopos = "top"; // float property
 		this.autosize = false; // will fill up to the size of its children elements
 		
+		this.staticposition = false; // will not affect the size of autosize parent
+		
 		this.autocenterX = false; // will center to middle of screen (best for popup windows, or also some HUD stuff)
 		this.autocenterY = false;
 		
@@ -62,53 +64,54 @@ class GuiElement {
 			}
 			
 		} */
-		
-		var p = this.parent;
-		if (p){
-		
-			// Float left, each element after is right of the one before it
-			if (p.autopos == "left"){
-				
-				this.dispx = p.dispx + p.padding;
-				this.dispy = p.dispy + p.padding;
-				
-				for (var i = 0; i < p.children.length; i++){
+		if (!this.staticposition){
+			var p = this.parent;
+			if (p){
+			
+				// Float left, each element after is right of the one before it
+				if (p.autopos == "left"){
 					
-					if (p.children[i].visible){
-						if (p.children[i] == this){
-							break;
-						}else{
-							this.dispx += p.children[i].dispwidth + p.padding;
+					this.dispx = p.dispx + p.padding;
+					this.dispy = p.dispy + p.padding;
+					
+					for (var i = 0; i < p.children.length; i++){
+						
+						if (p.children[i].visible){
+							if (p.children[i] == this){
+								break;
+							}else{
+								this.dispx += p.children[i].dispwidth + p.padding;
+							}
 						}
 					}
-				}
-			} 
-			if (p.autopos == "top"){
-				
-				this.dispx = p.dispx + p.padding;
-				this.dispy = p.dispy + p.padding;
-				
-				for (var i = 0; i < p.children.length; i++){
+				} 
+				if (p.autopos == "top"){
 					
-					if (p.children[i].visible){
-						if (p.children[i] == this){
-							break;
-						}else{
-							this.dispy += p.children[i].dispheight + p.padding;
+					this.dispx = p.dispx + p.padding;
+					this.dispy = p.dispy + p.padding;
+					
+					for (var i = 0; i < p.children.length; i++){
+						
+						if (p.children[i].visible){
+							if (p.children[i] == this){
+								break;
+							}else{
+								this.dispy += p.children[i].dispheight + p.padding;
+							}
 						}
 					}
+				} 
+			}else {
+				
+				if (this.autocenterX){
+					this.x = width/GUI_SCALE/2 - this.width/2;
 				}
-			} 
-		}else {
-			
-			if (this.autocenterX){
-				this.x = width/GUI_SCALE/2 - this.width/2;
+				if (this.autocenterY){
+					this.y = height/GUI_SCALE/2 - this.height/2;
+				}
+				
+				this.dispx = this.x + this.padding; this.dispy = this.y + this.padding;
 			}
-			if (this.autocenterY){
-				this.y = height/GUI_SCALE/2 - this.height/2;
-			}
-			
-			this.dispx = this.x + this.padding; this.dispy = this.y + this.padding;
 		}
 		
 		// This fills up an element based on the size of the children elements inside it:
@@ -119,7 +122,7 @@ class GuiElement {
 			for (var i = 0; i < this.children.length; i++){
 				
 				var c = this.children[i];
-				if (c.visible){
+				if (c.visible && !c.staticposition){
 					if (c.dispx + c.dispwidth > maxx){
 						maxx = c.dispx + c.dispwidth;
 					}
@@ -444,6 +447,51 @@ class GuiTextEntry extends GuiElement {
 		}
 	}
 
+}
+
+class GuiScrollContainer extends GuiElement {
+	constructor(x,y,width,height,parent,maxheight){
+		super(x,y,width,height,parent);
+		this.autosize = true; this.autopos = "top"; this.maxheight = maxheight;
+		this.scrollindex = 0;
+		this.upbutton   = new GuiElement( 0, 0, 25, 10, this ); this.upbutton.staticposition = true;
+		this.downbutton = new GuiElement( 0, 0, 25, 10, this ); this.downbutton.staticposition = true;
+		//this.upbutton.text = "/\\"; this.downbutton.text = "V";
+		
+		this.upbutton.onClick = function(){
+			this.parent.scrollindex--;
+		}
+		this.downbutton.onClick = function(){
+			this.parent.scrollindex++;
+		}
+		
+		this.upbutton.onRender = function(){
+			
+			var tpad = 5; var spad = 2; // top pad and side pad of triangle
+			triangle(this.dispx + this.dispwidth/2, this.dispy + tpad, this.dispx + spad, this.dispy + this.dispheight - tpad, this.dispx + this.dispwidth - spad, this.dispy + this.dispheight - tpad);
+		}
+		this.downbutton.onRender = function(){
+			
+			var tpad = 5; var spad = 2; // top pad and side pad of triangle
+			triangle(this.dispx + this.dispwidth/2, this.dispy + tpad, this.dispx + spad, this.dispy + this.dispheight - tpad, this.dispx + this.dispwidth - spad, this.dispy + this.dispheight - tpad);
+		}
+	}
+	
+	onUpdate(){
+		
+		var ub = this.children.indexOf(this.upbutton);
+		if (ub == -1){
+			this.children.push(this.upbutton);
+			this.children.push(this.downbutton);
+		}
+		this.upbutton.dispheight = 10; this.downbutton.dispheight = 10;
+		
+		this.upbutton.dispx   = this.dispx + this.dispwidth + (this.upbutton.dispwidth / 2) - this.padding ;
+		this.downbutton.dispx = this.dispx + this.dispwidth + (this.downbutton.dispwidth / 2) - this.padding;
+		
+		this.upbutton.dispy   = this.dispy;
+		this.downbutton.dispy = this.dispy + this.dispheight;// - this.downbutton.dispheight;
+	}
 }
 
 class GuiCheckbox extends GuiElement {
