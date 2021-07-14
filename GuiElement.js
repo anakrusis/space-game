@@ -412,8 +412,8 @@ class GuiTextEntry extends GuiElement {
 			this.text = this.setting;
 			
 			if (framecount % 32 >= 16){
-				var cursorx = this.dispx + this.padding + ((this.setting.length % 28) * 6.5 * 1.5);
-				var cursory = this.dispy + this.padding + 2*1.5 + (10*1.5*(this.lines - 1));
+				var cursorx = this.dispx + this.padding + ((this.setting.length % 28) * 6.45 * 1.5);
+				var cursory = this.dispy + this.padding + 11*1.5 + (10*1.5*(this.lines - 1));
 				fill(255);
 				rect( cursorx, cursory, 6 * 1.5, 8 * 1.5);
 			}
@@ -450,14 +450,14 @@ class GuiTextEntry extends GuiElement {
 }
 
 class GuiScrollContainer extends GuiElement {
-	constructor(x,y,width,height,parent,maxheight){
+	constructor(x,y,width,height,parent,minelements){
 		super(x,y,width,height,parent);
-		this.autosize = true; this.autopos = "top"; this.maxheight = maxheight;
+		this.autosize = true; this.autopos = "top"; this.minelements = minelements;
 		this.scrollindex = 0;
 		this.upbutton   = new GuiElement( 0, 0, 25, 10, this ); this.upbutton.staticposition = true;
 		this.downbutton = new GuiElement( 0, 0, 25, 10, this ); this.downbutton.staticposition = true;
 		//this.upbutton.text = "/\\"; this.downbutton.text = "V";
-		
+		this.upbutton.hide();
 		this.upbutton.onClick = function(){
 			this.parent.scrollindex--;
 		}
@@ -473,14 +473,29 @@ class GuiScrollContainer extends GuiElement {
 		this.downbutton.onRender = function(){
 			
 			var tpad = 5; var spad = 2; // top pad and side pad of triangle
-			triangle(this.dispx + this.dispwidth/2, this.dispy + tpad, this.dispx + spad, this.dispy + this.dispheight - tpad, this.dispx + this.dispwidth - spad, this.dispy + this.dispheight - tpad);
+			triangle(this.dispx + this.dispwidth/2, this.dispy + this.dispheight - tpad, this.dispx + spad, this.dispy + tpad, this.dispx + this.dispwidth - spad, this.dispy + tpad);
 		}
 	}
 	
 	onUpdate(){
 		
+		this.scrollindex = Math.max(this.scrollindex, 0);
+		this.scrollindex = Math.min(this.scrollindex, this.children.length - 2 - this.minelements );
+		
+		var showing = 0;
+		for ( i = 0; i < this.children.length; i++ ){
+			var c = this.children[i];
+			if (c == this.upbutton || c == this.downbutton){ continue; }
+			
+			c.hide();
+			if (i >= this.scrollindex && i < this.scrollindex + this.minelements){
+				c.show(); showing++;
+			}
+		}
+		//if (showing < this.minelements){ this.scrollindex--; }
+		
 		var ub = this.children.indexOf(this.upbutton);
-		if (ub == -1){
+		if (ub == -1 && this.children.length > this.minelements){
 			this.children.push(this.upbutton);
 			this.children.push(this.downbutton);
 		}
@@ -491,6 +506,12 @@ class GuiScrollContainer extends GuiElement {
 		
 		this.upbutton.dispy   = this.dispy;
 		this.downbutton.dispy = this.dispy + this.dispheight;// - this.downbutton.dispheight;
+	}
+	
+	onRender(){
+		
+		var boundtop = this.dispy + this.upbutton.dispheight;
+		var boundbtm = this.downbutton.dispy;
 	}
 }
 

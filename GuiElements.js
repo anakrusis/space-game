@@ -363,7 +363,7 @@ GROUP_HISTORY.ELM_CNTR_OUTER = new GuiElement(0,0,300,40,GROUP_HISTORY); GROUP_H
 GROUP_HISTORY.ELM_CNTR1 = new GuiElement(0,0,300,40,GROUP_HISTORY.ELM_CNTR_OUTER); GROUP_HISTORY.ELM_CNTR1.autosize = true;GROUP_HISTORY.ELM_CNTR1.autopos = "top";
 
 GROUP_HISTORY.ELM_MISSIONTITLE = new GuiElement(0,0,200,40,GROUP_HISTORY.ELM_CNTR1); GROUP_HISTORY.ELM_MISSIONTITLE.text = "Mission History"; 
-GROUP_HISTORY.ELM_MISSIONCNTR = new GuiScrollContainer(0,0,300,40,GROUP_HISTORY.ELM_CNTR1);
+GROUP_HISTORY.ELM_MISSIONCNTR = new GuiScrollContainer(0,0,300,40,GROUP_HISTORY.ELM_CNTR1,2);
 GROUP_HISTORY.ELM_MISSIONCNTR.onShow = function(){
 	this.children = [];
 	var p = client.world.getPlayer(); var e = p.history.events;
@@ -670,13 +670,15 @@ var GROUP_MISSION_SELECT = new GuiElement(0, 0, 0, 0); GROUP_MISSION_SELECT.hide
 
 GROUP_MISSION_SELECT.autocenterX = true; GROUP_MISSION_SELECT.autocenterY = true;
 
+var tittle = new GuiElement(0,0,305,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
+
+GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS = new GuiScrollContainer(0,0,0,0,GROUP_MISSION_SELECT,3);
+
 GROUP_MISSION_SELECT.onShow = function(){
 	
 	if (!(selectedEntity instanceof BuildingSpaceport)){ return; }
 	
-	this.children = [];
-	
-	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
+	GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS.children = [];
 	
 	var selectedCity = selectedEntity.getCity();
 	var missions = selectedCity.getAvailableMissions();
@@ -687,7 +689,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 	
 	for (mission of missions){		
 		
-		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); button.text = mission.displaytext; button.mission = mission;
+		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS); button.text = mission.displaytext; button.mission = mission;
 		button.onClick = function(){
 			selectedMission = this.mission;
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
@@ -707,11 +709,10 @@ GROUP_MISSION_SELECT.onShow = function(){
 			endShape(CLOSE);
 		}
 	}
-	
-	var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT); backbtn.text = "Back";
-	backbtn.onClick = function(){
-		GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
-	}
+}
+var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT); backbtn.text = "Back";
+backbtn.onClick = function(){
+	GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 
 GROUP_INFOBAR.hide(); BUTTON_MENU.hide(); GROUP_HOTBAR.hide();
