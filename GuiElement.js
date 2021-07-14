@@ -457,12 +457,12 @@ class GuiScrollContainer extends GuiElement {
 		this.upbutton   = new GuiElement( 0, 0, 25, 10, this ); this.upbutton.staticposition = true;
 		this.downbutton = new GuiElement( 0, 0, 25, 10, this ); this.downbutton.staticposition = true;
 		//this.upbutton.text = "/\\"; this.downbutton.text = "V";
-		this.upbutton.hide();
+		//this.upbutton.hide();
 		this.upbutton.onClick = function(){
-			this.parent.scrollindex--;
+			this.parent.scrollindex--; this.parent.ticksShown = 0;
 		}
 		this.downbutton.onClick = function(){
-			this.parent.scrollindex++;
+			this.parent.scrollindex++; this.parent.ticksShown = 0;
 		}
 		
 		this.upbutton.onRender = function(){
@@ -479,9 +479,20 @@ class GuiScrollContainer extends GuiElement {
 	
 	onUpdate(){
 		
+		// Upper and lower bounds for allowed scroll amounts
 		this.scrollindex = Math.max(this.scrollindex, 0);
-		this.scrollindex = Math.min(this.scrollindex, this.children.length - 2 - this.minelements );
+		var max = Math.max(this.children.length - 2 - this.minelements, 0);
+		this.scrollindex = Math.min(this.scrollindex, max );
 		
+/* 		this.upbutton.show(); this.downbutton.show();
+		if (this.scrollindex >= max ){
+			this.downbutton.hide();
+		}
+		if (this.scrollindex <= 0){
+			this.upbutton.hide();
+		} */
+		
+		// Iterates through every element and sees if it falls within the window or not
 		var showing = 0;
 		for ( i = 0; i < this.children.length; i++ ){
 			var c = this.children[i];
@@ -492,15 +503,16 @@ class GuiScrollContainer extends GuiElement {
 				c.show(); showing++;
 			}
 		}
-		//if (showing < this.minelements){ this.scrollindex--; }
-		
+
+		// Re-adds the up and down buttons if they are ever removed (like in a children clear in the onShow() event)
 		var ub = this.children.indexOf(this.upbutton);
 		if (ub == -1 && this.children.length > this.minelements){
 			this.children.push(this.upbutton);
 			this.children.push(this.downbutton);
 		}
-		this.upbutton.dispheight = 10; this.downbutton.dispheight = 10;
 		
+		// And manually positions them
+		this.upbutton.dispheight = 10; this.downbutton.dispheight = 10;
 		this.upbutton.dispx   = this.dispx + this.dispwidth + (this.upbutton.dispwidth / 2) - this.padding ;
 		this.downbutton.dispx = this.dispx + this.dispwidth + (this.downbutton.dispwidth / 2) - this.padding;
 		
@@ -509,9 +521,21 @@ class GuiScrollContainer extends GuiElement {
 	}
 	
 	onRender(){
-		
 		var boundtop = this.dispy + this.upbutton.dispheight;
 		var boundbtm = this.downbutton.dispy;
+		var scrollmax = Math.max(this.children.length - 2 - this.minelements, 0);
+		var barheight = ( boundbtm - boundtop ) * (this.minelements / (this.children.length - 2));
+		//console.log(barheight);
+		
+		//var bartop = ( boundbtm - boundtop ) * this.scrollindex / ( this.scrollmax );
+		//var coeff = (this.scrollindex - 0) / ( this.scrollmax - 0 );
+		var ratio = this.scrollindex / scrollmax;
+		var upped = ( ratio * ( boundbtm - barheight - boundtop ) ) + boundtop
+		//console.log(upped);
+		
+		//rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
+		
+		rect( this.upbutton.dispx, upped, this.upbutton.dispwidth, barheight );
 	}
 }
 
