@@ -18,20 +18,7 @@ class BodyPlanet extends EntityBody {
 		this.roads = [];
 		this.generateTerrain();
 		this.hasOcean  = false;
-		this.forms = [[]];
-		
-		for (var i = 0; i < this.terrainSize; i++){
-			var angle = 0 + (i * (2 * Math.PI) / this.terrainSize);
-
-			var pointx = rot_x(angle, this.radius + this.terrain[i], 0.0);
-			var pointy = rot_y(angle, this.radius + this.terrain[i], 0.0);
-			
-			this.forms[0].push(pointx); this.forms[0].push(pointy);
-		}
-		
-		for (var j = 1; j <= 8; j++){
-			this.forms[j] = this.LODPass( this.forms[j-1] );
-		}
+		this.initLOD();
 		
 		// Physics properties
 		this.canEntitiesCollide = true;
@@ -50,6 +37,23 @@ class BodyPlanet extends EntityBody {
 		this.calculateHumidity();
 		
 		this.populateOreVeins();
+	}
+	
+	initLOD(){
+		this.forms = [[]];
+		
+		for (var i = 0; i < this.terrainSize; i++){
+			var angle = 0 + (i * (2 * Math.PI) / this.terrainSize);
+
+			var pointx = rot_x(angle, this.radius + this.terrain[i], 0.0);
+			var pointy = rot_y(angle, this.radius + this.terrain[i], 0.0);
+			
+			this.forms[0].push(pointx); this.forms[0].push(pointy);
+		}
+		
+		for (var j = 1; j <= 8; j++){
+			this.forms[j] = this.LODPass( this.forms[j-1] );
+		}
 	}
 	
 	calculateHumidity(){

@@ -6,6 +6,9 @@ class Inventory {
 		this.size = size; // amount of slots in the inventory
 		this.stacks = [];
 		
+		// index of a selected slot, which can be used for whatever operations
+		this.selection = -1;
+		
 		this.type = this.constructor.name;
 	}
 	

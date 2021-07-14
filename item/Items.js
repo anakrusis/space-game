@@ -10,7 +10,8 @@ class Items {
 		
 		iron: new ItemIron("Iron"),
 		food: new ItemFood("Food"),
-		passengers: new ItemPassengers("Passengers")
+		passengers: new ItemPassengers("Passengers"),
+		spaceport: new ItemSpaceport("Spaceport Hangar")
 	};
 }
 

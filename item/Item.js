@@ -15,6 +15,11 @@ class Item {
 				-1, 1
 		]
 	}
+	
+	// Event for when the play area is clicked with an item selected in the cargo hold
+	onUse(){
+		
+	}
 }
 
 class ItemStack {
@@ -59,4 +64,20 @@ class ItemPassengers extends Item{
 	
 	getRelRenderPoints(){
 	return [-1,-1,-0,-1,0.25,-0.75,0.75,-1,1.25,-0.75,1.25,-0.25,0.75,0,0.25,-0.25,-0,0,-1,0,-0.25,0,-0,0.25,0.25,0,0.75,0.25,0.75,0.75,0.25,1,-0,0.75,0,0.75,-0.25,1,-1,1,]};
+}
+
+class ItemBuilding extends Item{
+	constructor(name){
+		super(name);
+		this.color = [255,255,255];
+	}
+	getBuilding(){
+		return null;
+	}
+}
+
+class ItemSpaceport extends ItemBuilding{
+	getBuilding(){
+		return new BuildingSpaceport();
+	}
 }

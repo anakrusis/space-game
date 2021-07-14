@@ -10,35 +10,41 @@ for (var i = 0; i < 9; i++){
 	
 	var he = new GuiElement( 0, 0, 64, 64, GROUP_HOTBAR ); he.index = i;
 	
+	he.onClick = function(){
+		server.onUpdateRequest( this.index, "world", "getPlayer", "inventory", "selection" );
+	}
+	
 	he.onRender = function(){
 		
 		if (!client.world.getPlayer()){ return; }
 		
-		var plyr = client.world.getPlayer(); var itemstk = client.world.getPlayer().inventory.get(this.index);
-		if (itemstk){
-			
-			
-			var scale = 18;
-			var pts = itemstk.getItem().getRelRenderPoints();
-			noFill()
-			stroke(itemstk.getItem().color[0], itemstk.getItem().color[1], itemstk.getItem().color[2]);
-			beginShape();
-			for (i = 0; i < pts.length; i += 2){
-				var px = (pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
-				var py = (-pts[i])   * scale + this.dispy - this.padding + this.height/2 + 4;
-				vertex(px,py);
-			}
-			endShape(CLOSE);
-			
-			stroke(255);
-			textAlign(RIGHT);
-			text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
-			textAlign(LEFT);
-			
-			//this.text = itemstk.item.name;
-			
-		}else{
+		var plyr = client.world.getPlayer(); var itemstk = plyr.inventory.get(this.index);
+		var sel = plyr.inventory.selection;
+		noFill();
+		stroke(255);
+		if ( this.index == sel ){
+			strokeWeight(3);
+			rect(this.dispx, this.dispy, this.dispwidth, this.dispheight);
+			strokeWeight(1);
 		}
+		
+		if (!itemstk){ return; }
+				
+		var scale = 18;
+		var pts = itemstk.getItem().getRelRenderPoints();
+		stroke(itemstk.getItem().color[0], itemstk.getItem().color[1], itemstk.getItem().color[2]);
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = (pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
+			var py = (-pts[i])   * scale + this.dispy - this.padding + this.height/2 + 4;
+			vertex(px,py);
+		}
+		endShape(CLOSE);
+		
+		stroke(255);
+		textAlign(RIGHT);
+		text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
+		textAlign(LEFT);
 	}
 }
 
@@ -281,7 +287,7 @@ GROUP_INFOBAR.BTN_MISSION.onClick = function(){
 var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
 
 var hdr = new GuiElement(0,0,700,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
-var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You can do delivery missions, exploration missions to other planets, or simply fly around leisurely. \nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nThis game runs much better in Chrome than Firefox!\n\nControls:\n\n W/S - accelerate/decelerate\n A/D - turn\n Mouse wheel - zoom in/out\n F - toggle fullscreen\n P - toggle trajectory drawing\n Space - toggle planet camera rotation"
+var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You can do delivery missions, exploration missions to other planets, or simply fly around leisurely. \nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n W/S - accelerate/decelerate\n A/D - turn\n Mouse wheel - zoom in/out\n F - toggle fullscreen\n P - toggle trajectory drawing\n Space - toggle planet camera rotation"
 
 var butoncontainer = new GuiElement(0,0,700,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
 

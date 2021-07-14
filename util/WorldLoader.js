@@ -33,6 +33,7 @@ class WorldLoader {
 				if (!( body instanceof BodyPlanet )){ continue; }
 				
 				body.tiles = [];
+				body.forms = [];
 			}
 		}
 			
@@ -55,7 +56,7 @@ class WorldLoader {
 			}
 		}
 		
-		// Reinstating tile objects in situations where they are empty
+		// Reinstating tile objects in situations where they are empty, and also planet LOD forms 
 		
 		for (var chunk of dw.getLoadedChunks()){
 
@@ -63,6 +64,9 @@ class WorldLoader {
 		
 				var body = chunk.bodies[uuid];
 				if (!( body instanceof BodyPlanet )){ continue; }
+				
+				body.initLOD();
+				
 				if (body.tiles.length > 0){ continue; }
 				
 				body.tiles = [];
