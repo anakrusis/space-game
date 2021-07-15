@@ -45,7 +45,7 @@ class Entity {
 			noFill();
 		}
 		if (selectedEntity == this){
-			stroke(255, 255 * (1 + Math.sin(framecount / 15)), 0);
+			stroke(255, 128 * (1 + Math.sin(framecount / 15)), 0);
 			strokeWeight(5);
 		}else{
 			stroke(this.color[0], this.color[1], this.color[2]);

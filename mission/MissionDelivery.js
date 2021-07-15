@@ -35,7 +35,7 @@ class MissionDelivery extends Mission {
 		if (plnt != dpnt){ 
 			
 			this.distance = CollisionUtil.euclideanDistance( srce.getSpaceport().x, srce.getSpaceport().y, dest.getSpaceport().x, dest.getSpaceport().y );
-			this.reward = 10 * Math.round ( this.distance / 300 );
+			this.reward = 10 * Math.round ( this.distance / 75 );
 		
 		// Missions on the same planet do the regular old way
 		}else{

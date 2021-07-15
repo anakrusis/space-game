@@ -67,120 +67,76 @@ class City {
 	
 	update(){
 		
-		if (this.getNation() == server.world.getPlayer().getNation()){
-			for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
-				var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
-				
-				if (b instanceof BodyPlanet && (!b.explored)){
-					
-					// Adds exploration missions if there is none already.
-					var explore_mission_found = false;
-					for (var i = 0; i < this.availableMissions.length; i++){
-						var mission = this.availableMissions[i];
-						
-						if (mission instanceof MissionExploration){
-							if (mission.destination.uuid == b.uuid){
-								explore_mission_found = true; break;
-							}
-						}
-					}
-					
-					if (!explore_mission_found){
-
-						var m = new MissionExploration(this.uuid, b);
-						this.availableMissions.push(m);
-					
-					}
-				}
+	}
+	
+	updateMissions(){
+		this.updateExploreMissions();
+		this.updateDeliveryMission( "passengers" );
+		this.updateDeliveryMission( "food" );
+		this.updateDeliveryMission( "iron" );
+	}
+	
+	findDeliveryMission( itemtype ){
+		for (var i = 0; i < this.availableMissions.length; i++){
+			var mission = this.availableMissions[i];
+			
+			if (mission.item == itemtype){
+				return mission;
 			}
 		}
+		return false;
+	}
+	
+	updateDeliveryMission( itemtype ){
+		// Can't have delivery missions if there aren't at least 2 cities
+		if (Object.keys(server.world.cities).length <= 1){ return; }
 		
-		// Removes delivery missions if the item to be delivered is not present in the citys inventory.
-		// With the exception of passengers, who are not in the city inventory ever.
+		// Will try to find an existing mission of the corresponding item type
+		var cm = this.findDeliveryMission(itemtype); if (cm){ return; }
 		
-		if (Object.keys(server.world.cities).length > 1){
+		// If no existing mission is found, then the city inventory will be checked to see if it has the items
+		// passenger missions are exempt because they don't ever enter the city inventory
+		var amt = this.resources.totalAmount( itemtype );
+		if (amt <= 0 && itemtype != "passengers"){ return; }
+		if (itemtype == "passengers"){ amt = 20; }
 		
-			for (var i = 0; i < this.availableMissions.length; i++){
-				var mission = this.availableMissions[i];
+		// finds a random city to assign the mission
+		var keys = Object.keys( server.world.cities );
+		var randomcity = this;
+		while (randomcity == this){
+			randomcity = server.world.cities[keys[ keys.length * random() << 0]];
+		}
+		var m = new MissionDelivery(this.uuid, randomcity.uuid, itemtype, amt);
+		this.availableMissions.push(m);
+	}
+	
+	updateExploreMissions(){
+		// Only the home nation can give a player exploration missions
+		if (this.getNation() != server.world.getPlayer().getNation()){ return; }
+		
+		for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
+			var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
+			
+			if (b instanceof BodyPlanet && (!b.explored)){
 				
-				if (mission instanceof MissionDelivery){
-					if (mission.item != "passengers"){
-						
-						if (this.resources.totalAmount( mission.item ) <= 0){
-							
-							this.availableMissions.splice(i,1);
+				// Adds exploration missions if there is none already.
+				var explore_mission_found = false;
+				for (var i = 0; i < this.availableMissions.length; i++){
+					var mission = this.availableMissions[i];
+					
+					if (mission instanceof MissionExploration){
+						if (mission.destination.uuid == b.uuid){
+							explore_mission_found = true; break;
 						}
-						
-					}
-				}
-			}
-			
-			// Adds passenger missions if there is none already.
-			var passenger_mission_found = false;
-			
-			for (var i = 0; i < this.availableMissions.length; i++){
-				var mission = this.availableMissions[i];
-				
-				if (mission.item == "passengers"){
-					passenger_mission_found = true; break;
-				}
-			}
-			if (!passenger_mission_found){
-				var keys = Object.keys( server.world.cities );
-				var randomcity = this;
-				while (randomcity == this){
-					randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-				}
-				var m = new MissionDelivery(this.uuid, randomcity.uuid, "passengers", 20);
-				this.availableMissions.push(m);
-			}
-			
-			// Adds delivery missions if there is a surplus of certain items in the citys inventory, 
-			// and no existing missions that already plan on delivering it
-			
-			var food_amt = this.resources.totalAmount( "food" );
-			if (food_amt > 0){
-				
-				var food_mission_present = false;
-				for (var i = 0; i < this.availableMissions.length; i++){
-					var mission = this.availableMissions[i];
-					if (mission.item == "food"){
-						food_mission_present = true;
 					}
 				}
 				
-				if (!food_mission_present){
-					var keys = Object.keys( server.world.cities );
-					var randomcity = this;
-					while (randomcity == this){
-						randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-					}
-					var m = new MissionDelivery(this.uuid, randomcity.uuid, "food", food_amt);
+				if (!explore_mission_found){
+
+					var m = new MissionExploration(this.uuid, b);
 					this.availableMissions.push(m);
-				}
-			
-			}
-			var iron_amt = this.resources.totalAmount( "iron" );
-			if (iron_amt > 0){
 				
-				var iron_mission_present = false;
-				for (var i = 0; i < this.availableMissions.length; i++){
-					var mission = this.availableMissions[i];
-					if (mission.item == "iron"){
-						iron_mission_present = true;
-					}
 				}
-				
-				if (!iron_mission_present){
-					var keys = Object.keys( server.world.cities );
-					var randomcity = this;
-					while (randomcity == this){
-						randomcity = server.world.cities[keys[ keys.length * random() << 0]];
-					}
-					var m = new MissionDelivery(this.uuid, randomcity.uuid, "iron", iron_amt);
-					this.availableMissions.push(m);
-				}
-			
 			}
 		}
 	}

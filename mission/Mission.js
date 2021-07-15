@@ -70,6 +70,8 @@ class Mission {
 	}
 	
 	onFail(){
+		this.getSourceCity().updateMissions();
+		
 		var p = server.world.getPlayer();
 		GROUP_MISSION_FAIL.children[1].text = this.failtext; p.currentMission = null;
 		p.history.events.push( new EventMissionFail( new Date(), this ) );
@@ -77,6 +79,8 @@ class Mission {
 	}
 	
 	onSuccess(){
+		this.getSourceCity().updateMissions();
+		
 		var p = server.world.getPlayer();
 		p.money += this.reward;
 		
@@ -86,7 +90,7 @@ class Mission {
 	}
 	
 	onCancel(){
-		
+		this.getSourceCity().updateMissions();
 	}
 	
 	onStart(){

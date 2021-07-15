@@ -140,6 +140,8 @@ function draw(){
 			}
 		}
 		
+		GuiHandler.drawBuildingGhost();
+		
 		fill(255,0,0);
 		circle(tra_rot_x(cursorAbsX, cursorAbsY), tra_rot_y(cursorAbsX, cursorAbsY), 5);
 		

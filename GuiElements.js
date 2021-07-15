@@ -328,8 +328,9 @@ GROUP_CITY_FOUND.BTN_YES.onClick = function(){
 	city.centerIndex = loopyMod(buildingToPlace.startindex + 2, buildingToPlace.getPlanet().terrainSize );
 	server.world.cities[city.uuid] = city;
 	buildingToPlace.getPlanet().explored = true;
-	
 	buildingToPlace.getPlanet().spawnBuilding( buildingToPlace, city );
+	
+	city.updateMissions();
 	GROUP_CITY_FOUND.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	
 	p.inventory.shrink("spaceport",1); buildingToPlace = null;
@@ -725,7 +726,8 @@ GROUP_MISSION_SELECT.onShow = function(){
 	var missions = selectedCity.getAvailableMissions();
 	
 	if (missions.length == 0){
-		var errtext = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT); errtext.text = "Sorry, no missions available! You can check back some time soon.";
+		var errtext = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS); errtext.text = "Sorry, no missions available! You can check back some time soon.";
+		return;
 	}
 	
 	for (mission of missions){		

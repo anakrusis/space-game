@@ -65,6 +65,11 @@ class World {
 		
 		this.playerUUID = player.uuid;
 		
+		// And allows the first missions to become available now that the player and everything is initialized
+		for (var uuid in this.cities){
+			var city = this.cities[uuid]; city.updateMissions();
+		}
+		
 		//this.player.inventory.add( new ItemStack( Items.ITEM_IRON, 4 ) );
 		
 	}

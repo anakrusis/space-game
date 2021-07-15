@@ -107,8 +107,6 @@ class GuiHandler {
 	
 	static render(){
 		
-		this.drawBuildingGhost();
-		
 		scale(GUI_SCALE);
 		fill(0);
 		stroke(255);
@@ -158,12 +156,17 @@ class GuiHandler {
 		
 		b.update();
 		if (CollisionUtil.euclideanDistance(p.x, p.y, b.x, b.y) > 100){ return null; }
+		
 		return b;
 	}
 	
 	static drawBuildingGhost(){
 		var b = (buildingToPlace) ? buildingToPlace : this.getBuildingGhost();
-		if (b){ b.render(); }
+		if (b){ 
+			var a = 64 * (2 + Math.sin(framecount / 4));
+			b.color = [a,a,a];
+			b.render(); 
+		}
 	}
 	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.

@@ -99,6 +99,7 @@ class EntityBuilding extends Entity {
 				
 				var itemstack = new ItemStack(this.productionItem, 1);
 				this.getCity().resources.add( itemstack );
+				this.getCity().updateMissions();
 				
 				this.productionProgress = 0;
 			}
