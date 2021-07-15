@@ -301,6 +301,8 @@ sorcebuton.onClick = function(){
 
 }
 
+// Screen for founding a city
+
 var GROUP_CITY_FOUND = new GuiElement(0,0,300,500); GROUP_CITY_FOUND.autosize = true; GROUP_CITY_FOUND.autopos = "top"; 
 GROUP_CITY_FOUND.hide(); GROUP_CITY_FOUND.autocenterX = true; GROUP_CITY_FOUND.autocenterY = true;
 GROUP_CITY_FOUND.ELM_TITLE = new GuiElement(0,0,300,40,GROUP_CITY_FOUND); GROUP_CITY_FOUND.ELM_TITLE.text = "This action will found a new city-- (cannot be undone!)\n\nWhat will the name be?";
@@ -317,24 +319,22 @@ GROUP_CITY_FOUND.BTN_NO.onClick = function(){
 GROUP_CITY_FOUND.BTN_YES = new GuiElement(0,0,148,40,GROUP_CITY_FOUND.ELM_CNTR1); GROUP_CITY_FOUND.BTN_YES.text = "OK";
 GROUP_CITY_FOUND.BTN_YES.onClick = function(){
 	
+	// TODO Organize this between the onUse() function in the item class, and also the GuiHandler
+	
 	var p = server.world.getPlayer();
 	var city = new City( p.nationUUID, p.getChunk().x, p.getChunk().y, buildingToPlace.getPlanet().uuid );
+	GROUP_CITY_FOUND.TXT_CITYNAME.commit();
 	city.name = cityName;
 	city.centerIndex = loopyMod(buildingToPlace.startindex + 2, buildingToPlace.getPlanet().terrainSize );
 	server.world.cities[city.uuid] = city;
+	buildingToPlace.getPlanet().explored = true;
 	
 	buildingToPlace.getPlanet().spawnBuilding( buildingToPlace, city );
 	GROUP_CITY_FOUND.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	
 	p.inventory.shrink("spaceport",1); buildingToPlace = null;
-	
-/* 	server.world = GROUP_LOAD.BTN_WORLD.world;
-	
-	GROUP_CITY_FOUND.hide(); GROUP_LOAD.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
-	client.onUpdate(server.world,"world"); selectedEntity = null; hoverEntity = null; */
 
 }
-
 
 // main menu
 

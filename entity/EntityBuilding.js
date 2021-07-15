@@ -80,13 +80,6 @@ class EntityBuilding extends Entity {
 			this.productionProgress = Math.round(random() * this.productionTime);
 		}
 		
-		// todo assign once at placement
-		if (this.cityUUID){
-			var city = server.world.cities[this.cityUUID];
-			var nation = server.world.nations[city.nationUUID];
-			this.color = nation.color;
-		}
-		
 		var ende = this.endindex;
 		if (this.endindex < this.startindex){
 			ende += this.getPlanet().terrainSize;

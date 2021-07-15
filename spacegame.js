@@ -287,6 +287,7 @@ function mouseClicked() {
 	}
 	MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), selectedEntity );
 	if (selectedEntity != null){ return; }
+	if (client.world.getPlayer().dead){ return; }
 	
 	if (GuiHandler.getBuildingGhost()){
 		buildingToPlace = GuiHandler.getBuildingGhost();

@@ -9,7 +9,7 @@ class EntityPlayer extends EntityShip {
 		this.color = [ 0, 255, 255 ];
 		this.renderPriority = 5;
 		this.inventory = new Inventory(9);
-		this.inventory.add( new ItemStack ( "spaceport", 1 ) );
+		this.inventory.add( new ItemStack ( "spaceport", 5 ) );
 		this.money = 0;
 		this.history = new History();
 		

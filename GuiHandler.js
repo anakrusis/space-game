@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.1e";
-BUILD_DATE = "2021-07-14"
+BUILD_DATE = "2021-07-15"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -123,6 +123,7 @@ class GuiHandler {
 	
 	// The theoretical "building to place" if possible, given the players cursor position, nearest planet, etc... Returns null if not valid placement
 	static getBuildingGhost(){
+		if (hoverEntity){ return null; }
 		var p = client.world.getPlayer(); if (!p){ return null; }
 		var nearbody = p.getNearestBody();
 		var is = p.inventory.stacks[ p.inventory.selection ]; if (!is){ return null; }

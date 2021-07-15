@@ -107,13 +107,14 @@ class BodyPlanet extends EntityBody {
 			orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
 			orbitbody.render();
 		}
-		
-		//stroke(0, 128, 0); noFill();
-		//circle( tra_x(this.getStar().x), tra_y(this.getStar().y), this.getOrbitDistance() * 2 * cam_zoom )
-		
 		super.render();
-		
-/* 		stroke(128);
+		if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
+			this.drawRoads();
+		}
+	}
+	
+	drawRoads(){
+		stroke(128);
 		strokeWeight(0.5 * cam_zoom);
 		for (var i = 0; i < this.terrainSize; i++){
 			if (this.tiles[ i ].hasRoad){
@@ -125,7 +126,7 @@ class BodyPlanet extends EntityBody {
 				endShape(CLOSE);
 			}
 		}
-		strokeWeight(1); */
+		strokeWeight(1);
 	}
 	
 	LODPass( points ){
@@ -373,31 +374,31 @@ class BodyPlanet extends EntityBody {
 			building.endindex -= this.terrainSize;
 		}
 		
-		if (this.tiles[building.startindex].buildingUUID == null){
+		if (this.tiles[building.startindex].buildingUUID){ return false; }
 			
-			var ende = building.endindex;
-			if (building.endindex < building.startindex){
-				ende += this.terrainSize;
-			}
-			
-			for (var i = building.startindex; i <= ende; i++){
-				
-				var index = loopyMod(i, this.terrainSize);
-				
-				this.tiles[index].buildingUUID = building.uuid;
-			}
-			building.grounded = true;
-            building.groundedBodyUUID = this.uuid;
-
-            building.moveToIndexOnPlanet(building.startindex, this, 1);
-			server.world.spawnEntity(building);
-			
-			if (city){
-				city.registerBuilding(building);
-			}
-			return true;
+		var ende = building.endindex;
+		if (building.endindex < building.startindex){
+			ende += this.terrainSize;
 		}
-		return false;
+		
+		for (var i = building.startindex; i <= ende; i++){
+			
+			var index = loopyMod(i, this.terrainSize);
+			
+			this.tiles[index].buildingUUID = building.uuid;
+		}
+		building.grounded = true;
+		building.groundedBodyUUID = this.uuid;
+
+		building.moveToIndexOnPlanet(building.startindex, this, 1);
+		server.world.spawnEntity(building);
+		
+		if (city){
+			city.registerBuilding(building);
+			var nation = server.world.nations[city.nationUUID];
+			building.color = nation.color;
+		}
+		return true;
 	}
 	
 	terrainIndexDistance(index1, index2) {

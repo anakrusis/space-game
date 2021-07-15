@@ -28,11 +28,20 @@ class MissionDelivery extends Mission {
 			this.successtext = "The " + item.name + " was safely delivered to the city of " + dest.name + "!\nGreat work!\n";
 		
 		}
-		
 		var plnt = srce.getPlanet();
-		this.distance = plnt.terrainIndexDistance( srce.centerIndex, dest.centerIndex );
+		var dpnt = dest.getPlanet();
 		
-		this.reward = 10 * Math.round(this.distance / 8);
+		// Missions on different planets do distance calc with euclidian distance
+		if (plnt != dpnt){ 
+			
+			this.distance = CollisionUtil.euclideanDistance( srce.getSpaceport().x, srce.getSpaceport().y, dest.getSpaceport().x, dest.getSpaceport().y );
+			this.reward = 10 * Math.round ( this.distance / 300 );
+		
+		// Missions on the same planet do the regular old way
+		}else{
+			this.distance = plnt.terrainIndexDistance( srce.centerIndex, dest.centerIndex );
+			this.reward = 10 * Math.round(this.distance / 8);
+		}
 		
 		this.objectives = [ [ new ObjectiveBringItemToPlace( this.item, this.quantity, new Place( dest.getSpaceport() ) ) ] ];
 		

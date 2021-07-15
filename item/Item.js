@@ -80,4 +80,6 @@ class ItemSpaceport extends ItemBuilding{
 	getBuilding(){
 		return new BuildingSpaceport();
 	}
+	getRelRenderPoints(){
+	return [0.75,-1,1,-0.75,1.25,0,1,0.75,0.75,1,0.75,1,0.75,-1,-0.5,-1,-0.5,1,0.75,1,]};
 }
