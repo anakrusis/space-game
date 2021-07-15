@@ -19,6 +19,8 @@ backspaceTimer = 0;
 BACKSPACE_TIMER_AMT = 20;
 
 selectedTextEntry = null;
+buildingToPlace   = null;
+cityName          = "";
 
 class GuiHandler {	
 	static elements = []; // outermost parent elements here, child elements contained within..
@@ -105,6 +107,8 @@ class GuiHandler {
 	
 	static render(){
 		
+		this.drawBuildingGhost();
+		
 		scale(GUI_SCALE);
 		fill(0);
 		stroke(255);
@@ -115,6 +119,50 @@ class GuiHandler {
 		}
 		
 		resetMatrix()
+	}
+	
+	// The theoretical "building to place" if possible, given the players cursor position, nearest planet, etc... Returns null if not valid placement
+	static getBuildingGhost(){
+		var p = client.world.getPlayer(); if (!p){ return null; }
+		var nearbody = p.getNearestBody();
+		var is = p.inventory.stacks[ p.inventory.selection ]; if (!is){ return null; }
+		var it = Items.items[is.item];
+		if (!(it instanceof ItemBuilding)){ return null; }
+		var b = it.getBuilding();
+		
+		// Where the hypothetical building would be placed
+		var cursorind = CollisionUtil.indexFromPosition( cursorAbsX, cursorAbsY, nearbody );
+		var start = loopyMod(cursorind - Math.round( b.size / 2 ), nearbody.terrainSize);
+		var end   = loopyMod(start + b.size, nearbody.terrainSize);
+		
+		var ende = (start > end) ? end + nearbody.terrainSize : end;
+		
+		// Iterates through each tile within the hypothetical buildings place
+		for ( var i = start; i <= ende; i++ ){
+			
+			var tile = nearbody.tiles[ loopyMod(i, nearbody.terrainSize) ];
+			if (tile.buildingUUID){ return null; }
+			if (tile.height < 0){ return null; }
+		}
+		
+		//b.cityUUID = new City(null,nearbody.getChunk().x,nearbody.getChunk().y,nearbody.uuid).uuid;
+		b.getChunk = function(){
+			return nearbody.getChunk();
+		}
+		b.grounded = true;
+		b.groundedBodyUUID = nearbody.uuid;
+		b.moveToIndexOnPlanet(b.startindex, nearbody, 1);
+		b.planetUUID = nearbody.uuid;
+		b.startindex = start; b.endindex = loopyMod(start + b.size, nearbody.terrainSize);
+		
+		b.update();
+		if (CollisionUtil.euclideanDistance(p.x, p.y, b.x, b.y) > 100){ return null; }
+		return b;
+	}
+	
+	static drawBuildingGhost(){
+		var b = (buildingToPlace) ? buildingToPlace : this.getBuildingGhost();
+		if (b){ b.render(); }
 	}
 	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.

@@ -3,6 +3,7 @@ class BuildingSpaceport extends EntityBuilding {
 	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
 		super(x,y,planetuuid, cityuuid, startindex, endindex);
 		this.name = "Spaceport Hangar";
+		this.size = 5;
 	}
 
 getRelRenderPoints(){

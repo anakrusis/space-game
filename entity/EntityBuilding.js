@@ -4,6 +4,7 @@ class EntityBuilding extends Entity {
 		this.name = "Building";
 		this.filled = false;
 		this.renderPriority = 2;
+		this.size = 1;
 		
 		this.startindex = startindex;
 		this.endindex   = endindex;
@@ -79,6 +80,7 @@ class EntityBuilding extends Entity {
 			this.productionProgress = Math.round(random() * this.productionTime);
 		}
 		
+		// todo assign once at placement
 		if (this.cityUUID){
 			var city = server.world.cities[this.cityUUID];
 			var nation = server.world.nations[city.nationUUID];

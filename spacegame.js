@@ -260,8 +260,11 @@ function keyPressed() {
 		}else if (keyCode === 66){
 			buildingDrawEnabled = !buildingDrawEnabled;	
 		}else if (keyCode === 84){
-			//FANCY_TEXT = !FANCY_TEXT;
-		}	
+		
+		// Hotbar
+		}else if (keyCode >= 48 && keyCode <= 57){
+			server.onUpdateRequest( keyCode - 49, "world", "getPlayer", "inventory", "selection" );
+		}
 	}
 }
 
@@ -283,6 +286,12 @@ function mouseClicked() {
 		selectedEntity = null;
 	}
 	MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), selectedEntity );
+	if (selectedEntity != null){ return; }
+	
+	if (GuiHandler.getBuildingGhost()){
+		buildingToPlace = GuiHandler.getBuildingGhost();
+		GuiHandler.openWindow(GROUP_CITY_FOUND);
+	}
 }
 
 function mouseWheel(e) {
