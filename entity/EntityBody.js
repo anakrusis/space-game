@@ -160,7 +160,7 @@ class EntityBody extends Entity {
 		var slice = this.getAbsPointsSlice( ind, ind );
 		var tx = tra_x(slice[0]); var ty = tra_y(slice[1]);
 		
-		if (cam_zoom > MIN_CITY_TEXT_ZOOM){ return true; }
+		if (cam_zoom < MIN_CITY_TEXT_ZOOM){ return true; }
 		
 		return ((tx > -(100*cam_zoom) && tx < width+(100*cam_zoom)) && (ty > -(100*cam_zoom) && ty < height+(100*cam_zoom)));
 		//return true;

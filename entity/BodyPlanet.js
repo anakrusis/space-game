@@ -138,7 +138,8 @@ class BodyPlanet extends EntityBody {
 		}
 		points = points2;
 		
-		if (points.length <= 8){ return points; }
+		// This prevents small bodies from ending up with a 2-point or 3-point LOD form.
+		if (points.length <= 16){ return points; }
 		
 		var amt = 4
 		for (var i = 2; i < points.length; i += amt){

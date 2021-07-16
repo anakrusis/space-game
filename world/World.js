@@ -51,11 +51,11 @@ class World {
 			nat.cityUUIDs.push(natcap.uuid);
 			nat.capitalCityUUID = natcap.uuid;
 			
-			var ship = new EntityShip(7500, 8192, 0);
+/* 			var ship = new EntityShip(7500, 8192, 0);
 			ship.nationUUID = nat.uuid;
 			if ( this.cities[natcap.uuid] ){
 				ship.moveToSpawnPoint(); this.spawnEntity(ship);
-			}
+			} */
 		}
 		
 		// Generates player now
@@ -89,22 +89,21 @@ class World {
 			
 			for ( var uuid in chunk.bodies ){
 				var b = chunk.bodies[uuid];
+				if (!(b instanceof BodyPlanet)){ continue; }
 					
-				if (b instanceof BodyPlanet){ 
-					
-					if (nearestPlanet){
-						var diff = Math.abs( idealTemp - b.temperature );
-						if (diff < nearestDiff){
-							
-							nearestPlanet = b;
-							nearestDiff = diff;
-						}
+				if (nearestPlanet){
+					var diff = Math.abs( idealTemp - b.temperature );
+					if (diff < nearestDiff){
 						
-					}else{
 						nearestPlanet = b;
-						nearestDiff = Math.abs( idealTemp - b.temperature );
+						nearestDiff = diff;
 					}
+					
+				}else{
+					nearestPlanet = b;
+					nearestDiff = Math.abs( idealTemp - b.temperature );
 				}
+				
 			}
 			if (nearestPlanet && nearestDiff < 50){
 				return nearestPlanet;
@@ -119,6 +118,16 @@ class World {
 	}
 	
 	update(){
+		
+		for (var chunk of this.getLoadedChunks()){
+			
+			for ( var uuid in chunk.bodies ){
+				var b = chunk.bodies[uuid];
+				//if (b == this.getPlayer().getNearestBody()){
+				b.update();
+				//}
+			}
+		}
 		
 		for ( var uuid in this.entities ){
 			var e = this.entities[uuid];
@@ -137,15 +146,7 @@ class World {
 				e.update();
 			}
 		}
-		for (var chunk of this.getLoadedChunks()){
-			
-			for ( var uuid in chunk.bodies ){
-				var b = chunk.bodies[uuid];
-				//if (b == this.getPlayer().getNearestBody()){
-				b.update();
-				//}
-			}
-		}
+
 		// The reason the first two ticks have no city updates is so that the planets can be situated into place
 		// otherwise mission will give incorrect distances between locations
 		if (this.worldTime > 2){

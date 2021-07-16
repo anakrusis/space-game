@@ -46,7 +46,7 @@ class Chunk {
 					var moonradius = radius / 4;//RandomUtil.fromRangeF(64,1024);
 					var moondistance = RandomUtil.fromRangeF(5,20) * radius;
 					var moon = new BodyPlanet(planet.getX() + moondistance, planet.getY(), 0, moonradius, moondistance, planet.uuid);
-					moon.temperature = planet.temperature - RandomUtil.fromRangeF(100,200);;
+					moon.temperature = Math.max(0,planet.temperature - RandomUtil.fromRangeF(100,200));
 					
 					this.spawnBody(moon);
 				}

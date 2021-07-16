@@ -162,9 +162,6 @@ class Entity {
                             var bgr = body;
                             var dependentBody = bgr.getDependentBody();
                             var distance = CollisionUtil.euclideanDistance(this.x, this.y, bgr.getX(), bgr.getY());
-
-							
-							
 							
                             // This function returns ~0 at the edge of the gravity radius, and ~1 at the surface of the body.
                             annulusPosition = (-1 / (bgr.getRadius() - dependentBody.getRadius())) * ( distance - dependentBody.getRadius() ) + 1;
@@ -179,12 +176,16 @@ class Entity {
                                 //forceMagnitude = 500 / ( distance * distance );
 								forceMagnitude = 0.05 * annulusPosition;
                             }
-                            this.gravityAttraction = forceMagnitude;
-
                             var angleFromCenter = Math.atan2(this.y - body.getY(), this.x - body.getX());
-							//this.x -= forceMagnitude * Math.cos(angleFromCenter);
-                            //this.y -= forceMagnitude * Math.sin(angleFromCenter);
-							this.forceVectors.push ( new ForceVector( "Gravity", 0 - forceMagnitude, angleFromCenter ) );
+							
+							// To prevent drift when grounded, the player only is attracted to the nearest body
+							if (this.grounded){
+								if ( this.getNearestBody() == dependentBody ){
+									this.forceVectors.push ( new ForceVector( "Gravity", 0 - forceMagnitude, angleFromCenter ) );
+								}
+							}else{
+								this.forceVectors.push ( new ForceVector( "Gravity", 0 - forceMagnitude, angleFromCenter ) );
+							}
 						
 						// BodyOcean enacts a buoyant force slightly stronger than gravity to slowly push entities up
                         }else if (body instanceof BodyOcean){
@@ -204,20 +205,30 @@ class Entity {
 
             if (this.grounded && this.getGroundedBody() != null) {
 
-				//this.velocity /= 1.001;
-				//this.boostForce.magnitude /= 1.01; // friction coeff
-
                 // This moves the entity along with a planet by anticipating where it will be in the next tick
                 if (this.getGroundedBody() instanceof BodyPlanet) {
                     var planet = this.getGroundedBody();
-                    // Added on an extra step (2pi/orbitPeriod) because planets update after entities (lol)
 					
-					// TODO move along with both moon and planet if landed on a moon
-					
-                    var angle = planet.getOrbitAngle() + (Math.PI * 2) / planet.getOrbitPeriod();
-					
-                    var futurePlanetX = rot_x(angle, planet.getOrbitDistance(), 0) + planet.getStar().getX();
-                    var futurePlanetY = rot_y(angle, planet.getOrbitDistance(), 0) + planet.getStar().getY();
+                    // It works by adding on an extra step (2pi/orbitPeriod) to move along entities with the planets
+				
+					// This getStar() terminology is a relic from when there were no moons, only planets orbiting stars
+					// anyways this if statement is particularly for moving along entities on moons
+/* 					if (planet.getStar() instanceof BodyPlanet){
+						var star = planet.getStar();
+						var starangle = star.getOrbitAngle() + (Math.PI * 2) / star.getOrbitPeriod();
+						var futureStarX = rot_x(starangle, star.getOrbitDistance(), 0) + star.getStar().getX();
+						var futureStarY = rot_y(starangle, star.getOrbitDistance(), 0) + star.getStar().getY();
+						
+						//this.x += (futureStarX - star.getX());
+						//this.y += (futureStarY - star.getY());
+						
+					}else{ */
+						var futureStarX = planet.getStar().getX();
+						var futureStarY = planet.getStar().getY();
+					//}
+					var angle = planet.getOrbitAngle() + (Math.PI * 2) / planet.getOrbitPeriod();
+					var futurePlanetX = rot_x(angle, planet.getOrbitDistance(), 0) + futureStarX;
+					var futurePlanetY = rot_y(angle, planet.getOrbitDistance(), 0) + futureStarY;
 
                     this.x += (futurePlanetX - planet.getX());
                     this.y += (futurePlanetY - planet.getY());
@@ -268,7 +279,7 @@ class Entity {
 	getDir() { return this.dir; }
 	
 	getGroundedBody(){
-		if (this.grounded){
+		if (this.grounded && this.getChunk()){
 			return this.getChunk().bodies[this.groundedBodyUUID];
 		}
 		return null;
