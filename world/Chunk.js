@@ -36,49 +36,27 @@ class Chunk {
 			
 			if ( RandomUtil.nextFloat(1) < planetChance && neighborhoodClear){
 				
-				var planet = new BodyPlanet(star.getX() + orbitDistance, star.getY(), 0, orbitDistance, star.uuid);
+				var radius = RandomUtil.fromRangeF(256,1024);
+				var planet = new BodyPlanet(star.getX() + orbitDistance, star.getY(), 0, radius, orbitDistance, star.uuid);
 				
 				this.spawnBody(planet);
+				
+				if ( RandomUtil.nextFloat(1) < 1 ){
+					
+					var moonradius = radius / 4;//RandomUtil.fromRangeF(64,1024);
+					var moondistance = RandomUtil.fromRangeF(5,20) * radius;
+					var moon = new BodyPlanet(planet.getX() + moondistance, planet.getY(), 0, moonradius, moondistance, planet.uuid);
+					moon.temperature = planet.temperature - RandomUtil.fromRangeF(100,200);;
+					
+					this.spawnBody(moon);
+				}
+				
 				//planetcount++;
 				planetChance -= 0.1;
 			}
 		}
 		
 		this.type = this.constructor.name;
-		
-/* 		       // Every star gets potentially up to 4 planets
-        var planetcount = 0;
-        var orbitDistanceInterval = 12000;
-        var orbitVariance = 4000;
-		
-		// chance that a given orbital position will yield a planet
-		var planetChance = 1;
-
-        for (var uuid in this.bodies) {
-			var body = this.bodies[uuid];
-            if (body instanceof BodyStar) {
-                //var planetnum = orbitDistanceInterval * Math.floor(random()*4 + 2) + orbitDistanceInterval;
-				var planetnum = orbitDistanceInterval * 8 + orbitDistanceInterval;
-				//console.log(planetnum);
-				//var planetnum = 4;
-                for (var planetdist = 2 * orbitDistanceInterval; planetdist < planetnum; planetdist += orbitDistanceInterval) {
-
-                    var orbitDistance = RandomUtil.fromRangeF(planetdist - orbitVariance, planetdist + orbitVariance);
-					//var orbitDistance = planetdist;
-
-                    //String name = body.getName() + " " + NymGen.greekLetters()[planetcount];
-					
-					if ( RandomUtil.nextFloat(1) < planetChance ){
-						
-						var planet = new BodyPlanet(body.getX() + orbitDistance, body.getY(), 0, orbitDistance, body.uuid);
-						
-						this.spawnBody(planet);
-						planetcount++;
-						planetChance -= 0.1;
-					}
-                }
-            }
-        } */
 	}
 	
 	getBody(uuid){

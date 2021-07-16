@@ -1,6 +1,6 @@
 class BodyPlanet extends EntityBody {
-	constructor(x,y,dir,orbitDistance,starUUID){
-		super(x, y, dir, RandomUtil.fromRangeF(256,1024));
+	constructor(x,y,dir,radius,orbitDistance,starUUID){
+		super(x, y, dir, radius);
 		
 		// Core properties
 		this.name = Nymgen.newName();
@@ -137,6 +137,8 @@ class BodyPlanet extends EntityBody {
 			points2[i] = points[i];
 		}
 		points = points2;
+		
+		if (points.length <= 8){ return points; }
 		
 		var amt = 4
 		for (var i = 2; i < points.length; i += amt){

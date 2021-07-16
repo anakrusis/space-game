@@ -282,19 +282,19 @@ function mouseClicked() {
 	
 	if (!GROUP_INFOBAR.active){ return; };
 	
+	if (GuiHandler.getBuildingGhost()){
+		buildingToPlace = GuiHandler.getBuildingGhost();
+		GuiHandler.openWindow(GROUP_CITY_FOUND); return;
+	}
+	
 	if (hoverEntity){
 		selectedEntity = hoverEntity;
 	}else{
 		selectedEntity = null;
 	}
 	MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), selectedEntity );
-	if (selectedEntity != null){ return; }
-	if (client.world.getPlayer().dead){ return; }
-	
-	if (GuiHandler.getBuildingGhost()){
-		buildingToPlace = GuiHandler.getBuildingGhost();
-		GuiHandler.openWindow(GROUP_CITY_FOUND);
-	}
+	//if (selectedEntity != null){ return; }
+	//if (client.world.getPlayer().dead){ return; }
 }
 
 function mouseWheel(e) {

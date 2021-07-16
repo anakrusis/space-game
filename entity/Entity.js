@@ -211,7 +211,11 @@ class Entity {
                 if (this.getGroundedBody() instanceof BodyPlanet) {
                     var planet = this.getGroundedBody();
                     // Added on an extra step (2pi/orbitPeriod) because planets update after entities (lol)
+					
+					// TODO move along with both moon and planet if landed on a moon
+					
                     var angle = planet.getOrbitAngle() + (Math.PI * 2) / planet.getOrbitPeriod();
+					
                     var futurePlanetX = rot_x(angle, planet.getOrbitDistance(), 0) + planet.getStar().getX();
                     var futurePlanetY = rot_y(angle, planet.getOrbitDistance(), 0) + planet.getStar().getY();
 

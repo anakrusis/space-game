@@ -121,7 +121,7 @@ class GuiHandler {
 	
 	// The theoretical "building to place" if possible, given the players cursor position, nearest planet, etc... Returns null if not valid placement
 	static getBuildingGhost(){
-		if (hoverEntity){ return null; }
+		//if (hoverEntity){ return null; }
 		var p = client.world.getPlayer(); if (!p){ return null; }
 		var nearbody = p.getNearestBody();
 		var is = p.inventory.stacks[ p.inventory.selection ]; if (!is){ return null; }
@@ -155,7 +155,9 @@ class GuiHandler {
 		b.startindex = start; b.endindex = loopyMod(start + b.size, nearbody.terrainSize);
 		
 		b.update();
+		// If either the cursor or the player are too far away then the building will not be able to be placed
 		if (CollisionUtil.euclideanDistance(p.x, p.y, b.x, b.y) > 100){ return null; }
+		if (CollisionUtil.euclideanDistance(p.x, p.y, cursorAbsX, cursorAbsY) > 100){ return null; }
 		
 		return b;
 	}
