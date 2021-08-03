@@ -37,6 +37,7 @@ class GuiElement {
 		}else{
 			GuiHandler.elements.push(this);
 		}
+		GuiHandler.allElements.push(this);
 	}
 	
 	// update() contains most of the auto positioning of text boxes and things, it is an outer layer to the 

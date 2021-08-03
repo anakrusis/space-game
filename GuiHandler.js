@@ -23,7 +23,8 @@ buildingToPlace   = null;
 cityName          = "";
 
 class GuiHandler {	
-	static elements = []; // outermost parent elements here, child elements contained within..
+	static elements    = []; // outermost parent elements here, child elements contained within..
+	static allElements = [];
 	
 	static init(){
 		
@@ -55,8 +56,8 @@ class GuiHandler {
 			}
 		}
 		
-		for (var i = 0; i < this.elements.length; i++){
-			var e = this.elements[i];
+		for (var i = 0; i < this.allElements.length; i++){
+			var e = this.allElements[i];
 			if (e.active){
 				e.update();
 			}
@@ -99,7 +100,7 @@ class GuiHandler {
 		
 		for (var i = this.elements.length - 1; i >= 0; i--){
 			var e = this.elements[i];
-			if (e.active){
+			if (e.active && !e.parent){
 				e.click();
 			}
 		}

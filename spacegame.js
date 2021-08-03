@@ -171,62 +171,6 @@ function draw(){
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);
 }
 
-var predictDerivativePoints = function(player){
-	if (!pathPredictEnabled){ return [[],[]]; }
-	
-/* 	var nearbody = player.getNearestBody(); */
-	
-	var futurePointsX = [];
-	var futurePointsY = [];
-	
-/* 	var angacc = player.angacc;
-	var angvel = player.angvel;
-	var vel = player.velocity;
-	var x   = player.x; var y = player.y;
-	var dir = player.dir;
-	for (var i = 0; i < 1000; i++){
-		
-		if ( CollisionUtil.euclideanDistance(nearbody.x, nearbody.y, x, y) < nearbody.radius ) { break; }
-		
-		angacc += player.angjer;
-		angvel += angacc;
-		vel += player.acc;
-		
-		dir += angvel;
-		
-		x += vel * Math.cos( dir );
-		y += vel * Math.sin( dir );
-		
-		futurePointsX.push(x); futurePointsY.push(y);
-	} */
-	return [futurePointsX, futurePointsY];
-}
-
-var predictFuturePoints = function(player){
-	if (!pathPredictEnabled){ return [[],[]]; }
-	
-	var futurePointsX = [];
-	var futurePointsY = [];
-
-	var e = new Entity( player.x, player.y, player.dir );
-	var markedDead = false;
-	for (var i = 0; i < 1000; i++){
-		e.update();
-
-		e.boostForce = player.boostForce; e.boostForce.dir = e.dir;
-		e.forceVectors.push(e.boostForce);
-		futurePointsX.push(e.x); futurePointsY.push(e.y);
-		
-		if (e.isDead() || e.grounded){ 
-			if (markedDead){
-				break;
-			}
-			markedDead = true;
-		};
-	}
-	return [futurePointsX, futurePointsY];
-}
-
 function touchStarted() {
 	
 	return false;
