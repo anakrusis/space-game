@@ -1,5 +1,5 @@
-TITLE_VERSION = "Space Game pre alpha 0.1.1e";
-BUILD_DATE = "2021-07-15"
+TITLE_VERSION = "Space Game pre alpha 0.1.2a";
+BUILD_DATE = "2021-08-05"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;

@@ -304,10 +304,12 @@ var update = function(){
 		//document.getElementById("bodydiv2").innerHTML = myJSON;
 	}
 	
-	if (keyIsDown(81)) { // q
+	// 81 Q 69 E
+	
+	if (keyIsDown(187)) { // plus
 		cam_zoom += (cam_zoom / 25);
 		
-	}else if (keyIsDown(69)) { // e
+	}else if (keyIsDown(189)) { // minus
 		cam_zoom -= (cam_zoom / 25);
 	}
 	

@@ -14,6 +14,7 @@ class BodyPlanet extends EntityBody {
 		this.color = RandomUtil.hslToRgb(dirthue, dirtsat, dirtlig);
 		
 		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
+		this.radius = this.terrainSize / (40/16)
 		this.tiles = [];
 		this.roads = [];
 		this.generateTerrain();
@@ -36,7 +37,7 @@ class BodyPlanet extends EntityBody {
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 100), 2 ) ) ) ;
 		this.calculateHumidity();
 		
-		this.populateOreVeins();
+		//this.populateOreVeins();
 	}
 	
 	initLOD(){
