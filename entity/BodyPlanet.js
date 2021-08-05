@@ -14,7 +14,7 @@ class BodyPlanet extends EntityBody {
 		this.color = RandomUtil.hslToRgb(dirthue, dirtsat, dirtlig);
 		
 		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
-		this.radius = this.terrainSize / (40/16)
+		//this.radius = this.terrainSize / (40/16)
 		this.tiles = [];
 		this.roads = [];
 		this.generateTerrain();
@@ -60,8 +60,6 @@ class BodyPlanet extends EntityBody {
 	calculateHumidity(){
 		var wetTiles = 0; var dryTiles = 0;
 		
-		if (!this.hasOcean){ this.humidity = 0; return; }
-		
 		for (i = 0; i < this.terrainSize; i++){
 			
 			if (this.tiles[i].height > 0){
@@ -70,8 +68,9 @@ class BodyPlanet extends EntityBody {
 				wetTiles++;
 			}
 		}
-		
-		this.humidity = wetTiles / this.terrainSize;
+		this.waterratio = wetTiles / this.terrainSize;
+		if (!this.hasOcean){ this.humidity = 0; return; }
+		this.humidity = this.waterratio;
 	}
 	
 	makeLush(){

@@ -4,6 +4,7 @@ class EntityBody extends Entity {
 		this.name = "Body";
 		this.color = [255, 255, 255];
 		this.renderPriority = 3;
+		this.updatePriority = 1;
 		
 		this.radius = radius;
 		this.terrainSize = 16;

@@ -212,23 +212,25 @@ class Entity {
                     // It works by adding on an extra step (2pi/orbitPeriod) to move along entities with the planets
 				
 					// This getStar() terminology is a relic from when there were no moons, only planets orbiting stars
-					// anyways this if statement is particularly for moving along entities on moons
+					// anyways this if statement is made for moving along entities on moons
 /* 					if (planet.getStar() instanceof BodyPlanet){
 						var star = planet.getStar();
 						var starangle = star.getOrbitAngle() + (Math.PI * 2) / star.getOrbitPeriod();
 						var futureStarX = rot_x(starangle, star.getOrbitDistance(), 0) + star.getStar().getX();
 						var futureStarY = rot_y(starangle, star.getOrbitDistance(), 0) + star.getStar().getY();
 						
-						//this.x += (futureStarX - star.getX());
-						//this.y += (futureStarY - star.getY());
+						this.x += (futureStarX - star.getX());
+						this.y += (futureStarY - star.getY());
 						
 					}else{ */
 						var futureStarX = planet.getStar().getX();
 						var futureStarY = planet.getStar().getY();
 					//}
+					
+					// This older portion is for moving along entities on planets and moons
 					var angle = planet.getOrbitAngle() + (Math.PI * 2) / planet.getOrbitPeriod();
-					var futurePlanetX = rot_x(angle, planet.getOrbitDistance(), 0) + futureStarX;
-					var futurePlanetY = rot_y(angle, planet.getOrbitDistance(), 0) + futureStarY;
+					var futurePlanetX = rot_x(angle, planet.getOrbitDistance(), 0) + planet.getStar().x;
+					var futurePlanetY = rot_y(angle, planet.getOrbitDistance(), 0) + planet.getStar().y;
 
                     this.x += (futurePlanetX - planet.getX());
                     this.y += (futurePlanetY - planet.getY());

@@ -199,13 +199,15 @@ function keyPressed() {
 		
 		if (keyCode === 70){
 			fullscreen(!fullscreen());
+		//}else if (keyCode === 80){
+			//pathPredictEnabled = !pathPredictEnabled;
 		}else if (keyCode === 80){
-			pathPredictEnabled = !pathPredictEnabled;
-		}else if (keyCode === 32){
 			PLANET_CAM = !PLANET_CAM;
-		}else if (keyCode === 66){
+			
+		}else if (keyCode === 66){ // B
 			buildingDrawEnabled = !buildingDrawEnabled;	
-		}else if (keyCode === 84){
+			
+		}else if (keyCode === 69){ // E
 		
 		// Hotbar
 		}else if (keyCode >= 48 && keyCode <= 57){

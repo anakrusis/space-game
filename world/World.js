@@ -21,6 +21,8 @@ class World {
 	init(){
 		
 		this.seed = Math.floor ( random() * 10000 );
+		//this.seed = (845);
+		//this.seed = (7295);
 		//this.seed = (2653);
 		//this.seed = (7132);
 		p5.prototype.randomSeed(this.seed);
@@ -105,11 +107,11 @@ class World {
 				}
 				
 			}
-			if (nearestPlanet && nearestDiff < 50){
-				return nearestPlanet;
-			}
+			if (!nearestPlanet || nearestDiff >= 50){ cx += 1; continue; }
+			if (nearestPlanet.waterratio > 0.80){ cx += 1; continue; }
+			if (nearestPlanet.getStar() instanceof BodyStar){ cx += 1; continue; } // temporarily testing for only moon spawns
 			
-			cx += 1;
+			return nearestPlanet;
 		}
 	}
 	
@@ -119,13 +121,13 @@ class World {
 	
 	update(){
 		
-		for (var chunk of this.getLoadedChunks()){
-			
-			for ( var uuid in chunk.bodies ){
-				var b = chunk.bodies[uuid];
-				//if (b == this.getPlayer().getNearestBody()){
-				b.update();
-				//}
+		for ( var i = 0; i < 2; i++ ){
+			for (var chunk of this.getLoadedChunks()){
+				for ( var uuid in chunk.bodies ){
+					var b = chunk.bodies[uuid];
+					if (b.updatePriority != i){ continue;}
+					b.update();
+				}
 			}
 		}
 		
