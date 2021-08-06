@@ -24,7 +24,7 @@ class World {
 		//this.seed = (845);
 		//this.seed = (7295);
 		//this.seed = (2653);
-		//this.seed = (7132);
+		//this.seed = (7647);
 		p5.prototype.randomSeed(this.seed);
 		
 		var homePlanet = this.findHomePlanet();
@@ -109,7 +109,7 @@ class World {
 			}
 			if (!nearestPlanet || nearestDiff >= 50){ cx += 1; continue; }
 			if (nearestPlanet.waterratio > 0.80){ cx += 1; continue; }
-			if (nearestPlanet.getStar() instanceof BodyStar){ cx += 1; continue; } // temporarily testing for only moon spawns
+			//if (nearestPlanet.getStar() instanceof BodyStar){ cx += 1; continue; } // temporarily testing for only moon spawns
 			
 			return nearestPlanet;
 		}

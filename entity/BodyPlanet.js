@@ -13,7 +13,11 @@ class BodyPlanet extends EntityBody {
 		
 		this.color = RandomUtil.hslToRgb(dirthue, dirtsat, dirtlig);
 		
-		this.terrainSize = Math.round(this.radius * (40/16)); this.terrainSize -= (this.terrainSize % 64);
+		//var v = Math.pow(this.radius, 2)
+		//this.terrainSize = Math.round(v * (1/192));
+		this.terrainSize = Math.round(this.radius * (40/16));
+		//console.log(this.terrainSize);
+		this.terrainSize -= (this.terrainSize % 64);
 		//this.radius = this.terrainSize / (40/16)
 		this.tiles = [];
 		this.roads = [];
@@ -94,6 +98,8 @@ class BodyPlanet extends EntityBody {
 		var b = (this.grassColor[2] * grassPrevalence) + (this.color[2] * (1 - grassPrevalence));
 		
 		this.color = [r,g,b];
+		
+		//this.populateOreVeins();
 		
 		//var r = (grassColor[0] + this.color[0]) / 2;
 		//var g = (grassColor[0] + this.color[0]) / 2;

@@ -13,10 +13,10 @@ class Chunk {
 		// this value starts at 1 (so there is always 1 planet at least) and steps down 0.1 with each planet
 		var planetChance = 1;
 		// serves as a minimum value so that planets don't get too close in orbit
-		var orbitDistanceInterval = 12000;
+		var orbitDistanceInterval = 18000;
 		// random variation so they aren't too boring/evenly spaced
         var orbitVariance = 5000;
-		for (i = 0; i < 8; i++){
+		for (var pc = 0; pc < 8; pc++){
 			
 			var orbitSlot = RandomUtil.fromRangeI(0,8);
 			var planetdist = orbitDistanceInterval * (orbitSlot + 2);
@@ -26,7 +26,7 @@ class Chunk {
 			var neighborhoodClear = true;
 			for (var uuid in this.bodies){
 				var body = this.bodies[uuid];
-				if (body instanceof BodyPlanet && !(body.getStar() instanceof BodyPlanet)){
+				if (body instanceof BodyPlanet ){ //&& !(body.getStar() instanceof BodyPlanet)
 					var orbitDiff = Math.abs(body.orbitDistance - orbitDistance);
 					if (orbitDiff < orbitDistanceInterval){
 						neighborhoodClear = false; break;
@@ -38,6 +38,7 @@ class Chunk {
 				
 				var radius = RandomUtil.fromRangeF(256,1024);
 				var planet = new BodyPlanet(star.getX() + orbitDistance, star.getY(), 0, radius, orbitDistance, star.uuid);
+				planet.populateOreVeins();
 				
 				this.spawnBody(planet);
 				
@@ -50,6 +51,8 @@ class Chunk {
 					moon.uuid = planet.uuid - 5;
 					moon.icon = "🌙";
 					moon.updatePriority = 0;
+					
+					moon.populateOreVeins(); // temporarily pulled out here because it relies on establishing a uuid first
 					
 					this.spawnBody(moon);
 				}
