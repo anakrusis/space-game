@@ -64,6 +64,17 @@ class GuiHandler {
 			cam_zoom -= (cam_zoom / 25);
 		}
 		
+		if ( mouseIsPressed ){
+			
+			for (var i = this.elements.length - 1; i >= 0; i--){
+				var e = this.elements[i];
+				if ((e.active || e.bypassActiveForClicks) && !e.parent && e.holdclick){
+					e.click();
+				}
+			}
+			bypassGameClick = false;
+		}
+		
 		for (var i = 0; i < this.allElements.length; i++){
 			var e = this.allElements[i];
 			if (e.active){

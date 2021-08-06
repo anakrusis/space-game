@@ -42,6 +42,7 @@ class Chunk {
 				
 				this.spawnBody(planet);
 				
+				// TODO the chance of moons should ramp up with bigger radius planets
 				if ( RandomUtil.nextFloat(1) < 1 ){
 					
 					var moonradius = 64//radius/4;
