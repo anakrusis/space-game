@@ -48,6 +48,27 @@ for (var i = 0; i < 9; i++){
 	}
 }
 
+var BTN_ZOOM_UP = new GuiElement(0,0,30,25); BTN_ZOOM_UP.text = "+";
+BTN_ZOOM_UP.bypassActiveForClicks = true; BTN_ZOOM_UP.holdclick = true;
+BTN_ZOOM_UP.onUpdate = function(){
+	//var mid = width/2;
+	this.x = width /GUI_SCALE - this.width;
+	this.y = height/GUI_SCALE - this.height - 40;
+}
+BTN_ZOOM_UP.onClick = function(){
+	cam_zoom += (cam_zoom / 25);
+}
+var BTN_ZOOM_DOWN = new GuiElement(0,0,30,25); BTN_ZOOM_DOWN.text = "-";
+BTN_ZOOM_DOWN.bypassActiveForClicks = true; BTN_ZOOM_DOWN.holdclick = true;
+BTN_ZOOM_DOWN.onUpdate = function(){
+	//var mid = width/2;
+	this.x = width /GUI_SCALE - this.width;
+	this.y = height/GUI_SCALE - this.height - 10;
+}
+BTN_ZOOM_DOWN.onClick = function(){
+	cam_zoom -= (cam_zoom / 25);
+}
+
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;
@@ -349,7 +370,7 @@ menu_resume.onClick = function(){
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 GROUP_MAINMENU.ELM_CNTR1 = new GuiElement(0,0,300,40,GROUP_MAINMENU); GROUP_MAINMENU.ELM_CNTR1.autosize = true; GROUP_MAINMENU.ELM_CNTR1.autopos = "left";
-var menu_save = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR1); menu_save.text = "Save Game";
+var menu_save = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR1); menu_save.text = "Save World";
 menu_save.onClick = function(){
 	
 	var jsonworld = getItem("world");
@@ -368,7 +389,7 @@ menu_save.onClick = function(){
 
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_SAVE);
 }
-var menu_load = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR1); menu_load.text = "Load Game";
+var menu_load = new GuiElement(0,0,147.5,40,GROUP_MAINMENU.ELM_CNTR1); menu_load.text = "Load World";
 menu_load.onClick = function(){
 	var jsonworld = getItem("world");
 	if (!jsonworld){ 

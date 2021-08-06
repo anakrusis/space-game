@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.2a";
-BUILD_DATE = "2021-08-05"
+BUILD_DATE = "2021-08-06"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -7,7 +7,7 @@ document.title = TITLE_VERSION;
 GUI_SCALE = 1.5;
 MOUSE_SENSITIVITY = 1;
 PLANET_CAM = true; cam_rot = 0;
-FANCY_TEXT = false; LORES_MODE = false;
+FANCY_TEXT = false; LORES_MODE = false; TOUCH_MODE = false;
 
 lasttouches = [];
 options_buffer = {}; // This is used to buffer changes in the options menu
@@ -44,7 +44,7 @@ class GuiHandler {
 		if (keyIsDown(16)){
 			shiftDown = true;
 		}
-		if (keyIsDown(8)){
+		if (keyIsDown(8) && selectedTextEntry){
 			backspaceTimer--;
 			if (backspaceTimer <= 0){
 				
@@ -54,6 +54,14 @@ class GuiHandler {
 					// = BACKSPACE_TIMER_AMT;
 				}
 			}
+		}
+		
+		// Zoom keys
+		if (keyIsDown(187)) { // plus
+			cam_zoom += (cam_zoom / 25);
+			
+		}else if (keyIsDown(189)) { // minus
+			cam_zoom -= (cam_zoom / 25);
 		}
 		
 		for (var i = 0; i < this.allElements.length; i++){
@@ -80,12 +88,16 @@ class GuiHandler {
 			}
 		}
 		
-		// Special case where these two are inseperable, TODO maybe put these into a bigger super-group
+		// Special case where these elements are inseperable, TODO maybe put these into a bigger super-group
 		if (element == GROUP_INFOBAR){
 			GROUP_HOTBAR.active = true;
 			GROUP_HOTBAR.show();
 			BUTTON_MENU.active = true;
 			BUTTON_MENU.show();
+			BTN_ZOOM_UP.active = true;
+			BTN_ZOOM_UP.show();
+			BTN_ZOOM_DOWN.active = true;
+			BTN_ZOOM_DOWN.show();
 		}
 		
 		element.active = true;
@@ -100,7 +112,7 @@ class GuiHandler {
 		
 		for (var i = this.elements.length - 1; i >= 0; i--){
 			var e = this.elements[i];
-			if (e.active && !e.parent){
+			if ((e.active || e.bypassActiveForClicks) && !e.parent){
 				e.click();
 			}
 		}

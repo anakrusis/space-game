@@ -220,7 +220,7 @@ function mouseMoved() {
 	
 }
 
-function mouseClicked() {
+function mousePressed() {
 	
 	GuiHandler.onClick();
 	
@@ -307,13 +307,6 @@ var update = function(){
 	}
 	
 	// 81 Q 69 E
-	
-	if (keyIsDown(187)) { // plus
-		cam_zoom += (cam_zoom / 25);
-		
-	}else if (keyIsDown(189)) { // minus
-		cam_zoom -= (cam_zoom / 25);
-	}
 	
 	// MOUSE HANDLING
 	

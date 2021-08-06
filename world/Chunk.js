@@ -15,7 +15,7 @@ class Chunk {
 		// serves as a minimum value so that planets don't get too close in orbit
 		var orbitDistanceInterval = 18000;
 		// random variation so they aren't too boring/evenly spaced
-        var orbitVariance = 5000;
+        var orbitVariance = 10000;
 		for (var pc = 0; pc < 8; pc++){
 			
 			var orbitSlot = RandomUtil.fromRangeI(0,8);
@@ -54,6 +54,7 @@ class Chunk {
 					
 					moon.populateOreVeins(); // temporarily pulled out here because it relies on establishing a uuid first
 					
+					// TODO spawn all moons afterwards so they dont affect the orbit positioning
 					this.spawnBody(moon);
 				}
 				

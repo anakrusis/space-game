@@ -38,7 +38,7 @@ class BodyPlanet extends EntityBody {
 		this.oceanUUID = null;
 		this.gravUUID = null;
 		
-		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 100), 2 ) ) ) ;
+		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 90), 2 ) ) ) ;
 		this.calculateHumidity();
 		
 		//this.populateOreVeins();

@@ -14,8 +14,10 @@ class GuiElement {
 		this.dispheight = 100;
 		
 		this.active = true;
+		this.bypassActiveForClicks = false; // a few elements bypass the parents activity for click elements, such as the zoom buttons
 		this.visible = true;
 		this.ticksShown = 0;
+		this.holdclick = false; // If true, it will trigger the click event every tick that it is held, instead of just once at the beginning
 		
 		this.autopos = "top"; // float property
 		this.autosize = false; // will fill up to the size of its children elements
@@ -232,7 +234,7 @@ class GuiElement {
 				var e  = this.children[i];
 				e.click();
 			} 
-			if (this.visible && this.active){
+			if (this.visible && (this.active || this.bypassActiveForClicks)){
 				if (mouseX > this.dispx*GUI_SCALE && mouseX < (this.dispx + this.dispwidth) * GUI_SCALE
 				 && mouseY > this.dispy*GUI_SCALE && mouseY < (this.dispy + this.dispheight)* GUI_SCALE ){
 				

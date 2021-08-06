@@ -173,6 +173,7 @@ class EntityShip extends Entity {
 		
 		var homecity   = homenation.getCapitalCity(); var homeindex = homecity.getPlayerSpawnIndex();
 		this.moveToIndexOnPlanet(homeindex, homeplanet, 0);
+		this.dir += ( Math.PI / 2 );
 	}
 	
 	getNearestBody(){
