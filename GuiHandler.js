@@ -8,6 +8,7 @@ GUI_SCALE = 1.5;
 MOUSE_SENSITIVITY = 1;
 PLANET_CAM = true; cam_rot = 0;
 FANCY_TEXT = false; LORES_MODE = false; TOUCH_MODE = false;
+DPAD_DIST = 145; DPAD_SIZE = 150;
 
 lasttouches = [];
 options_buffer = {}; // This is used to buffer changes in the options menu
@@ -64,7 +65,7 @@ class GuiHandler {
 			cam_zoom -= (cam_zoom / 25);
 		}
 		
-		if ( mouseIsPressed ){
+		if ( mouseIsPressed && touches.length == 0 ){
 			
 			for (var i = this.elements.length - 1; i >= 0; i--){
 				var e = this.elements[i];
@@ -101,14 +102,15 @@ class GuiHandler {
 		
 		// Special case where these elements are inseperable, TODO maybe put these into a bigger super-group
 		if (element == GROUP_INFOBAR){
-			GROUP_HOTBAR.active = true;
-			GROUP_HOTBAR.show();
-			BUTTON_MENU.active = true;
-			BUTTON_MENU.show();
-			BTN_ZOOM_UP.active = true;
-			BTN_ZOOM_UP.show();
-			BTN_ZOOM_DOWN.active = true;
-			BTN_ZOOM_DOWN.show();
+			GROUP_HOTBAR.active = true;  GROUP_HOTBAR.show();
+			BUTTON_MENU.active = true;   BUTTON_MENU.show();
+			BTN_ZOOM_UP.active = true;   BTN_ZOOM_UP.show();
+			BTN_ZOOM_DOWN.active = true; BTN_ZOOM_DOWN.show();
+			// dpad
+			BTN_DPAD_FWRD.active = true; BTN_DPAD_FWRD.show();
+			BTN_DPAD_BWRD.active = true; BTN_DPAD_BWRD.show();
+			BTN_DPAD_LEFT.active = true; BTN_DPAD_LEFT.show();
+			BTN_DPAD_RGHT.active = true; BTN_DPAD_RGHT.show();
 		}
 		
 		element.active = true;
@@ -264,11 +266,26 @@ class GuiHandler {
 				var e = this.elements[i];
 				if ((e.active || e.bypassActiveForClicks) && !e.parent && e.holdclick){
 					e.click(touches[q].x, touches[q].y);
+					
 				}
 			}
 			bypassGameClick = false;
 			
 		}
 		
+		if (touches.length == 2 && lasttouches.length == 2){
+
+			var thistickdist = CollisionUtil.euclideanDistance( touches[0].x, touches[0].y, touches[1].x, touches[1].y);
+			var lasttickdist = CollisionUtil.euclideanDistance( lasttouches[0].x, lasttouches[0].y, lasttouches[1].x, lasttouches[1].y);
+
+			var diff = thistickdist - lasttickdist;
+			//console.log(diff);
+			cam_zoom += ((cam_zoom / 25) * (diff / 11 ))
+		}
+		// deep copy of last tick's touch events
+		lasttouches = [];
+		for (var i = 0; i < touches.length; i++){
+			lasttouches[i] = touches[i];
+		}
 	}
 }

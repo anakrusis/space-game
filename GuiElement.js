@@ -16,6 +16,7 @@ class GuiElement {
 		this.active = true;
 		this.bypassActiveForClicks = false; // a few elements bypass the parents activity for click elements, such as the zoom buttons
 		this.visible = true;
+		this.transparent = false;
 		this.ticksShown = 0;
 		this.holdclick = false; // If true, it will trigger the click event every tick that it is held, instead of just once at the beginning
 		
@@ -259,17 +260,14 @@ class GuiElement {
 	render(){
 		if (!this.visible || this.ticksShown < 3) { return; }
 		
-		//if (!FANCY_TEXT){
-			fill(0);
-			stroke(255);
-		//}
+		if (!this.transparent){ fill(0); } else { noFill(); blendMode(DIFFERENCE); }
+		stroke(255);
 			
 		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
-		//if (!FANCY_TEXT){
-			noStroke();
-			fill(255);
-		//}
+		if (this.transparent){ blendMode(BLEND); }
+		noStroke();
+		fill(255);
 		
 		if (this.text != ""){
 			//this.text = this.text.toUpperCase();

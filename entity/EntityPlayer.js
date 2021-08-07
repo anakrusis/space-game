@@ -15,6 +15,7 @@ class EntityPlayer extends EntityShip {
 		
 		// Physical properties
 		this.boostForce = new ForceVector("Boost",0,0); // this is a buffer which pushes onto the forces array a boost value per tick
+		this.maxBoost = 10;
 	
 		this.currentMission = null;
 	}
@@ -56,13 +57,11 @@ class EntityPlayer extends EntityShip {
 		this.lastangvel = this.angvel;
 		this.lastangacc = this.angacc;
 		
-		this.lastTerrainIndex = this.terrainIndex;//CollisionUtil.indexFromEntityAngle(this, this.getNearestBody());
+		this.lastTerrainIndex = this.terrainIndex;
 		
-/* 		this.lastxvel = this.xvel; this.lastyvel = this.yvel;
-		this.lastxacc = this.xacc; this.lastyacc = this.yacc; */
-		//this.forceVectors.push(this.boostForce);
+		this.getBoostForce().magnitude = Math.min( this.maxBoost, this.getBoostForce().magnitude );
+		this.getBoostForce().magnitude = Math.max( 0, this.getBoostForce().magnitude );
 		this.getBoostForce().dir = this.dir;
-		//pts = this.predictPoints2();
 		
 		super.update();
 		

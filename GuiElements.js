@@ -69,6 +69,47 @@ BTN_ZOOM_DOWN.onClick = function(){
 	cam_zoom -= (cam_zoom / 25);
 }
 
+BTN_DPAD_FWRD = new GuiElement(0,0,100,100); BTN_DPAD_FWRD.holdclick = true; 
+BTN_DPAD_FWRD.transparent = true;
+BTN_DPAD_FWRD.onUpdate = function(){
+	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
+	this.x = width / 2 / GUI_SCALE - this.width / 2;
+	this.y = height/ 2 / GUI_SCALE - this.height / 2 - DPAD_DIST;
+}
+BTN_DPAD_FWRD.onClick = function(){
+	server.onUpdateRequest( client.world.getPlayer().boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+}
+BTN_DPAD_BWRD = new GuiElement(0,0,100,100); BTN_DPAD_BWRD.holdclick = true; 
+BTN_DPAD_BWRD.transparent = true;
+BTN_DPAD_BWRD.onUpdate = function(){
+	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
+	this.x = width / 2 / GUI_SCALE - this.width / 2;
+	this.y = height/ 2 / GUI_SCALE - this.height / 2 + DPAD_DIST;
+}
+BTN_DPAD_BWRD.onClick = function(){
+	server.onUpdateRequest( client.world.getPlayer().boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
+}
+BTN_DPAD_LEFT = new GuiElement(0,0,100,100); BTN_DPAD_LEFT.holdclick = true; 
+BTN_DPAD_LEFT.transparent = true;
+BTN_DPAD_LEFT.onUpdate = function(){
+	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
+	this.x = width / 2 / GUI_SCALE - this.width / 2 - DPAD_DIST;
+	this.y = height/ 2 / GUI_SCALE - this.height / 2;
+}
+BTN_DPAD_LEFT.onClick = function(){
+	server.onUpdateRequest( client.world.getPlayer().dir - 0.1, "world", "getPlayer", "dir" );
+}
+BTN_DPAD_RGHT = new GuiElement(0,0,100,100); BTN_DPAD_RGHT.holdclick = true; 
+BTN_DPAD_RGHT.transparent = true;
+BTN_DPAD_RGHT.onUpdate = function(){
+	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
+	this.x = width / 2 / GUI_SCALE - this.width / 2 + DPAD_DIST;
+	this.y = height/ 2 / GUI_SCALE - this.height / 2;
+}
+BTN_DPAD_RGHT.onClick = function(){
+	server.onUpdateRequest( client.world.getPlayer().dir + 0.1, "world", "getPlayer", "dir" );
+}
+
 // INFOBAR: Left hand bar with the information on various things
 
 var GROUP_INFOBAR = new GuiElement(0,0,0,0); GROUP_INFOBAR.autosize = true;

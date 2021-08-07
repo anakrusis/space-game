@@ -271,31 +271,17 @@ var update = function(){
 	
 	if (player){
 		if (keyIsDown(87)) { // up
-			if (player.boostForce.magnitude < 10) {
-				//server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
-				server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
-				trajectory = [[],[]]; dir_history = [];
-			}
+			server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 		}
 		else if (keyIsDown(83)) { // down
-			if (player.boostForce.magnitude > 0) {
-				//server.onUpdateRequest( player.boostForce.magnitude, "world", "player", "lastBoostForce", "magnitude" );
-				server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
-				trajectory = [[],[]]; dir_history = [];
-			}
-			
-		}else{
-			//server.onUpdateRequest( player.velocity / 1.01, "world", "player", "velocity" );
-			
+			server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
 		}
 		
 		if (keyIsDown(65)) { // left
 			server.onUpdateRequest( player.dir - 0.1, "world", "getPlayer", "dir" );
-			trajectory = [[],[]]; dir_history = [];
 		}
 		if (keyIsDown(68)) { // right
 			server.onUpdateRequest( player.dir + 0.1, "world", "getPlayer", "dir" );
-			trajectory = [[],[]]; dir_history = [];
 		}
 		
 		if (keyIsDown(82)) {
