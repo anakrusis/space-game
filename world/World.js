@@ -109,6 +109,7 @@ class World {
 			}
 			if (!nearestPlanet || nearestDiff >= 50){ cx += 1; continue; }
 			if (nearestPlanet.waterratio > 0.80){ cx += 1; continue; }
+			if (nearestPlanet.radius < 128){ cx += 1; continue; }
 			//if (nearestPlanet.getStar() instanceof BodyStar){ cx += 1; continue; } // temporarily testing for only moon spawns
 			
 			return nearestPlanet;

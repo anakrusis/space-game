@@ -280,7 +280,7 @@ class GuiHandler {
 
 			var diff = thistickdist - lasttickdist;
 			//console.log(diff);
-			cam_zoom += ((cam_zoom / 25) * (diff / 11 ))
+			cam_zoom += ((cam_zoom / 25) * MOUSE_SENSITIVITY * (diff / 11 ))
 		}
 		// deep copy of last tick's touch events
 		lasttouches = [];

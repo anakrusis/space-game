@@ -13,7 +13,7 @@ class Chunk {
 		// this value starts at 1 (so there is always 1 planet at least) and steps down 0.1 with each planet
 		var planetChance = 1;
 		// serves as a minimum value so that planets don't get too close in orbit
-		var orbitDistanceInterval = 18000;
+		var orbitDistanceInterval = RandomUtil.fromRangeF(12000,18000);
 		// random variation so they aren't too boring/evenly spaced
         var orbitVariance = 10000;
 		for (var pc = 0; pc < 8; pc++){
@@ -43,9 +43,9 @@ class Chunk {
 				this.spawnBody(planet);
 				
 				// TODO the chance of moons should ramp up with bigger radius planets
-				if ( RandomUtil.nextFloat(1) < 1 ){
+				if ( RandomUtil.nextFloat(1) < 0.5 ){
 					
-					var moonradius = 64//radius/4;
+					var moonradius = radius/4;
 					var moondistance = RandomUtil.fromRangeF(15,20) * radius;
 					var moon = new BodyPlanet(planet.getX() + moondistance, planet.getY(), 0, moonradius, moondistance, planet.uuid);
 					moon.temperature = Math.max(0,planet.temperature - RandomUtil.fromRangeF(100,200));

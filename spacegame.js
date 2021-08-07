@@ -172,8 +172,7 @@ function draw(){
 }
 
 function touchStarted() {
-	
-	mousePressed();
+	mousePressed(); TOUCH_MODE = true;
 	return false;
 }
 

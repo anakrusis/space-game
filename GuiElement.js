@@ -542,7 +542,7 @@ class GuiScrollContainer extends GuiElement {
 
 class GuiCheckbox extends GuiElement {
 	constructor(width,parent,patharray){
-		super(0,0,width,60,parent);
+		super(0,0,width,50,parent);
 		this.patharray = patharray;
 		this.setting = window[ this.patharray[0] ];
 		this.originalsetting = this.setting;

@@ -75,6 +75,7 @@ BTN_DPAD_FWRD.onUpdate = function(){
 	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
 	this.x = width / 2 / GUI_SCALE - this.width / 2;
 	this.y = height/ 2 / GUI_SCALE - this.height / 2 - DPAD_DIST;
+	if (TOUCH_MODE){ this.show(); } else { this.hide(); }
 }
 BTN_DPAD_FWRD.onClick = function(){
 	server.onUpdateRequest( client.world.getPlayer().boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
@@ -85,6 +86,7 @@ BTN_DPAD_BWRD.onUpdate = function(){
 	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
 	this.x = width / 2 / GUI_SCALE - this.width / 2;
 	this.y = height/ 2 / GUI_SCALE - this.height / 2 + DPAD_DIST;
+	if (TOUCH_MODE){ this.show(); } else { this.hide(); }
 }
 BTN_DPAD_BWRD.onClick = function(){
 	server.onUpdateRequest( client.world.getPlayer().boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
@@ -95,6 +97,7 @@ BTN_DPAD_LEFT.onUpdate = function(){
 	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
 	this.x = width / 2 / GUI_SCALE - this.width / 2 - DPAD_DIST;
 	this.y = height/ 2 / GUI_SCALE - this.height / 2;
+	if (TOUCH_MODE){ this.show(); } else { this.hide(); }
 }
 BTN_DPAD_LEFT.onClick = function(){
 	server.onUpdateRequest( client.world.getPlayer().dir - 0.1, "world", "getPlayer", "dir" );
@@ -105,6 +108,7 @@ BTN_DPAD_RGHT.onUpdate = function(){
 	this.width = DPAD_SIZE; this.height = DPAD_SIZE;
 	this.x = width / 2 / GUI_SCALE - this.width / 2 + DPAD_DIST;
 	this.y = height/ 2 / GUI_SCALE - this.height / 2;
+	if (TOUCH_MODE){ this.show(); } else { this.hide(); }
 }
 BTN_DPAD_RGHT.onClick = function(){
 	server.onUpdateRequest( client.world.getPlayer().dir + 0.1, "world", "getPlayer", "dir" );
@@ -625,9 +629,12 @@ var options_mouse = new GuiSlider(0,0,400,40,GROUP_OPTIONS,["MOUSE_SENSITIVITY",
 options_mouse.onUpdate = function(){
 	this.text = "Zoom sensitivity: " + Math.round(this.setting * 100)/100;
 }
-var options_lores = new GuiCheckbox(200,GROUP_OPTIONS,["LORES_MODE","SQUIDWARD"]); options_lores.text = "Low res mode: ";
+var options_optcntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_optcntr.autosize = true; options_optcntr.autopos = "left";
 
-var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true;  options_btncntr.autopos = "left";
+var options_lores = new GuiCheckbox(200,options_optcntr,["LORES_MODE","SQUIDWARD"]); options_lores.text = "Low res mode: ";
+var options_touch = new GuiCheckbox(225,options_optcntr,["TOUCH_MODE","SQUIDWARD"]); options_touch.text = "Touchscreen mode: ";
+
+var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true; options_btncntr.autopos = "left";
 
 var options_back = new GuiElement(0,0,100,40,options_btncntr); options_back.text = "Back";
 options_back.onClick = function(){
