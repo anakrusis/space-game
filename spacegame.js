@@ -86,15 +86,15 @@ function draw(){
 	}
 	framecount++;
 	
+	cam_zoom = Math.min(cam_zoom, MAX_ZOOM);
+	cam_zoom = Math.max(cam_zoom, MIN_ZOOM);
+	
 	// The level of detail (LOD) is used to tell how many times to invoke a resampling function which each time reduces the number of vertices drawn on a planet by a factor of 2
 	// 
 	lod = 10 / cam_zoom;
 	lod = Math.ceil(Math.log(lod)/Math.log(2))
 	lod = Math.max( 0, lod );
 	lod = Math.min( 8, lod );
-	
-	cam_zoom = Math.min(cam_zoom, MAX_ZOOM);
-	cam_zoom = Math.max(cam_zoom, MIN_ZOOM);
 	
 	background(13,0,13);
 	
