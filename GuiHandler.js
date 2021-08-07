@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.2a";
-BUILD_DATE = "2021-08-06"
+BUILD_DATE = "2021-08-07"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -69,7 +69,7 @@ class GuiHandler {
 			for (var i = this.elements.length - 1; i >= 0; i--){
 				var e = this.elements[i];
 				if ((e.active || e.bypassActiveForClicks) && !e.parent && e.holdclick){
-					e.click();
+					e.click(mouseX, mouseY);
 				}
 			}
 			bypassGameClick = false;
@@ -117,14 +117,14 @@ class GuiHandler {
 		
 	}
 	
-	static onClick(){
+	static onClick(x,y){
 		
 		selectedTextEntry = null;
 		
 		for (var i = this.elements.length - 1; i >= 0; i--){
 			var e = this.elements[i];
 			if ((e.active || e.bypassActiveForClicks) && !e.parent){
-				e.click();
+				e.click(x,y);
 			}
 		}
 	}
@@ -258,94 +258,17 @@ class GuiHandler {
 	
 	static handleTouches(){
 		
-		var player = client.world.getPlayer();
-		
-		cursorAbsX = untra_x( mouseX, mouseY ); cursorAbsY = untra_y( mouseX, mouseY );
-	
-		// TOUCHSCREEN HANDLING
-		
-		// The single touch is complicated because it can do many actions. Let's try to break it down:
-		
-		if (touches.length == 1){
-			// This is both random accidental screen tap protection, and, also allows double touch events to not
-			// accidentally trigger single touch events (you know, both fingers dont touch the screen on the same tick hardly ever)
-			// so there is a 15-tick window for a single touch event to add on more touches, before it's registered as a single touch
+		for (var q = 0; q < touches.length; q++){
 			
-			if (lasttouches.length==0){ singletouchtimer = 0;}else{ singletouchtimer++; }
-			
-			if (singletouchtimer > 15){
-				
-				//cursorAbsX = untra_x( touches[0].x ); cursorAbsY = untra_y( touches[0].y );
-				
-				// First, it will try to find a gui element and interact with it. All other actions will be skipped.
-				
-				GuiHandler.onClick();
-	
-				if (bypassGameClick){ bypassGameClick = false; return; }
-				
-				// Second, it will try to find an entity to select. All other actions will be skipped.
-				
-				MissionHandler.onPlayerSelectEntity( client.world.getPlayer(), hoverEntity );
-				if (hoverEntity){
-					selectedEntity = hoverEntity; return;
-				}else{
-					selectedEntity = null;
+			for (var i = this.elements.length - 1; i >= 0; i--){
+				var e = this.elements[i];
+				if ((e.active || e.bypassActiveForClicks) && !e.parent && e.holdclick){
+					e.click(touches[q].x, touches[q].y);
 				}
-				
-				// Then, it will make sure you are on the main screen, and if so, then you can modify the player's movement with the touch.
-				// The screen is partitioned into four quadrants based on the players facing direction.
-				
-				if (!GROUP_INFOBAR.active){ return; };
-				
-				var abs_angle = Math.atan2( cursorAbsY - player.y, cursorAbsX - player.x );
-				abs_angle = loopyMod(abs_angle - player.dir, PI*2);
-				
-				// forward
-				if ( abs_angle < HALF_PI/2 || abs_angle > (3/2)*PI + (1/4)*PI ){
-					if (player.boostForce.magnitude < 10) {
-						server.onUpdateRequest( player.boostForce.magnitude + 0.005, "world", "getPlayer", "boostForce", "magnitude" );
-					}
-				} 
-				// left
-				if ( abs_angle > PI + (1/4)*PI && abs_angle < (3/2)*PI + (1/4)*PI ){
-					server.onUpdateRequest( player.dir - 0.1, "world", "getPlayer", "dir" );
-				} 
-				// right
-				if ( abs_angle > HALF_PI/2 && abs_angle < 3 * HALF_PI/2 ){
-					server.onUpdateRequest( player.dir + 0.1, "world", "getPlayer", "dir" );
-				}
-				if ( abs_angle > 3 * HALF_PI/2 && abs_angle < PI + (1/4)*PI) {
-					
-					if (player.boostForce.magnitude > 0) {
-					
-						server.onUpdateRequest( player.boostForce.magnitude - 0.005, "world", "getPlayer", "boostForce", "magnitude" );
-					
-					}
-				}
-				
-				if (framecount % 30 == 0){
-					//console.log(abs_angle);
-				}
-				//server.onUpdateRequest( abs_angle, "world", "player", "dir" );
-				
 			}
+			bypassGameClick = false;
+			
 		}
 		
-		// The double touch is simpler because it just handles the camera zoom. Maybe in the future it will do more
-		
-		if (touches.length == 2 && lasttouches.length == 2){
-			
-			var thistickdist = CollisionUtil.euclideanDistance( touches[0].x, touches[0].y, touches[1].x, touches[1].y);
-			var lasttickdist = CollisionUtil.euclideanDistance( lasttouches[0].x, lasttouches[0].y, lasttouches[1].x, lasttouches[1].y);
-			
-			var diff = thistickdist - lasttickdist;
-			//console.log(diff);
-			cam_zoom += ((cam_zoom / 25) * (diff / 11 ))
-		}
-		// deep copy of last tick's touch events
-		lasttouches = [];
-		for (var i = 0; i < touches.length; i++){
-			lasttouches[i] = touches[i];
-		}
 	}
 }

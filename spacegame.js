@@ -173,6 +173,7 @@ function draw(){
 
 function touchStarted() {
 	
+	mousePressed();
 	return false;
 }
 
@@ -222,7 +223,7 @@ function mouseMoved() {
 
 function mousePressed() {
 	
-	GuiHandler.onClick();
+	GuiHandler.onClick(mouseX, mouseY);
 	
 	if (bypassGameClick){ bypassGameClick = false; return; }
 	

@@ -228,15 +228,15 @@ class GuiElement {
 	}
 	
 	// This one also acts as a skeleton function for the real behavior which is onClick()
-	click(){
+	click(x,y){
 		if (!bypassGameClick){
 			for (var i = 0; i < this.children.length; i++){
 				var e  = this.children[i];
-				e.click();
+				e.click(x,y);
 			} 
 			if (this.visible && (this.active || this.bypassActiveForClicks)){
-				if (mouseX > this.dispx*GUI_SCALE && mouseX < (this.dispx + this.dispwidth) * GUI_SCALE
-				 && mouseY > this.dispy*GUI_SCALE && mouseY < (this.dispy + this.dispheight)* GUI_SCALE ){
+				if (x > this.dispx*GUI_SCALE && x < (this.dispx + this.dispwidth) * GUI_SCALE
+				 && y > this.dispy*GUI_SCALE && y < (this.dispy + this.dispheight)* GUI_SCALE ){
 				
 					this.onClick(); 
 					bypassGameClick = true;

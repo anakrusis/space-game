@@ -30,27 +30,6 @@ class EntityPlayer extends EntityShip {
 			this.drawPointsTrailFromEntity(pts);
 		}
 		
-		if (touches.length == 1){
-		
-			stroke(255);
-			
-			for ( var i = 0; i < 4; i++ ){
-				
-				var angle = HALF_PI * i;
-				
-				if (PLANET_CAM){
-					angle -= cam_rot;
-				}
-				 
-				var rotx = rot_x( angle + client.world.getPlayer().dir, 300, 300 ) + width/2;
-				var roty = rot_y( angle + client.world.getPlayer().dir, 300, 300 ) + height/2;
-				
-				line( width/2, height/2, rotx, roty );
-				
-			}
-			
-		}
-		
 		super.render();
 		
 	}
