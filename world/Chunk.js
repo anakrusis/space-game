@@ -52,6 +52,7 @@ class Chunk {
 					moon.uuid = planet.uuid - 5;
 					moon.icon = "🌙";
 					moon.updatePriority = 0;
+					moon.descriptor = "moon";
 					
 					moon.populateOreVeins(); // temporarily pulled out here because it relies on establishing a uuid first
 					

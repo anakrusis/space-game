@@ -4,6 +4,10 @@ var GROUP_HOTBAR = new GuiElement(0,0,500,500);
 GROUP_HOTBAR.autosize = true; GROUP_HOTBAR.autopos = "left"; GROUP_HOTBAR.autocenterX = true;
 GROUP_HOTBAR.onUpdate = function(){
 	this.y = height/GUI_SCALE - this.height;
+	
+	if (BUTTON_MENU.dispx + BUTTON_MENU.dispwidth > this.dispx ){
+		this.y -= 35;
+	}
 }
 
 for (var i = 0; i < 9; i++){
@@ -280,7 +284,9 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 		var infostring = "";
 		
 		if (e instanceof BodyPlanet){
-			var starname = e.getStar().name; infostring += "Planet of the " + starname + " system\n\n";
+			var starname = e.getStar().name; 
+			infostring += e.descriptor + " of the " + e.getStar().descriptor + " " + starname + "\n\n";
+			infostring = infostring.charAt(0).toUpperCase() + infostring.slice(1);
 			
 			var daylen = 2 * Math.PI / e.rotSpeed / 60 / 60;
 			//infostring += "= Day length: " + Math.round(daylen) + " Earth min.\n"
@@ -345,7 +351,7 @@ GROUP_INFOBAR.BTN_MISSION.onUpdate = function(){
 	
 }
 GROUP_INFOBAR.BTN_MISSION.onClick = function(){
-	GuiHandler.openWindow( GROUP_MISSION_SELECT )
+	GuiHandler.openWindow( GROUP_MISSION_SELECT );
 }
 
 // WELCOME: When you first open up the game

@@ -197,6 +197,34 @@ class GuiHandler {
 		}
 	}
 	
+	static drawSpaceportTooltips(){
+		if ((MissionHandler.inPlaceForDelivery || MissionHandler.inPlaceForMission)){
+			var planet = client.world.getPlayer().getGroundedBody();
+			if (!planet){ return; }
+			var index = client.world.getPlayer().terrainIndex;
+			var building = planet.tiles[ index ].getBuilding();
+			if (!building.isOnScreen()){ return; }
+			
+			//var tx = width / 2 - 
+			var tx = tra_rot_x(building.x, building.y)
+			var ty = tra_rot_y(building.x, building.y) - ( 6 * cam_zoom );
+			
+			fill(building.color[0], building.color[1], building.color[2]); noStroke();
+			textAlign(CENTER);
+			textSize(32 + cam_zoom/2);
+			if (MissionHandler.inPlaceForDelivery){
+				text( "[E] Deliver", tx, ty );
+				
+			} else if (MissionHandler.inPlaceForMission){
+				if ( ! ( client.world.getPlayer().currentMission ) ){
+					text( "[E] Missions...", tx, ty );
+				}
+			}
+			textAlign(LEFT);
+			textSize(16);
+		}
+	}
+	
 	// Draws the names of the cities pointing toward their location. The text is angled radially to point towards the center of the planet. The text will always face upward if possible.
 	static drawCityLabels(){
 		for (key in client.world.cities){

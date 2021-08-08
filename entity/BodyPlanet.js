@@ -4,6 +4,7 @@ class BodyPlanet extends EntityBody {
 		
 		// Core properties
 		this.name = Nymgen.newName();
+		this.descriptor = "planet";
 		this.icon = "🪐"
 		//this.color = [192,192,192];
 		

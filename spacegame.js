@@ -156,7 +156,7 @@ function draw(){
 		
 		resetMatrix();
 	}
-	
+	GuiHandler.drawSpaceportTooltips();
 	GuiHandler.update();
 	GuiHandler.render();
 	
@@ -208,6 +208,23 @@ function keyPressed() {
 			buildingDrawEnabled = !buildingDrawEnabled;	
 			
 		}else if (keyCode === 69){ // E
+			
+			if (GROUP_INFOBAR.active){
+				if (MissionHandler.inPlaceForDelivery){
+					
+					var planet = client.world.getPlayer().getGroundedBody();
+					var index = client.world.getPlayer().terrainIndex;
+					var building = planet.tiles[ index ].getBuilding(); selectedEntity = building;
+					server.world.getPlayer().currentMission.onSuccess();
+					
+				} else if (MissionHandler.inPlaceForMission){
+					
+					var planet = client.world.getPlayer().getGroundedBody();
+					var index = client.world.getPlayer().terrainIndex;
+					var building = planet.tiles[ index ].getBuilding(); selectedEntity = building;
+					GuiHandler.openWindow( GROUP_MISSION_SELECT );
+				}
+			}
 		
 		// Hotbar
 		}else if (keyCode >= 48 && keyCode <= 57){

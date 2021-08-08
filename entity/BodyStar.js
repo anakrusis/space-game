@@ -6,6 +6,7 @@ class BodyStar extends EntityBody {
 		this.rotSpeed = 0.01;
 		this.canEntitiesCollide = true;
 		this.name = Nymgen.newName();
+		this.descriptor = "star system"
 		
 		this.gravUUID = null;
 	}
