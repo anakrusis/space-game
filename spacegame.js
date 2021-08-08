@@ -205,7 +205,7 @@ function keyPressed() {
 			PLANET_CAM = !PLANET_CAM;
 			
 		}else if (keyCode === 66){ // B
-			buildingDrawEnabled = !buildingDrawEnabled;	
+			//buildingDrawEnabled = !buildingDrawEnabled;	
 			
 		}else if (keyCode === 69){ // E
 			
@@ -299,17 +299,7 @@ var update = function(){
 		if (keyIsDown(68)) { // right
 			server.onUpdateRequest( player.dir + 0.1, "world", "getPlayer", "dir" );
 		}
-		
-		if (keyIsDown(82)) {
-			//server.onUpdateRequest( 0, "world", "player", "boostForce", "magnitude" );
-		}
 	}
-	if (keyIsDown(80)){
-		//var myJSON = JSON.stringify(server.world);
-		//document.getElementById("bodydiv2").innerHTML = myJSON;
-	}
-	
-	// 81 Q 69 E
 	
 	// MOUSE HANDLING
 	

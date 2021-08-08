@@ -6,6 +6,10 @@ class MissionHandler {
 	
 	static inPlaceForDelivery = false; static spaceportSelected = false;
 	static inPlaceForMission  = false;
+	
+	static onMissionEnd(){
+		this.inPlaceForDelivery = false;
+	}
 
 	static onPlayerGround( player, planet ){
 	

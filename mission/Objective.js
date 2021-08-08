@@ -53,7 +53,7 @@ class ObjectiveGoToPlace extends Objective {
 		}else
 		if (place.placetype == "planet"){
 			
-			this.text = "Land on planet " + place.name;
+			this.text = "Land on " + place.get().descriptor + " " + place.name;
 			
 		}
 		this.place = place;

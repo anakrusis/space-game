@@ -13,7 +13,7 @@ class Place {
 			if (obj instanceof BodyPlanet){
 				
 				this.placetype = "planet";
-				this.chunkx = obj.chunkx; this.chunky = obj.chunky;
+				this.chunkx = obj.getChunk().x; this.chunky = obj.getChunk().y;
 				
 			}
 			

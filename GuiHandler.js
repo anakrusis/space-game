@@ -204,8 +204,8 @@ class GuiHandler {
 			var index = client.world.getPlayer().terrainIndex;
 			var building = planet.tiles[ index ].getBuilding();
 			if (!building.isOnScreen()){ return; }
+			if (cam_zoom < MIN_CITY_TEXT_ZOOM*32){ return; }
 			
-			//var tx = width / 2 - 
 			var tx = tra_rot_x(building.x, building.y)
 			var ty = tra_rot_y(building.x, building.y) - ( 6 * cam_zoom );
 			

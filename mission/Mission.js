@@ -76,6 +76,8 @@ class Mission {
 		GROUP_MISSION_FAIL.children[1].text = this.failtext; p.currentMission = null;
 		p.history.events.push( new EventMissionFail( new Date(), this ) );
 		GuiHandler.openWindow(GROUP_MISSION_FAIL);
+		
+		MissionHandler.onMissionEnd();
 	}
 	
 	onSuccess(){
@@ -87,10 +89,14 @@ class Mission {
 		GROUP_MISSION_SUCCESS.children[1].text = this.successtext; p.currentMission = null;
 		p.history.events.push( new EventMissionSuccess( new Date(), this ) );
 		GuiHandler.openWindow(GROUP_MISSION_SUCCESS);
+		
+		MissionHandler.onMissionEnd();
 	}
 	
 	onCancel(){
 		this.getSourceCity().updateMissions();
+		
+		MissionHandler.onMissionEnd();
 	}
 	
 	onStart(){

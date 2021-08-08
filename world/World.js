@@ -89,6 +89,8 @@ class World {
 			var nearestPlanet = null;
 			var nearestDiff;
 			
+			var found = true;
+			
 			for ( var uuid in chunk.bodies ){
 				var b = chunk.bodies[uuid];
 				if (!(b instanceof BodyPlanet)){ continue; }
@@ -107,12 +109,16 @@ class World {
 				}
 				
 			}
-			if (!nearestPlanet || nearestDiff >= 50){ cx += 1; continue; }
-			if (nearestPlanet.waterratio > 0.80){ cx += 1; continue; }
-			if (nearestPlanet.radius < 128){ cx += 1; continue; }
-			//if (nearestPlanet.getStar() instanceof BodyStar){ cx += 1; continue; } // temporarily testing for only moon spawns
+			if (!nearestPlanet || nearestDiff >= 50){ found = false; }
+			if (nearestPlanet.waterratio > 0.80)    { found = false; }
+			if (nearestPlanet.radius < 128)         { found = false; }
+			//if (nearestPlanet.getStar() instanceof BodyStar){ found = false; } // temporarily testing for only moon spawns
 			
-			return nearestPlanet;
+			if (found){ return nearestPlanet; }
+			
+			this.unloadChunk(cx,cy);
+			cx += 1;
+			continue;
 		}
 	}
 	
@@ -215,6 +221,18 @@ class World {
 		}
 		this.loadedChunksX.push(chunkx);
 		this.loadedChunksY.push(chunky);
+	}
+	
+	unloadChunk(chunkx, chunky){
+		for (var p = 0; p < this.loadedChunksX.length; p++){
+			
+			if ( this.loadedChunksX[p] != chunkx ) { continue; }
+			if ( this.loadedChunksY[p] != chunky ) { continue; }
+			
+			this.loadedChunksX.splice(p,1);
+			this.loadedChunksY.splice(p,1);
+			return;
+		}
 	}
 	
 	getInfoString(){

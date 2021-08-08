@@ -358,10 +358,16 @@ GROUP_INFOBAR.BTN_MISSION.onClick = function(){
 
 var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
 
-var hdr = new GuiElement(0,0,700,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
-var bdy = new GuiElement(0,0,700,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You can do delivery missions, exploration missions to other planets, or simply fly around leisurely. \nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n W/S - accelerate/decelerate\n A/D - turn\n Mouse wheel - zoom in/out\n F - toggle fullscreen\n P - toggle trajectory drawing\n Space - toggle planet camera rotation"
+var hdr = new GuiElement(0,0,400,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
+var bdy = new GuiElement(0,0,400,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You can do delivery missions, exploration missions to other planets, or simply fly around leisurely. \nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n";
+bdy.text += " W/S .......... accelerate/decelerate\n"
+bdy.text += " A/D .......... turn\n"
+bdy.text += " E ............ action\n" 
+bdy.text += " +/- .......... zoom\n" 
+bdy.text += " mouse wheel .. zoom\n"
+bdy.text += " P ............ toggle camera rotation";
 
-var butoncontainer = new GuiElement(0,0,700,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
+var butoncontainer = new GuiElement(0,0,400,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
 
 var startbuton = new GuiElement(0,0,160,40,butoncontainer); startbuton.text = "Begin flying!";
 startbuton.onClick = function(){
