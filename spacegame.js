@@ -338,7 +338,7 @@ var update = function(){
 				hoverEntity = body; break;
 			}
 			
-			if (body.hasDynamicScale){
+			if (body.hasDynamicScale && cam_zoom < MAX_INTERPLANETARY_ZOOM){
 				var dist = CollisionUtil.euclideanDistance(tra_rot_x(body.x,body.y), tra_rot_y(body.x,body.y), mouseX, mouseY);
 				if (dist < body.dispradius){
 					hoverEntity = body; break;
