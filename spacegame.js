@@ -225,6 +225,17 @@ function keyPressed() {
 					GuiHandler.openWindow( GROUP_MISSION_SELECT );
 				}
 			}
+			
+		} else if (keyCode === 27){ // esc 
+		
+			for ( var q = GuiHandler.elements.length - 1; q >= 0; q-- ){
+				
+				var e = GuiHandler.elements[q];
+				if (e.active && e.BTN_BACK){
+					
+					e.BTN_BACK.onClick(); return;
+				}
+			}
 		
 		// Hotbar
 		}else if (keyCode >= 48 && keyCode <= 57){

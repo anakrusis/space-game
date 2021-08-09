@@ -5,7 +5,7 @@ GROUP_HOTBAR.autosize = true; GROUP_HOTBAR.autopos = "left"; GROUP_HOTBAR.autoce
 GROUP_HOTBAR.onUpdate = function(){
 	this.y = height/GUI_SCALE - this.height;
 	
-	if (BUTTON_MENU.dispx + BUTTON_MENU.dispwidth > this.dispx ){
+	if (GROUP_INFOBAR.BTN_BACK.dispx + GROUP_INFOBAR.BTN_BACK.dispwidth > this.dispx ){
 		this.y -= 35;
 	}
 }
@@ -126,13 +126,13 @@ tittle.onClick = function(){
 	GuiHandler.openWindow(GROUP_WELCOME);
 }
 
-var BUTTON_MENU = new GuiElement(0,0,150,40); BUTTON_MENU.text = "Options..."
-BUTTON_MENU.onUpdate = function(){
+GROUP_INFOBAR.BTN_BACK = new GuiElement(0,0,150,40); GROUP_INFOBAR.BTN_BACK.text = "Options..."
+GROUP_INFOBAR.BTN_BACK.onUpdate = function(){
 	//var mid = width/2;
 	this.y = height/GUI_SCALE - this.height;
 
 }
-BUTTON_MENU.onClick = function(){
+GROUP_INFOBAR.BTN_BACK.onClick = function(){
 	GuiHandler.openWindow(GROUP_MAINMENU);
 }
 
@@ -369,8 +369,8 @@ bdy.text += " P ............ toggle camera rotation";
 
 var butoncontainer = new GuiElement(0,0,400,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";
 
-var startbuton = new GuiElement(0,0,160,40,butoncontainer); startbuton.text = "Begin flying!";
-startbuton.onClick = function(){
+GROUP_WELCOME.BTN_BACK = new GuiElement(0,0,160,40,butoncontainer); GROUP_WELCOME.BTN_BACK.text = "Begin flying!";
+GROUP_WELCOME.BTN_BACK.onClick = function(){
 	GROUP_WELCOME.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 var sorcebuton = new GuiElement(0,0,210,40,butoncontainer); sorcebuton.text = "View code (Github)";
@@ -422,8 +422,8 @@ GROUP_MAINMENU.hide(); GROUP_MAINMENU.autocenterX = true; GROUP_MAINMENU.autocen
 
 //var menu_title = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_title.text = "Space Game";
 
-var menu_resume = new GuiElement(0,0,300,40,GROUP_MAINMENU); menu_resume.text = "Resume Game";
-menu_resume.onClick = function(){
+GROUP_MAINMENU.BTN_BACK = new GuiElement(0,0,300,40,GROUP_MAINMENU); GROUP_MAINMENU.BTN_BACK.text = "Resume Game";
+GROUP_MAINMENU.BTN_BACK.onClick = function(){
 	GROUP_MAINMENU.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 GROUP_MAINMENU.ELM_CNTR1 = new GuiElement(0,0,300,40,GROUP_MAINMENU); GROUP_MAINMENU.ELM_CNTR1.autosize = true; GROUP_MAINMENU.ELM_CNTR1.autopos = "left";
@@ -648,8 +648,8 @@ var options_touch = new GuiCheckbox(225,options_optcntr,["TOUCH_MODE","SQUIDWARD
 
 var options_btncntr = new GuiElement(0,0,700,64, GROUP_OPTIONS); options_btncntr.autosize = true; options_btncntr.autopos = "left";
 
-var options_back = new GuiElement(0,0,100,40,options_btncntr); options_back.text = "Back";
-options_back.onClick = function(){
+GROUP_OPTIONS.BTN_BACK = new GuiElement(0,0,100,40,options_btncntr); GROUP_OPTIONS.BTN_BACK.text = "Back";
+GROUP_OPTIONS.BTN_BACK.onClick = function(){
 	GROUP_OPTIONS.hide(); GuiHandler.openWindow(GROUP_MAINMENU);
 }
 var options_apply = new GuiElement(0,0,100,40,options_btncntr); options_apply.text = "Apply";
@@ -737,7 +737,7 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 
 	var mission_sure_cntr = new GuiElement(0,0,700,64, GROUP_MISSION_CONFIRM); mission_sure_cntr.autosize = true;  mission_sure_cntr.autopos = "left";
 
-	var yesbtn = new GuiElement(0,0,148,40,mission_sure_cntr); yesbtn.text = "Yea";
+	var yesbtn = new GuiElement(0,0,148,40,mission_sure_cntr); yesbtn.text = "OK";
 	yesbtn.onClick = function(){
 		GROUP_MISSION_CONFIRM.hide(); 
 		
@@ -753,8 +753,8 @@ GROUP_MISSION_CONFIRM.onShow = function(){
 		}
 	}
 	
-	var backbtn = new GuiElement(0,0,148,40,mission_sure_cntr); backbtn.text = "Nah";
-	backbtn.onClick = function(){
+	this.BTN_BACK = new GuiElement(0,0,148,40,mission_sure_cntr); this.BTN_BACK.text = "Cancel";
+	this.BTN_BACK.onClick = function(){
 		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_MISSION_SELECT);
 	}
 	
@@ -834,11 +834,11 @@ GROUP_MISSION_SELECT.onShow = function(){
 		}
 	}
 }
-var backbtn = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT); backbtn.text = "Back";
-backbtn.onClick = function(){
+GROUP_MISSION_SELECT.BTN_BACK = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT); GROUP_MISSION_SELECT.BTN_BACK.text = "Back";
+GROUP_MISSION_SELECT.BTN_BACK.onClick = function(){
 	GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 
-GROUP_INFOBAR.hide(); BUTTON_MENU.hide(); GROUP_HOTBAR.hide();
+GROUP_INFOBAR.hide(); GROUP_INFOBAR.BTN_BACK.hide(); GROUP_HOTBAR.hide();
 
 GuiHandler.openWindow( GROUP_WELCOME );

@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.2a";
-BUILD_DATE = "2021-08-07"
+BUILD_DATE = "2021-08-09"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -103,7 +103,7 @@ class GuiHandler {
 		// Special case where these elements are inseperable, TODO maybe put these into a bigger super-group
 		if (element == GROUP_INFOBAR){
 			GROUP_HOTBAR.active = true;  GROUP_HOTBAR.show();
-			BUTTON_MENU.active = true;   BUTTON_MENU.show();
+			GROUP_INFOBAR.BTN_BACK.active = true; GROUP_INFOBAR.BTN_BACK.show();
 			BTN_ZOOM_UP.active = true;   BTN_ZOOM_UP.show();
 			BTN_ZOOM_DOWN.active = true; BTN_ZOOM_DOWN.show();
 			// dpad
@@ -199,19 +199,28 @@ class GuiHandler {
 	
 	static drawSpaceportTooltips(){
 		if ((MissionHandler.inPlaceForDelivery || MissionHandler.inPlaceForMission)){
+			
+			// mobile users dont need to see computer keybinds
+			if (TOUCH_MODE){ return; }
+			if (cam_zoom < MIN_CITY_TEXT_ZOOM*32){ return; }
+			
+			// gets the building info
 			var planet = client.world.getPlayer().getGroundedBody();
 			if (!planet){ return; }
 			var index = client.world.getPlayer().terrainIndex;
 			var building = planet.tiles[ index ].getBuilding();
 			if (!building.isOnScreen()){ return; }
-			if (cam_zoom < MIN_CITY_TEXT_ZOOM*32){ return; }
 			
-			var tx = tra_rot_x(building.x, building.y)
-			var ty = tra_rot_y(building.x, building.y) - ( 6 * cam_zoom );
+			var tx = width / 2;
+			var ty = height / 4;
+			//var tx = tra_rot_x(building.x, building.y)
+			//var ty = tra_rot_y(building.x, building.y) - ( 6 * cam_zoom );
 			
-			fill(building.color[0], building.color[1], building.color[2]); noStroke();
+			fill(building.color[0], building.color[1], building.color[2]);
+			stroke(building.color[0], building.color[1], building.color[2]);
 			textAlign(CENTER);
-			textSize(32 + cam_zoom/2);
+			textSize(24 * GUI_SCALE);
+			
 			if (MissionHandler.inPlaceForDelivery){
 				text( "[E] Deliver", tx, ty );
 				
