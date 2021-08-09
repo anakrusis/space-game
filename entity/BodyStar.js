@@ -7,6 +7,7 @@ class BodyStar extends EntityBody {
 		this.canEntitiesCollide = true;
 		this.name = Nymgen.newName();
 		this.descriptor = "star system"
+		this.hasDynamicScale = true;
 		
 		this.gravUUID = null;
 	}

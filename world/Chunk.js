@@ -26,7 +26,7 @@ class Chunk {
 			var neighborhoodClear = true;
 			for (var uuid in this.bodies){
 				var body = this.bodies[uuid];
-				if (body instanceof BodyPlanet ){ //&& !(body.getStar() instanceof BodyPlanet)
+				if (body instanceof BodyPlanet && body.descriptor != "moon" ){ //&& !(body.getStar() instanceof BodyPlanet)
 					var orbitDiff = Math.abs(body.orbitDistance - orbitDistance);
 					if (orbitDiff < orbitDistanceInterval){
 						neighborhoodClear = false; break;
@@ -48,7 +48,7 @@ class Chunk {
 					var moonradius = radius/4;
 					var moondistance = RandomUtil.fromRangeF(15,20) * radius;
 					var moon = new BodyPlanet(planet.getX() + moondistance, planet.getY(), 0, moonradius, moondistance, planet.uuid);
-					moon.temperature = Math.max(0,planet.temperature - RandomUtil.fromRangeF(100,200));
+					moon.temperature = Math.max(0,planet.temperature + RandomUtil.fromRangeF(-100,100));
 					moon.uuid = planet.uuid - 5;
 					moon.icon = "🌙";
 					moon.updatePriority = 0;

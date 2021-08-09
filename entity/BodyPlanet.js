@@ -13,6 +13,7 @@ class BodyPlanet extends EntityBody {
 		var dirtlig = RandomUtil.fromRangeF(0.2,0.5);
 		
 		this.color = RandomUtil.hslToRgb(dirthue, dirtsat, dirtlig);
+		this.hasDynamicScale = true;
 		
 		//var v = Math.pow(this.radius, 2)
 		//this.terrainSize = Math.round(v * (1/192));
@@ -114,6 +115,7 @@ class BodyPlanet extends EntityBody {
 			orbitbody.color = [0, 128, 0]; orbitbody.filled = false;
 			orbitbody.render();
 		}
+		
 		super.render();
 		if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
 			this.drawRoads();

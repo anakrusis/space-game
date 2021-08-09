@@ -115,6 +115,8 @@ function draw(){
 		endShape();
 		
 		var bodies = 0;
+		var buildings = 0;
+		var particles = 0;
 
 		for ( var i = 0; i < 6; i++ ){
 					
@@ -123,6 +125,9 @@ function draw(){
 				var e = client.world.entities[uuid];
 				if (e.isOnScreen() && e.renderPriority == i){
 					e.render();
+					
+					if (e instanceof EntityBuilding){ buildings++ }
+					if (e instanceof EntityParticle){ particles++ }
 				}
 			}
 			
@@ -165,7 +170,11 @@ function draw(){
 	stroke(255); fill(255);
 	textSize(16 * GUI_SCALE);
 	text("FPS: " + Math.round(frameRate()), width - ( 75 * GUI_SCALE ), 16 * GUI_SCALE);
-	//text("br: " + bodies, width - ( 75 * GUI_SCALE ), 32 * GUI_SCALE);
+	if (VERBOSE_DEBUG_TEXT){
+		text("bod: " + bodies, width - ( 75 * GUI_SCALE ), 32 * GUI_SCALE);
+		text("bld: " + buildings, width - ( 75 * GUI_SCALE ), 48 * GUI_SCALE);
+		text("prt: " + particles, width - ( 75 * GUI_SCALE ), 64 * GUI_SCALE);
+	}
 	textSize(16);
 	
 	//text(Math.round(tra_rot_x(cursorAbsX, cursorAbsY)) + " " + Math.round(tra_rot_y(cursorAbsX, cursorAbsY)), width - 225, 32);
@@ -198,13 +207,14 @@ function keyPressed() {
 	}else{
 		
 		if (keyCode === 70){
-			fullscreen(!fullscreen());
+			//fullscreen(!fullscreen());
 		//}else if (keyCode === 80){
 			//pathPredictEnabled = !pathPredictEnabled;
 		}else if (keyCode === 80){
 			PLANET_CAM = !PLANET_CAM;
 			
-		}else if (keyCode === 66){ // B
+		}else if (keyCode === 86){ // V
+			VERBOSE_DEBUG_TEXT = !VERBOSE_DEBUG_TEXT;
 			//buildingDrawEnabled = !buildingDrawEnabled;	
 			
 		}else if (keyCode === 69){ // E
@@ -326,6 +336,13 @@ var update = function(){
 			var body = cc.bodies[uuid];
 			if (CollisionUtil.isColliding(cursorEntity, body) && body.canEntitiesCollide && !(body instanceof BodyOcean)){
 				hoverEntity = body; break;
+			}
+			
+			if (body.hasDynamicScale){
+				var dist = CollisionUtil.euclideanDistance(tra_rot_x(body.x,body.y), tra_rot_y(body.x,body.y), mouseX, mouseY);
+				if (dist < body.dispradius){
+					hoverEntity = body; break;
+				}
 			}
 		}
 	}

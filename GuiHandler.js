@@ -7,7 +7,7 @@ document.title = TITLE_VERSION;
 GUI_SCALE = 1.5;
 MOUSE_SENSITIVITY = 1;
 PLANET_CAM = true; cam_rot = 0;
-FANCY_TEXT = false; LORES_MODE = false; TOUCH_MODE = false;
+FANCY_TEXT = false; LORES_MODE = false; TOUCH_MODE = false; VERBOSE_DEBUG_TEXT = false;
 DPAD_DIST = 145; DPAD_SIZE = 150;
 
 lasttouches = [];

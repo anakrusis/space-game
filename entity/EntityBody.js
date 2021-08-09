@@ -5,6 +5,7 @@ class EntityBody extends Entity {
 		this.color = [255, 255, 255];
 		this.renderPriority = 3;
 		this.updatePriority = 1;
+		this.hasDynamicScale = false; // planets and stars are dynamically scaled on the map 
 		
 		this.radius = radius;
 		this.terrainSize = 16;
@@ -16,15 +17,31 @@ class EntityBody extends Entity {
 		this.explored = false;
 	}
 	
-	render(){;
+	render(){
+		
+		if (this.hasDynamicScale){
+			// the smallest radius the planet should appear with onscreen
+			var min_scrn_radius = 25;
+			var cntrx = tra_rot_x(this.x,this.y);
+			var cntry = tra_rot_y(this.x,this.y);
+			var edgex = tra_rot_x(this.x,this.y + this.radius);
+			var edgey = tra_rot_y(this.x,this.y + this.radius);
+			var scrn_radius = CollisionUtil.euclideanDistance(cntrx, cntry, edgex, edgey );
+			
+			var ratio = scrn_radius / min_scrn_radius
+			
+			if ( scrn_radius < min_scrn_radius ){
+				
+				this.scale = Math.pow(1 / ratio, 0.75);
+				this.dispradius = scrn_radius * this.scale;
+				
+			}else{
+				this.scale = 1;
+				this.dispradius = scrn_radius;
+			}
+		}
 		
 		super.render();
-		
-		//if (cam_zoom > MAX_INTERPLANETARY_ZOOM){
-			
-			
-		//}
-		
 	}
 	
 	update(){
