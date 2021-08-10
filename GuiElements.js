@@ -334,24 +334,36 @@ GROUP_INFOBAR.BTN_DELIVER.onClick = function(){
 	this.hide();
 }
 
-GROUP_INFOBAR.BTN_MISSION = new GuiElement(0,0,150,40,GROUP_INFOBAR); GROUP_INFOBAR.BTN_MISSION.text = "Missions...";
+GROUP_INFOBAR.ELM_CNTR1 = new GuiElement(0,0,400,64, GROUP_INFOBAR); GROUP_INFOBAR.ELM_CNTR1.autosize = true;  GROUP_INFOBAR.ELM_CNTR1.autopos = "left";
+
+GROUP_INFOBAR.BTN_MISSION = new GuiElement(0,0,147,40,GROUP_INFOBAR.ELM_CNTR1); GROUP_INFOBAR.BTN_MISSION.text = "Missions...";
 GROUP_INFOBAR.BTN_MISSION.hide();
 GROUP_INFOBAR.BTN_MISSION.onUpdate = function(){
 	
-	this.hide();
-	if (MissionHandler.inPlaceForMission && MissionHandler.spaceportSelected){
-		
-		if (selectedEntity){
-			if ( selectedEntity.isIndexInBuilding( server.world.getPlayer().terrainIndex ) ){
+	this.parent.hide();
+	if ((!MissionHandler.inPlaceForMission) || (!MissionHandler.spaceportSelected)){ return; }
+	if (!selectedEntity){ return; }
+	if (!selectedEntity.isIndexInBuilding( server.world.getPlayer().terrainIndex ) ){ return; }
 				
-				this.show();
-			}
-		}
-	}
-	
+	this.parent.show();
 }
 GROUP_INFOBAR.BTN_MISSION.onClick = function(){
 	GuiHandler.openWindow( GROUP_MISSION_SELECT );
+}
+
+GROUP_INFOBAR.BTN_CITYINFO = new GuiElement(0,0,147,40,GROUP_INFOBAR.ELM_CNTR1); GROUP_INFOBAR.BTN_CITYINFO.text = "City Info...";
+GROUP_INFOBAR.BTN_CITYINFO.hide();
+GROUP_INFOBAR.BTN_CITYINFO.onUpdate = function(){
+	
+	this.hide();
+	if ((!MissionHandler.inPlaceForMission) || (!MissionHandler.spaceportSelected)){ return; }
+	if (!selectedEntity){ return; }
+	if (!selectedEntity.isIndexInBuilding( server.world.getPlayer().terrainIndex ) ){ return; }
+				
+	this.show();
+}
+GROUP_INFOBAR.BTN_CITYINFO.onClick = function(){
+	//GuiHandler.openWindow( GROUP_MISSION_SELECT );
 }
 
 // WELCOME: When you first open up the game

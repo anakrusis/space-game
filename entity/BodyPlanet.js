@@ -23,6 +23,7 @@ class BodyPlanet extends EntityBody {
 		//this.radius = this.terrainSize / (40/16)
 		this.tiles = [];
 		this.roads = [];
+		this.densities = [];
 		this.generateTerrain();
 		this.hasOcean  = false;
 		this.initLOD();

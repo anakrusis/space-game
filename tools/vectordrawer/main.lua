@@ -21,7 +21,7 @@ function love.keypressed( key, scancode, isrepeat )
 
 	if key == "space" then
 	
-		table.insert(buildingpoints,"x"); table.insert(buildingpoints,"x");
+		table.insert(buildingpoints,"NaN"); table.insert(buildingpoints,"NaN");
 	
 	end
 	
@@ -36,7 +36,7 @@ function love.keypressed( key, scancode, isrepeat )
 	
 		file = io.open("test.lua", "w")
 		
-		output = "getRelRenderPoints(){\nreturn ["
+		output = "getRelRenderPoints(){\n	return ["
 		
 		for i = 1, (#buildingpoints) do
 		
@@ -89,7 +89,7 @@ function drawObject(array, offsetx, offsety)
 	
 		--love.graphics.print(pxind .. " " .. pyind .. " " .. nxind .. " " .. nyind, 0, 30*i);
 		
-		if (array[pxind] ~= "x") and (array[nxind] ~= "x") then
+		if (array[pxind] ~= "NaN") and (array[nxind] ~= "NaN") then
 		
 			playerpx = tra_x( offsetx + array[pxind] ); playerpy = tra_y( offsety + array[pyind] )
 			playernx = tra_x( offsetx + array[nxind] ); playerny = tra_y( offsety + array[nyind] )
@@ -143,7 +143,9 @@ function love.draw()
 	
 	if #buildingpoints > 0 then
 		lastpointx = buildingpoints[#buildingpoints-1]; lastpointy = buildingpoints[#buildingpoints];
-		love.graphics.circle( "line", tra_x(lastpointx), tra_y(lastpointy), 5 )
+		if lastpointx ~= "NaN" then
+			love.graphics.circle( "line", tra_x(lastpointx), tra_y(lastpointy), 5 )
+		end
 	
 	end
 	

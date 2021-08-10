@@ -350,7 +350,7 @@ var update = function(){
 		entity = client.world.entities[uuid];
 		if (entity.isOnScreen()){
 			if (!(entity instanceof EntityPlayer || entity instanceof EntityParticle) && CollisionUtil.isEntityCollidingWithEntity(cursorEntity, entity)){
-				hoverEntity = entity;
+				hoverEntity = entity; break;
 			}
 		}
 	}

@@ -56,6 +56,7 @@ class Entity {
 		for (i = 0; i < pts.length; i += 2){
 			
 			var px = pts[i]; var py = pts[i+1];
+			if (!px){ endShape(CLOSE); beginShape(); continue; }
 			
 			px = ((px - this.x) * this.scale) + this.x;  py = ((py - this.y) * this.scale) + this.y; 
 			
