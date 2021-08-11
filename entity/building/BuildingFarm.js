@@ -1,9 +1,10 @@
 class BuildingFarm extends EntityBuilding {
 
-	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
-		super(x,y,planetuuid, cityuuid, startindex, endindex);
+	constructor(x,y,planetuuid, cityuuid, startindex, terrsize){
+		super(x,y,planetuuid, cityuuid, startindex, terrsize, 2);
 		this.name = "Farm";
 		this.productionItem = "food";
+		this.size = 2;
 	}
 
 	getRelRenderPoints(){

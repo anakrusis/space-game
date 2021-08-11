@@ -1,7 +1,8 @@
 class BuildingBigTest extends EntityBuilding {
-	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
-		super(x,y,planetuuid, cityuuid, startindex, endindex);
+	constructor(x,y,planetuuid, cityuuid, startindex, teresize){
+		super(x,y,planetuuid, cityuuid, startindex, teresize);
 		this.name = "Big Building";
+		this.size = 2;
 	}
 	
 	getRelRenderPoints(){

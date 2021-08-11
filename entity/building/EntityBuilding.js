@@ -1,13 +1,15 @@
 class EntityBuilding extends Entity {
-	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
+	constructor(x,y,planetuuid, cityuuid, startindex, terrsize, bldgsize){
 		super(x,y,0);
 		this.name = "Building";
+		this.template = null; // Many buildings, like the spaceport, have only a single form and accept no template
+		
 		this.filled = false;
 		this.renderPriority = 2;
-		this.size = 1;
+		this.size = bldgsize; if (!this.size){ this.size = 1; }
 		
 		this.startindex = startindex;
-		this.endindex   = endindex;
+		this.endindex   = loopyMod(startindex + this.size - 1, terrsize);
 		this.planetUUID = planetuuid;
 		this.cityUUID   = null;
 		

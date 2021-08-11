@@ -336,7 +336,7 @@ class BodyPlanet extends EntityBody {
 		}
 		
 		// The spaceport is always the first one placed because, it has to spawn no matter what.
-		var newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, cityCenterIndex, cityCenterIndex + 4);
+		var newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, cityCenterIndex, this.terrainSize);
 		this.spawnBuilding( newbuilding, city );
 		
 		for (var i = -cityRadius; i <= cityRadius; i++){
@@ -350,12 +350,12 @@ class BodyPlanet extends EntityBody {
 				
 			}else if (i == 1){
 				var ei = loopyMod(relIndex + 1, this.terrainSize);
-				newbuilding = new BuildingBigTest( this.x, this.y, this.uuid, city.uuid, relIndex, ei);
+				newbuilding = new BuildingBigTest( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize);
 				
 			}else{
 				
 				if (this.tiles[relIndex].oreVeinUUID != null){
-					newbuilding = new BuildingMine( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+					newbuilding = new BuildingMine( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize);
 				}else{
 					
 					var dist = this.terrainIndexDistance( relIndex, cityCenterIndex + 2 );
@@ -363,11 +363,11 @@ class BodyPlanet extends EntityBody {
 					
 					if ( random() < probability ){
 						
-						newbuilding = new BuildingHouse( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex);
+						newbuilding = new BuildingHouse( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize, "housesmall1");
 						
 					}else{
 						
-						newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, relIndex + 1);
+						newbuilding = new BuildingFarm( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize);
 						
 					}
 				}					

@@ -46,10 +46,10 @@ class Entity {
 		}
 		if (selectedEntity == this){
 			stroke(255, 128 * (1 + Math.sin(framecount / 15)), 0);
-			strokeWeight(5);
+			strokeWeight(6);
 		}else{
 			stroke(this.color[0], this.color[1], this.color[2]);
-			strokeWeight(1);
+			strokeWeight(2);
 		}
 		var pts = this.getRenderPoints();
 		beginShape();

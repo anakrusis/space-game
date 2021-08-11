@@ -1,7 +1,7 @@
 class BuildingMine extends EntityBuilding {
 	
-	constructor(x,y,planetuuid, cityuuid, startindex, endindex){
-		super(x,y,planetuuid, cityuuid, startindex, endindex);
+	constructor(x,y,planetuuid, cityuuid, startindex, terrsize){
+		super(x,y,planetuuid, cityuuid, startindex, terrsize);
 		this.name = "Mine";
 		this.productionItem = "iron";
 	}
