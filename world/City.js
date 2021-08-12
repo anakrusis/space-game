@@ -43,7 +43,7 @@ class City {
 	}
 	
 	getPlanet(){
-		return server.world.getChunk( this.chunkx, this.chunky ).getBody( this.planetUUID );
+		return server.world.getChunk( this.chunkx, this.chunky ).bodies[ this.planetUUID ];
 	}
 	
 	getNation(){
@@ -66,7 +66,35 @@ class City {
 	}
 	
 	update(){
-		
+		if ( server.world.worldTime % 60 == 59 ){ this.updateDensities() }
+	}
+	
+	updateDensities(){
+		for (var uuid of this.buildingUUIDs){
+			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
+			var terrsize = plnt.terrainSize;
+			var buildingradius = 5;
+			
+			var strt = building.startindex - buildingradius;
+			var ende = building.endindex + buildingradius;
+			if (building.endindex < building.startindex){ ende += terrsize; }
+			
+			for (var p = strt; p <= ende; p++){
+				var i = loopyMod(p,terrsize);
+			
+				if (!plnt.densities[i]){ plnt.densities[i] = 0 };
+				
+				if (building.isIndexInBuilding(i)){
+					var amt = 0.1;
+				}else{
+					var leftdist = plnt.terrainIndexDistance(building.startindex, i);
+					var rightdist = plnt.terrainIndexDistance(building.endindex, i);
+					var dist = Math.min(leftdist, rightdist);
+					var amt = 0.1 * ( ( buildingradius - dist) / buildingradius );
+				}
+				plnt.densities[i] += amt;
+			}
+		}
 	}
 	
 	updateMissions(){

@@ -306,7 +306,6 @@ class BodyPlanet extends EntityBody {
 			// This way there can be almost always found a place to put a city between sizes of 8 and 24
 			
 			var attemptratio = 1.0 - (a / cityPlaceAttempts);
-			
 			cityRadius = Math.round(16 * (attemptratio) + 8);
 			
 			var cityCenterValid = true;
@@ -339,7 +338,7 @@ class BodyPlanet extends EntityBody {
 		var newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, cityCenterIndex, this.terrainSize);
 		this.spawnBuilding( newbuilding, city );
 		
-		for (var i = -cityRadius; i <= cityRadius; i++){
+/* 		for (var i = -cityRadius; i <= cityRadius; i++){
 			
 			var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
 			
@@ -376,7 +375,7 @@ class BodyPlanet extends EntityBody {
 			
 			this.tiles[relIndex].hasRoad = true;
 			this.roads[relIndex] = true;
-		}
+		} */
 		city.centerIndex = cityCenterIndex;
 		server.world.cities[city.uuid] = city;
 		return city;

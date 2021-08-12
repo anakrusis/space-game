@@ -111,14 +111,15 @@ class EntityBuilding extends Entity {
 	
 	isIndexInBuilding(index){
 		
+		var terrsize = this.getPlanet().terrainSize;
 		var ende = this.endindex;
 		if (this.endindex < this.startindex){
-			ende += this.getPlanet().terrainSize;
+			ende += terrsize;
 		}
-		
 		for (var i = this.startindex; i <= ende; i++){
 			
-			if (i == index){
+			var ind = loopyMod(i,terrsize);
+			if (ind == index){
 				return true;
 			}
 		}
