@@ -176,7 +176,7 @@ class EntityBody extends Entity {
 		//var ind = client.world.getPlayer().getTerrainIndex();
 		var ind = CollisionUtil.indexFromEntityAngle( client.world.getPlayer(), this );
 		var slice = this.getAbsPointsSlice( ind, ind );
-		var tx = tra_x(slice[0]); var ty = tra_y(slice[1]);
+		var tx = tra_rot_x(slice[0],slice[1]); var ty = tra_rot_y(slice[0],slice[1]);
 		
 		if (cam_zoom < MIN_CITY_TEXT_ZOOM){ return true; }
 		

@@ -96,7 +96,7 @@ function draw(){
 	lod = Math.max( 0, lod );
 	lod = Math.min( 8, lod );
 	
-	background(13,0,13);
+	background(6,0,6);
 	
 	if ( drawEnabled ){
 		// chunk boundary lines are behind everything

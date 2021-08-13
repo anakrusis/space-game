@@ -35,7 +35,7 @@ class City {
 	}
 	
 	getBuilding(index){
-		//return this.getTile(
+		return this.getTile(index).getBuilding();
 	}
 	
 	getTile(index){
@@ -66,7 +66,7 @@ class City {
 	}
 	
 	update(){
-		if ( server.world.worldTime % 60 == 59 ){ this.updateDensities() }
+		if ( server.world.worldTime % 60 == 59 ){ this.updateDensities(); this.doDensityEvent(); }
 	}
 	
 	updateDensities(){
@@ -94,6 +94,51 @@ class City {
 				}
 				plnt.densities[i] += amt;
 			}
+		}
+	}
+	
+	// Picks a random index in the city bounds, or the near radius outside the city bounds
+	// Will do a weighted random chance of picking any building based on the distances between them all
+	doDensityEvent(){
+		
+		// Updating city buildings must be done first by selecting a random index within the city bounds, or slightly outside it in either direction
+		var possibleIndices = [];
+		for (var i = 0; i < this.claimedTileIndexes.length; i++){
+			var ci = this.claimedTileIndexes[i];
+			
+			// The city will not modify the spaceport because it is neccessary for survival
+			if ( this.getBuilding(ci) instanceof BuildingSpaceport ) { continue; }
+			
+			possibleIndices.push(ci);
+		}
+		// These are the extreme ends of the city
+		var minindex = Math.min(...this.claimedTileIndexes);
+		var maxindex = Math.max(...this.claimedTileIndexes);
+		var terrsize = this.getPlanet().terrainSize;
+		
+		for (var i = 0; i < 5; i++){
+			var lr = loopyMod(minindex - i, terrsize);
+			var rr = loopyMod(maxindex + i, terrsize);
+			
+			possibleIndices.push(lr, rr);
+		}
+		
+		// If there are no possible indices to update, then whatever, i guess, just dont
+		if (possibleIndices.length == 0){ 
+			console.log("couldn't update city");
+			return false; }
+		
+		var index = possibleIndices[Math.floor(Math.random() * possibleIndices.length)]; //console.log(index);
+		
+		// With an index identified, we now collect the differences between all the possible densities of the building templates to the density of the tile
+		var chances = {};
+		var sum = 0;
+		for ( var key in Buildings.buildings ){
+			var template = Buildings.buildings[key];
+			//if (!this.densities[index]){ this.densities[index] = 0; }
+			var diff = Math.abs( template.density - this.getPlanet().densities[index] )
+			chances[key] = 1 / diff;
+			sum += chances[key];
 		}
 	}
 	
