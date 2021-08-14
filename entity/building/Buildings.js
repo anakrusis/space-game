@@ -7,6 +7,15 @@ class BuildingTemplate {
 	}
 }
 
+class TemplateNone extends BuildingTemplate {
+	constructor(){
+		super();
+		this.buildingtype = "none";
+		this.density = 0;
+		this.size = 1;
+	}
+}
+
 // short 1 size house
 class TemplateHouseSmall1 extends BuildingTemplate {
 	constructor(){
@@ -46,6 +55,7 @@ class Buildings {
 		
 		housesmall1: new TemplateHouseSmall1(),
 		housesmall2: new TemplateHouseSmall2(),
-		farm2:       new TemplateFarm2()
+		farm2:       new TemplateFarm2(),
+		none:        new TemplateNone(),
 	};
 }

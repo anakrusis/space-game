@@ -102,9 +102,10 @@ class City {
 	doDensityEvent(){
 		
 		var plnt = this.getPlanet();
+		var terrsize = plnt.terrainSize;
 		
 		// Updating city buildings must be done first by selecting a random index within the city bounds, or slightly outside it in either direction
-		var possibleIndices = [];
+/* 		var possibleIndices = [];
 		for (var i = 0; i < this.claimedTileIndexes.length; i++){
 			var ci = this.claimedTileIndexes[i];
 			
@@ -113,10 +114,8 @@ class City {
 			
 			possibleIndices.push(ci);
 		}
-		// These are the extreme ends of the city
-		var minindex = Math.min(...this.claimedTileIndexes);
-		var maxindex = Math.max(...this.claimedTileIndexes);
-		var terrsize = plnt.terrainSize;
+		
+		
 		
 		for (var i = 0; i < 5; i++){
 			var lr = loopyMod(minindex - i, terrsize);
@@ -130,7 +129,47 @@ class City {
 			console.log("couldn't update city");
 			return false; }
 		
-		var index = possibleIndices[Math.floor(Math.random() * possibleIndices.length)]; //console.log(index);
+		var index = possibleIndices[Math.floor(Math.random() * possibleIndices.length)]; //console.log(index); */
+		
+		// The city selects the index of the tile with the greatest difference in density between itself and the template of the building currently occupying it
+		var biggestdensitydiff = 0; var index; var ogtemplate;
+		// These are the extreme ends of the city
+		var minindex = Math.min(...this.claimedTileIndexes);
+		var maxindex = Math.max(...this.claimedTileIndexes);
+		
+		for (var i = minindex - 1; i <= maxindex + 1; i++){
+			var ci = loopyMod(i,terrsize);
+			var ct; // current template
+			var cb = this.getBuilding(ci); // current building
+			
+			// Kind of working backwards to find a template given a building, should probably be alot less messy
+			if (!cb){
+				ct = Buildings.buildings["none"];
+			}else{
+				switch (cb.type){
+					// The city will not modify the spaceport because it is neccessary for survival
+					case "BuildingSpaceport":
+						continue;
+					case "BuildingHouse":
+						ct = cb.template;
+						break;
+					case "BuildingFarm":
+						ct = Buildings.buildings["farm2"];
+						break;
+					default:
+						ct = Buildings.buildings["none"];
+						break;
+				}
+			}
+			
+			if (!ct){ continue; }
+			
+			var diff = Math.abs( ct.density - plnt.densities[ci] );
+			if ( diff > biggestdensitydiff ){
+				biggestdensitydiff = diff; index = ci; ogtemplate = ct;
+			}
+		}
+		if (!index){ return false; }
 		
 		// It is now time to calculate the chance of all different possible buildings being built, given the ideal density of the building templates and the density of the tile
 		var keys    = [];
@@ -160,7 +199,8 @@ class City {
 		}
 		if (!selectedKey){ return false; }
 		
-/* 		var random = Math.random() * sum;
+/* 		first weighted random attempt
+		var random = Math.random() * sum;
 		var selectedKey = keys[0];
 		for ( var q = keys.length - 1; q >= 0; q-- ){
 			
@@ -173,14 +213,35 @@ class City {
 		
 		var template = Buildings.buildings[selectedKey]; //console.log(template);
 		if (!template){ return false; }
+		
+		var adjustedIndex = index;
+		for (var q = index; q <= index + template.size - 1; q++){
+			var ci = loopyMod(q, terrsize);
+			var oldbuildinguuid = plnt.tiles[ci].buildingUUID;
+			//if (oldbuildinguuid){ adjustedIndex--; }
+		}
+		
 		var bldg;
 		switch (template.buildingtype){
 			case "farm":
-				bldg = new BuildingFarm( plnt.x, plnt.y, plnt.uuid, this.uuid, index, plnt.terrainSize);
+				bldg = new BuildingFarm( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize);
 				break;
 			case "house":
-				bldg = new BuildingHouse( plnt.x, plnt.y, plnt.uuid, this.uuid, index, plnt.terrainSize, selectedKey);
+				bldg = new BuildingHouse( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize, selectedKey);
 				break;
+		}
+		
+		if (!bldg){ return false; }
+	
+		for (var q = index; q <= index + template.size - 1; q++){
+/* 			var p = loopyMod(q, terrsize);
+			var ob = plnt.tiles[p].getBuilding();
+			if (!ob){ continue; }
+			
+			ob.dead = true;
+			plnt.tiles[p].buildingUUID = null;
+			var uuidIndex = this.buildingUUIDs.findIndex(ob.uuid);
+			this.buildingUUID.splice(uuidIndex,1);  */ 
 		}
 		plnt.spawnBuilding( bldg, this );
 	}
