@@ -101,6 +101,8 @@ class City {
 	// Will do a weighted random chance of picking any building based on the distances between them all
 	doDensityEvent(){
 		
+		var plnt = this.getPlanet();
+		
 		// Updating city buildings must be done first by selecting a random index within the city bounds, or slightly outside it in either direction
 		var possibleIndices = [];
 		for (var i = 0; i < this.claimedTileIndexes.length; i++){
@@ -114,7 +116,7 @@ class City {
 		// These are the extreme ends of the city
 		var minindex = Math.min(...this.claimedTileIndexes);
 		var maxindex = Math.max(...this.claimedTileIndexes);
-		var terrsize = this.getPlanet().terrainSize;
+		var terrsize = plnt.terrainSize;
 		
 		for (var i = 0; i < 5; i++){
 			var lr = loopyMod(minindex - i, terrsize);
@@ -130,16 +132,57 @@ class City {
 		
 		var index = possibleIndices[Math.floor(Math.random() * possibleIndices.length)]; //console.log(index);
 		
-		// With an index identified, we now collect the differences between all the possible densities of the building templates to the density of the tile
-		var chances = {};
+		// It is now time to calculate the chance of all different possible buildings being built, given the ideal density of the building templates and the density of the tile
+		var keys    = [];
+		var chances = [];
 		var sum = 0;
 		for ( var key in Buildings.buildings ){
 			var template = Buildings.buildings[key];
 			//if (!this.densities[index]){ this.densities[index] = 0; }
-			var diff = Math.abs( template.density - this.getPlanet().densities[index] )
-			chances[key] = 1 / diff;
-			sum += chances[key];
+			var diff = Math.abs( template.density - plnt.densities[index] )
+			var chance = 1 / diff;
+			
+			chances.push(chance);
+			keys.push(key);
+			
+			sum += chance;
 		}
+		
+		console.log(chances);
+		
+		var selectedKey;
+		for (var q = 0; q < keys.length; q++){
+			var prob = chances[q] / sum;
+			if ( random() < prob ){
+				selectedKey = keys[q];
+				break;
+			}
+		}
+		if (!selectedKey){ return false; }
+		
+/* 		var random = Math.random() * sum;
+		var selectedKey = keys[0];
+		for ( var q = keys.length - 1; q >= 0; q-- ){
+			
+			if (random >= sum) { 
+				selectedKey = keys[q];
+				break;
+			}
+			sum -= chances[q];
+		} */
+		
+		var template = Buildings.buildings[selectedKey]; //console.log(template);
+		if (!template){ return false; }
+		var bldg;
+		switch (template.buildingtype){
+			case "farm":
+				bldg = new BuildingFarm( plnt.x, plnt.y, plnt.uuid, this.uuid, index, plnt.terrainSize);
+				break;
+			case "house":
+				bldg = new BuildingHouse( plnt.x, plnt.y, plnt.uuid, this.uuid, index, plnt.terrainSize, selectedKey);
+				break;
+		}
+		plnt.spawnBuilding( bldg, this );
 	}
 	
 	updateMissions(){
