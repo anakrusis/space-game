@@ -381,6 +381,27 @@ class BodyPlanet extends EntityBody {
 		return city;
 	}
 	
+	removeBuilding(building){
+		if (building instanceof BuildingSpaceport){ return false; }
+		
+		var ende = building.endindex;
+		if (building.endindex < building.startindex){
+			ende += this.terrainSize;
+		}
+		
+		for (var i = building.startindex; i <= ende; i++){
+			
+			var index = loopyMod(i, this.terrainSize);
+			
+			this.tiles[index].buildingUUID = null;
+		}
+		building.dead = true;
+		
+		var city = building.getCity(); //console.log(building.uuid);
+		var uuidIndex = city.buildingUUIDs.indexOf(building.uuid); 
+		city.buildingUUIDs.splice(uuidIndex,1);
+	}
+	
 	spawnBuilding(building, city){
 		if (building.endindex >= this.terrainSize){
 			building.endindex -= this.terrainSize;
@@ -398,6 +419,8 @@ class BodyPlanet extends EntityBody {
 			var index = loopyMod(i, this.terrainSize);
 			
 			this.tiles[index].buildingUUID = building.uuid;
+			this.tiles[index].hasRoad = true;
+			this.roads[index] = true;
 		}
 		building.grounded = true;
 		building.groundedBodyUUID = this.uuid;
@@ -411,6 +434,12 @@ class BodyPlanet extends EntityBody {
 			building.color = nation.color;
 		}
 		return true;
+	}
+	
+	isIndexLeftOfIndex(index1, index2){
+		var rightDiff = index2 - (index1 - this.terrainSize);
+        var leftDiff =  index1 - index2;
+		return ( leftDiff < rightDiff );
 	}
 	
 	terrainIndexDistance(index1, index2) {

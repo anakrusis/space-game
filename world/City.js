@@ -72,6 +72,7 @@ class City {
 	updateDensities(){
 		for (var uuid of this.buildingUUIDs){
 			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
+			if (!(building instanceof BuildingSpaceport)){ continue; }
 			var terrsize = plnt.terrainSize;
 			var buildingradius = 5;
 			
@@ -103,33 +104,6 @@ class City {
 		
 		var plnt = this.getPlanet();
 		var terrsize = plnt.terrainSize;
-		
-		// Updating city buildings must be done first by selecting a random index within the city bounds, or slightly outside it in either direction
-/* 		var possibleIndices = [];
-		for (var i = 0; i < this.claimedTileIndexes.length; i++){
-			var ci = this.claimedTileIndexes[i];
-			
-			// The city will not modify the spaceport because it is neccessary for survival
-			if ( this.getBuilding(ci) instanceof BuildingSpaceport ) { continue; }
-			
-			possibleIndices.push(ci);
-		}
-		
-		
-		
-		for (var i = 0; i < 5; i++){
-			var lr = loopyMod(minindex - i, terrsize);
-			var rr = loopyMod(maxindex + i, terrsize);
-			
-			possibleIndices.push(lr, rr);
-		}
-		
-		// If there are no possible indices to update, then whatever, i guess, just dont
-		if (possibleIndices.length == 0){ 
-			console.log("couldn't update city");
-			return false; }
-		
-		var index = possibleIndices[Math.floor(Math.random() * possibleIndices.length)]; //console.log(index); */
 		
 		// The city selects the index of the tile with the greatest difference in density between itself and the template of the building currently occupying it
 		var biggestdensitydiff = 0; var index; var ogtemplate;
@@ -164,8 +138,9 @@ class City {
 			
 			if (!ct){ continue; }
 			
+			if (!plnt.densities[i]){ plnt.densities[i] = 0 };
 			var diff = Math.abs( ct.density - plnt.densities[ci] );
-			if ( diff > biggestdensitydiff ){
+			if ( diff >= biggestdensitydiff ){
 				biggestdensitydiff = diff; index = ci; ogtemplate = ct;
 			}
 		}
@@ -187,7 +162,7 @@ class City {
 			sum += chance;
 		}
 		
-		console.log(chances);
+		//console.log(chances);
 		
 		var selectedKey;
 		for (var q = 0; q < keys.length; q++){
@@ -210,17 +185,25 @@ class City {
 			}
 			sum -= chances[q];
 		} */
-		
 		var template = Buildings.buildings[selectedKey]; //console.log(template);
 		if (!template){ return false; }
 		
+		// This part adjusts the index so it doesnt overlap certain buildings when built on the edge of city limits
 		var adjustedIndex = index;
 		for (var q = index; q <= index + template.size - 1; q++){
 			var ci = loopyMod(q, terrsize);
 			var oldbuildinguuid = plnt.tiles[ci].buildingUUID;
-			//if (oldbuildinguuid){ adjustedIndex--; }
+			if (oldbuildinguuid){ 
+				
+				if (plnt.isIndexLeftOfIndex( ci, this.centerIndex )){
+					adjustedIndex--; 
+				}else{
+					adjustedIndex++;
+				}
+			}
 		}
 		
+		// This part creates the building given the template
 		var bldg;
 		switch (template.buildingtype){
 			case "farm":
@@ -233,7 +216,14 @@ class City {
 		
 		if (!bldg){ return false; }
 	
+		// This part clears any buildings that may be already present in the space
 		for (var q = index; q <= index + template.size - 1; q++){
+			var ci = loopyMod(q, terrsize);
+			var ob = plnt.tiles[ci].getBuilding();
+			if (!ob){ continue; }
+			
+			plnt.removeBuilding(ob);
+			
 /* 			var p = loopyMod(q, terrsize);
 			var ob = plnt.tiles[p].getBuilding();
 			if (!ob){ continue; }
