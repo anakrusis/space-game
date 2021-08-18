@@ -144,7 +144,7 @@ class City {
 				biggestdensitydiff = diff; index = ci; ogtemplate = ct;
 			}
 		}
-		if (!index){ return false; }
+		if (!index){ console.log("no valid index found"); return false; }
 		
 		// It is now time to calculate the chance of all different possible buildings being built, given the ideal density of the building templates and the density of the tile
 		var keys    = [];
@@ -165,32 +165,23 @@ class City {
 		//console.log(chances);
 		
 		var selectedKey;
-		for (var q = 0; q < keys.length; q++){
-			var prob = chances[q] / sum;
-			if ( random() < prob ){
-				selectedKey = keys[q];
-				break;
-			}
-		}
-		if (!selectedKey){ return false; }
-		
-/* 		first weighted random attempt
+		//first weighted random attempt
 		var random = Math.random() * sum;
 		var selectedKey = keys[0];
 		for ( var q = keys.length - 1; q >= 0; q-- ){
 			
-			if (random >= sum) { 
-				selectedKey = keys[q];
+			if (random > sum) { 
+				selectedKey = keys[q+1];
 				break;
 			}
 			sum -= chances[q];
-		} */
+		}
 		var template = Buildings.buildings[selectedKey]; //console.log(template);
-		if (!template){ return false; }
+		if (!template){ console.log("no valid template"); return false; }
 		
 		// This part adjusts the index so it doesnt overlap certain buildings when built on the edge of city limits
 		var adjustedIndex = index;
-		for (var q = index; q <= index + template.size - 1; q++){
+/* 		for (var q = index; q <= index + template.size - 1; q++){
 			var ci = loopyMod(q, terrsize);
 			var oldbuildinguuid = plnt.tiles[ci].buildingUUID;
 			if (oldbuildinguuid){ 
@@ -201,7 +192,7 @@ class City {
 					adjustedIndex++;
 				}
 			}
-		}
+		} */
 		
 		// This part creates the building given the template
 		var bldg;
@@ -214,7 +205,7 @@ class City {
 				break;
 		}
 		
-		if (!bldg){ return false; }
+		if (!bldg){ console.log("no valid building"); return false; }
 	
 		// This part clears any buildings that may be already present in the space
 		for (var q = index; q <= index + template.size - 1; q++){
