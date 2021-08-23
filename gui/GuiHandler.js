@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.2b";
-BUILD_DATE = "2021-08-11"
+BUILD_DATE = "2021-08-23"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -209,6 +209,7 @@ class GuiHandler {
 			if (!planet){ return; }
 			var index = client.world.getPlayer().terrainIndex;
 			var building = planet.tiles[ index ].getBuilding();
+			if (!building){ return; }
 			if (!building.isOnScreen()){ return; }
 			
 			var tx = width / 2;

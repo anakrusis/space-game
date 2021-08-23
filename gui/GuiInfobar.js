@@ -178,7 +178,11 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			infostring += "= Temp: " + temp + "°C\n"
 			
 			var hum = Math.round(e.humidity * 100);
-			infostring += "= Humidity: " + hum + "%\n"
+			infostring += "= Humidity: " + hum + "%\n\n"
+			
+			var index = CollisionUtil.indexFromPosition(cursorAbsX,cursorAbsY,e)
+			var dns = Math.round( e.densities[ index ] * 1000 ) / 1000;
+			infostring += "= Density: " + dns + "\n";
 			
 		}else if (e instanceof EntityBuilding){
 			

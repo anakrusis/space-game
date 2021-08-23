@@ -70,6 +70,9 @@ class City {
 	}
 	
 	updateDensities(){
+		
+		var densityaddamt = 1; // set really high right now for testing
+		
 		for (var uuid of this.buildingUUIDs){
 			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
 			if (!(building instanceof BuildingSpaceport)){ continue; }
@@ -86,12 +89,12 @@ class City {
 				if (!plnt.densities[i]){ plnt.densities[i] = 0 };
 				
 				if (building.isIndexInBuilding(i)){
-					var amt = 0.1;
+					var amt = densityaddamt;
 				}else{
 					var leftdist = plnt.terrainIndexDistance(building.startindex, i);
 					var rightdist = plnt.terrainIndexDistance(building.endindex, i);
 					var dist = Math.min(leftdist, rightdist);
-					var amt = 0.1 * ( ( buildingradius - dist) / buildingradius );
+					var amt = densityaddamt * ( ( buildingradius - dist) / buildingradius );
 				}
 				plnt.densities[i] += amt;
 			}
@@ -99,20 +102,30 @@ class City {
 	}
 	
 	// Picks a random index in the city bounds, or the near radius outside the city bounds
-	// Will do a weighted random chance of picking any building based on the distances between them all
+	// Will do a weighted random chance of picking a building to build based on the distances between them all
+	// However there are many criteria which may make such building impossible to build, as detailed below
 	doDensityEvent(){
 		
 		var plnt = this.getPlanet();
 		var terrsize = plnt.terrainSize;
-		
-		// The city selects the index of the tile with the greatest difference in density between itself and the template of the building currently occupying it
-		var biggestdensitydiff = 0; var index; var ogtemplate;
+
 		// These are the extreme ends of the city
 		var minindex = Math.min(...this.claimedTileIndexes);
 		var maxindex = Math.max(...this.claimedTileIndexes);
+		var truemin  = loopyMod( minindex - 1, terrsize );
+		var allIndices = [];
 		
+		// Randomly shuffles all the possible building indices, so as to not favor one side over another
 		for (var i = minindex - 1; i <= maxindex + 1; i++){
 			var ci = loopyMod(i,terrsize);
+			allIndices.push(ci);
+		}
+		var shuffledIndices = this.shuffle(allIndices);
+		
+		// Selects the index of the tile with the greatest difference in density between itself and the template of the building currently occupying it
+		var biggestdensitydiff = 0; var index; var ogtemplate;
+		for (var i = 0; i < shuffledIndices.length; i++){
+			var ci = shuffledIndices[i];
 			var ct; // current template
 			var cb = this.getBuilding(ci); // current building
 			
@@ -125,7 +138,7 @@ class City {
 					case "BuildingSpaceport":
 						continue;
 					case "BuildingHouse":
-						ct = cb.template;
+						ct = Buildings.buildings[cb.template];
 						break;
 					case "BuildingFarm":
 						ct = Buildings.buildings["farm2"];
@@ -138,13 +151,14 @@ class City {
 			
 			if (!ct){ continue; }
 			
-			if (!plnt.densities[i]){ plnt.densities[i] = 0 };
+			if (!plnt.densities[ci]){ plnt.densities[ci] = 0 };
 			var diff = Math.abs( ct.density - plnt.densities[ci] );
 			if ( diff >= biggestdensitydiff ){
 				biggestdensitydiff = diff; index = ci; ogtemplate = ct;
 			}
 		}
 		if (!index){ console.log("no valid index found"); return false; }
+		console.log(biggestdensitydiff);
 		
 		// It is now time to calculate the chance of all different possible buildings being built, given the ideal density of the building templates and the density of the tile
 		var keys    = [];
@@ -152,20 +166,21 @@ class City {
 		var sum = 0;
 		for ( var key in Buildings.buildings ){
 			var template = Buildings.buildings[key];
-			//if (!this.densities[index]){ this.densities[index] = 0; }
 			var diff = Math.abs( template.density - plnt.densities[index] )
 			var chance = 1 / diff;
+			
+			// If the diff is 0, the chance will be INFINITY!!! so we have to replace this chance value with something really big but not infinity, or the weighted random will just totally break
+			if (chance === Infinity){ chance = 10000; }
 			
 			chances.push(chance);
 			keys.push(key);
 			
 			sum += chance;
 		}
-		
 		//console.log(chances);
 		
+		// Here is the weighted random which selects a template to build
 		var selectedKey;
-		//first weighted random attempt
 		var random = Math.random() * sum;
 		var selectedKey = keys[0];
 		for ( var q = keys.length - 1; q >= 0; q-- ){
@@ -179,8 +194,14 @@ class City {
 		var template = Buildings.buildings[selectedKey]; //console.log(template);
 		if (!template){ console.log("no valid template"); return false; }
 		
+		// Won't try to overwrite a building with another identical building
+		if (ogtemplate == template){ console.log("template is the same (" + template.constructor.name + ")"); return false; }
+		
 		// This part adjusts the index so it doesnt overlap certain buildings when built on the edge of city limits
 		var adjustedIndex = index;
+		if (index == truemin){
+			adjustedIndex = loopyMod( index - (template.size - 1), terrsize );
+		}
 /* 		for (var q = index; q <= index + template.size - 1; q++){
 			var ci = loopyMod(q, terrsize);
 			var oldbuildinguuid = plnt.tiles[ci].buildingUUID;
@@ -208,9 +229,13 @@ class City {
 		if (!bldg){ console.log("no valid building"); return false; }
 	
 		// This part clears any buildings that may be already present in the space
+		// It also checks if any of the tiles are underwater, or part of a Spaceport, which if they are, it will completely cancel
 		for (var q = index; q <= index + template.size - 1; q++){
 			var ci = loopyMod(q, terrsize);
 			var ob = plnt.tiles[ci].getBuilding();
+			var height = plnt.tiles[ci].height;
+			if (height < 0){ console.log("Can't place building underwater!"); return false; }
+			if (ob instanceof BuildingSpaceport){ console.log("Can't place building over spaceport"); return false;}
 			if (!ob){ continue; }
 			
 			plnt.removeBuilding(ob);
@@ -302,8 +327,14 @@ class City {
 	registerBuilding(building){
 		this.buildingUUIDs.push(building.uuid);
 		
-		for (var i = building.startindex; i <= building.endindex; i++){
-			this.claimedTileIndexes.push(i);
+		var ende = building.endindex;
+		if (building.endindex < building.startindex){
+			ende += this.getPlanet().terrainSize;
+		}
+		for (var i = building.startindex; i <= ende; i++){
+			
+			var index = loopyMod(i, this.getPlanet().terrainSize);
+			this.claimedTileIndexes.push(index);
 		}
 		building.cityUUID = this.uuid;
 	}
@@ -315,5 +346,15 @@ class City {
 			buildings.push(building);
 		}
 		return buildings;
+	}
+	
+	// Durstenfeld shuffle from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+	shuffle(arrIn) {
+		var a = arrIn.slice(0); // deep copy
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
 	}
 }

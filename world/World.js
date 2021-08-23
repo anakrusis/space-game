@@ -44,21 +44,21 @@ class World {
 		playerNation.capitalCityUUID = capitalCity.uuid;
 		
 		// Other nations
-		for (var i = 0; i < 4; i++){
+/* 		for (var i = 0; i < 4; i++){
 			
 			var nat = new Nation(homePlanet.getChunk().x, homePlanet.getChunk().y, homePlanet.uuid);
 			this.nations[nat.uuid] = nat;
 		
 			var natcap = homePlanet.spawnCity( nat );
 			nat.cityUUIDs.push(natcap.uuid);
-			nat.capitalCityUUID = natcap.uuid;
+			nat.capitalCityUUID = natcap.uuid; */
 			
 /* 			var ship = new EntityShip(7500, 8192, 0);
 			ship.nationUUID = nat.uuid;
 			if ( this.cities[natcap.uuid] ){
 				ship.moveToSpawnPoint(); this.spawnEntity(ship);
 			} */
-		}
+		//}
 		
 		// Generates player now
 		var player = new EntityPlayer(7500, 8192, 0)
