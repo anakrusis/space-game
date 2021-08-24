@@ -75,7 +75,9 @@ class City {
 		
 		for (var uuid of this.buildingUUIDs){
 			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
-			if (!(building instanceof BuildingSpaceport)){ continue; }
+			if (!(building instanceof BuildingSpaceport || building instanceof BuildingHouse || building instanceof BuildingMine)){ continue; }
+			if (building instanceof BuildingHouse){ densityaddamt = 0.1; }
+			
 			var terrsize = plnt.terrainSize;
 			var buildingradius = 5;
 			
@@ -123,7 +125,7 @@ class City {
 		var shuffledIndices = this.shuffle(allIndices);
 		
 		// Selects the index of the tile with the greatest difference in density between itself and the template of the building currently occupying it
-		var biggestdensitydiff = 0; var index; var ogtemplate;
+/* 		var biggestdensitydiff = 0; var index; var ogtemplate;
 		for (var i = 0; i < shuffledIndices.length; i++){
 			var ci = shuffledIndices[i];
 			var ct; // current template
@@ -156,9 +158,40 @@ class City {
 			if ( diff >= biggestdensitydiff ){
 				biggestdensitydiff = diff; index = ci; ogtemplate = ct;
 			}
-		}
+		} */
+		
+		// this just picks a random index
+		var indexindex = Math.floor( Math.random() * shuffledIndices.length );
+		var index = shuffledIndices[ indexindex ];
+		
 		if (!index){ console.log("no valid index found"); return false; }
-		console.log(biggestdensitydiff);
+		
+		var cb = this.getBuilding(index); // current building
+		var ct;
+		// Kind of working backwards to find a template given a building, should probably be alot less messy
+		if (!cb){
+			ct = Buildings.buildings["none"];
+		}else{
+			switch (cb.type){
+				// The city will not modify the spaceport because it is neccessary for survival
+				case "BuildingSpaceport":
+					console.log("selected index belongs to spaceport"); return false;
+				case "BuildingHouse":
+					ct = Buildings.buildings[cb.template];
+					break;
+				case "BuildingFarm":
+					ct = Buildings.buildings["farm2"];
+					break;
+				case "BuildingMine":
+					ct = Buildings.buildings["mine1"];
+					break;
+				default:
+					ct = Buildings.buildings["none"];
+					break;
+			}
+		}
+		var ogtemplate = ct;
+		//console.log(biggestdensitydiff);
 		
 		// It is now time to calculate the chance of all different possible buildings being built, given the ideal density of the building templates and the density of the tile
 		var keys    = [];
@@ -166,6 +199,9 @@ class City {
 		var sum = 0;
 		for ( var key in Buildings.buildings ){
 			var template = Buildings.buildings[key];
+			// Some templates like the mines will never spawn simply based on density, they need other special criteria to spawn
+			if (!template.density){ continue; }
+			
 			var diff = Math.abs( template.density - plnt.densities[index] )
 			var chance = 1 / diff;
 			
@@ -192,6 +228,12 @@ class City {
 			sum -= chances[q];
 		}
 		var template = Buildings.buildings[selectedKey]; //console.log(template);
+		
+		// Overriding template on special cases: mines will spawn always on ore vein tiles
+		if ( plnt.tiles[index].oreVeinUUID != null ){
+			template = Buildings.buildings["mine1"];
+		}
+		
 		if (!template){ console.log("no valid template"); return false; }
 		
 		// Won't try to overwrite a building with another identical building
@@ -223,6 +265,9 @@ class City {
 				break;
 			case "house":
 				bldg = new BuildingHouse( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize, selectedKey);
+				break;
+			case "mine":
+				bldg = new BuildingMine( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize);
 				break;
 		}
 		

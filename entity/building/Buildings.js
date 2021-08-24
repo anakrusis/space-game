@@ -49,6 +49,15 @@ class TemplateFarm2 extends BuildingTemplate {
 	}
 }
 
+class TemplateMine1 extends BuildingTemplate {
+	constructor(){
+		super();
+		this.buildingtype = "mine";
+		this.density = null;
+		this.size = 1;
+	}
+}
+
 // Wrapper for the registry of all building templates
 class Buildings {
 	static buildings = {
@@ -56,6 +65,7 @@ class Buildings {
 		housesmall1: new TemplateHouseSmall1(),
 		housesmall2: new TemplateHouseSmall2(),
 		farm2:       new TemplateFarm2(),
+		mine1:       new TemplateMine1(),
 		none:        new TemplateNone(),
 	};
 }
