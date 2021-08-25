@@ -65,6 +65,50 @@ class City {
 		
 	}
 	
+	// Checks if a city contains both the smallest and largest index of the planets tiles, signifying it crosses the seam boundary
+	isOnSeam(){
+		var terrsize = this.getPlanet().terrainSize;
+		return ( this.claimedTileIndexes.indexOf( terrsize - 1 ) != -1 ) && (this.claimedTileIndexes.indexOf( 0 ) != -1 );
+	}
+	
+	getLeftIndex(){
+		var plnt = this.getPlanet();
+		if (this.isOnSeam()){
+			// furthest left index must be selected the long way..
+			var maxdist = 0; var index;
+			for (var ind of this.claimedTileIndexes){
+				if (!plnt.isIndexLeftOfIndex(ind,this.centerIndex)){ continue; }
+				
+				var currentdist = plnt.terrainIndexDistance( ind, this.centerIndex );
+				if ( currentdist > maxdist ){
+					maxdist = currentdist; index = ind;
+				}
+			}
+			return index;
+		}else{
+			return Math.min(...this.claimedTileIndexes);
+		}
+	}
+	
+	getRightIndex(){
+		var plnt = this.getPlanet();
+		if (this.isOnSeam()){
+			// ditto
+			var maxdist = 0; var index;
+			for (var ind of this.claimedTileIndexes){
+				if (plnt.isIndexLeftOfIndex(ind,this.centerIndex)){ continue; }
+				
+				var currentdist = plnt.terrainIndexDistance( ind, this.centerIndex );
+				if ( currentdist > maxdist ){
+					maxdist = currentdist; index = ind;
+				}
+			}
+			return index;
+		}else{
+			return Math.max(...this.claimedTileIndexes);
+		}
+	}
+	
 	update(){
 		if ( server.world.worldTime % 60 == 59 ){ this.updateDensities(); this.doDensityEvent(); }
 	}
@@ -111,15 +155,16 @@ class City {
 		var plnt = this.getPlanet();
 		var terrsize = plnt.terrainSize;
 
-		// These are the extreme ends of the city
-		var minindex = Math.min(...this.claimedTileIndexes);
-		var maxindex = Math.max(...this.claimedTileIndexes);
+		var minindex = this.getLeftIndex(); var maxindex = this.getRightIndex();
 		var truemin  = loopyMod( minindex - 1, terrsize );
 		var allIndices = [];
 		
 		// Randomly shuffles all the possible building indices, so as to not favor one side over another
 		for (var i = minindex - 1; i <= maxindex + 1; i++){
 			var ci = loopyMod(i,terrsize);
+			var cb = this.getBuilding(ci);
+			// And empty tiles are doubly represented, so as to strongly encourage empty land to be built upon
+			if (!cb){ allIndices.push(ci); }
 			allIndices.push(ci);
 		}
 		var shuffledIndices = this.shuffle(allIndices);
@@ -242,7 +287,7 @@ class City {
 		// This part adjusts the index so it doesnt overlap certain buildings when built on the edge of city limits
 		var adjustedIndex = index;
 		if (index == truemin){
-			adjustedIndex = loopyMod( index - (template.size - 1), terrsize );
+			adjustedIndex = loopyMod( index - (template.size - 1), terrsize ); console.log("index adjusted (" + index + " -> " + adjustedIndex + ")");
 		}
 /* 		for (var q = index; q <= index + template.size - 1; q++){
 			var ci = loopyMod(q, terrsize);
@@ -269,18 +314,30 @@ class City {
 			case "mine":
 				bldg = new BuildingMine( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize);
 				break;
+			case "none":
+				plnt.removeBuilding(adjustedIndex); console.log("building intentionally demolished"); return true;
+				break;
 		}
 		
 		if (!bldg){ console.log("no valid building"); return false; }
-	
-		// This part clears any buildings that may be already present in the space
-		// It also checks if any of the tiles are underwater, or part of a Spaceport, which if they are, it will completely cancel
-		for (var q = index; q <= index + template.size - 1; q++){
+		
+		// There are now TWO PASSES which will check several things to ensure this spot is valid
+			
+		// FIRST PASS: checks if any of the tiles are underwater, part of another city, or part of a Spaceport, which if so, will cancel the construction
+		for (var q = adjustedIndex; q < adjustedIndex + template.size; q++){
 			var ci = loopyMod(q, terrsize);
-			var ob = plnt.tiles[ci].getBuilding();
 			var height = plnt.tiles[ci].height;
 			if (height < 0){ console.log("Can't place building underwater!"); return false; }
 			if (ob instanceof BuildingSpaceport){ console.log("Can't place building over spaceport"); return false;}
+			
+			var cc = plnt.tiles[ci].cityUUID;
+			if (cc && cc != this.uuid){ console.log("Can't place building in another city"); return false; }
+		}
+		
+		// SECOND PASS: This part clears any buildings that may be already present in the space where the new building will occupy
+		for (var q = adjustedIndex; q < adjustedIndex + template.size; q++){
+			var ci = loopyMod(q, terrsize);
+			var ob = plnt.tiles[ci].getBuilding();
 			if (!ob){ continue; }
 			
 			plnt.removeBuilding(ob);
