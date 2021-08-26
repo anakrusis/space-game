@@ -437,14 +437,27 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	isIndexLeftOfIndex(index1, index2){
-		var rightDiff = index2 - (index1 - this.terrainSize);
+		
+		if (index1 > index2){ 
+			var temp = index1;
+			index1 = index2;
+			index2 = temp;
+		}
+		
+		var rightDiff = index2 - index1;
         var leftDiff =  index1 - index2;
 		return ( leftDiff < rightDiff );
 	}
 	
 	terrainIndexDistance(index1, index2) {
 		
-		var rightDiff = index2 - (index1 - this.terrainSize);
+		if (index1 > index2){ 
+			var temp = index1;
+			index1 = index2;
+			index2 = temp;
+		}
+		
+		var rightDiff = index2 - index1;
         var leftDiff =  index1 - index2;
         return Math.min( Math.abs(leftDiff), Math.abs(rightDiff));
 		

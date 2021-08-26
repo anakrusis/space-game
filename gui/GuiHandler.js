@@ -167,7 +167,7 @@ class GuiHandler {
 			
 			var tile = nearbody.tiles[ loopyMod(i, nearbody.terrainSize) ];
 			if (tile.buildingUUID){ return null; }
-			if (tile.height < 0){ return null; }
+			if (tile.height < 0 && nearbody.hasOcean){ return null; }
 		}
 		
 		//b.cityUUID = new City(null,nearbody.getChunk().x,nearbody.getChunk().y,nearbody.uuid).uuid;

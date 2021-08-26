@@ -182,6 +182,7 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			
 			var index = CollisionUtil.indexFromPosition(cursorAbsX,cursorAbsY,e)
 			var dns = Math.round( e.densities[ index ] * 1000 ) / 1000;
+			infostring += "= Index: " + index + "\n";
 			infostring += "= Density: " + dns + "\n";
 			
 		}else if (e instanceof EntityBuilding){
