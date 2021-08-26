@@ -437,28 +437,26 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	isIndexLeftOfIndex(index1, index2){
+		var rightDiff = loopyMod(index2 - index1, this.terrainSize);
+		var leftDiff  = loopyMod(index1 - index2, this.terrainSize);
 		
-		if (index1 > index2){ 
-			var temp = index1;
-			index1 = index2;
-			index2 = temp;
-		}
-		
-		var rightDiff = index2 - index1;
-        var leftDiff =  index1 - index2;
-		return ( leftDiff < rightDiff );
+		return (leftDiff > rightDiff);
 	}
 	
 	terrainIndexDistance(index1, index2) {
-		
-		if (index1 > index2){ 
+/* 		if (index1 < index2){
 			var temp = index1;
 			index1 = index2;
 			index2 = temp;
 		}
-		
-		var rightDiff = index2 - index1;
+		var rightDiff = index2 - (index1 - this.terrainSize);
         var leftDiff =  index1 - index2;
+		if (leftDiff < 0) { leftDiff += this.terrainSize; }
+        if (rightDiff < 0) { rightDiff += this.terrainSize; } */
+		
+		var rightDiff = loopyMod(index2 - index1, this.terrainSize);
+		var leftDiff  = loopyMod(index1 - index2, this.terrainSize);
+		
         return Math.min( Math.abs(leftDiff), Math.abs(rightDiff));
 		
 	}

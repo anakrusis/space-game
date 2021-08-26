@@ -156,6 +156,7 @@ class City {
 		var terrsize = plnt.terrainSize;
 
 		var minindex = this.getLeftIndex(); var maxindex = this.getRightIndex();
+		if (minindex > maxindex){ minindex -= terrsize; }
 		var truemin  = loopyMod( minindex - 1, terrsize );
 		var allIndices = [];
 		
