@@ -327,9 +327,11 @@ class City {
 		// FIRST PASS: checks if any of the tiles are underwater, part of another city, or part of a Spaceport, which if so, will cancel the construction
 		for (var q = adjustedIndex; q < adjustedIndex + template.size; q++){
 			var ci = loopyMod(q, terrsize);
+			var ob = plnt.tiles[ci].getBuilding();
+			if (ob instanceof BuildingSpaceport){ console.log("Can't place building over spaceport"); return false;}
+			
 			var height = plnt.tiles[ci].height;
 			if (height < 0){ console.log("Can't place building underwater!"); return false; }
-			if (ob instanceof BuildingSpaceport){ console.log("Can't place building over spaceport"); return false;}
 			
 			var cc = plnt.tiles[ci].cityUUID;
 			if (cc && cc != this.uuid){ console.log("Can't place building in another city"); return false; }

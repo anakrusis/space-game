@@ -20,7 +20,7 @@ class World {
 	
 	init(){
 		
-		this.seed = Math.floor ( random() * 10000 );
+		this.seed = Math.floor ( 4304 )//random() * 10000 );
 		//this.seed = (845);
 		//this.seed = (7295);
 		//this.seed = (2653);

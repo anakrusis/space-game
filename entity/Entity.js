@@ -321,7 +321,8 @@ class Entity {
     }
 	
 	isOnScreen(){
-		var tx = tra_x(this.x); var ty = tra_y(this.y); 
-		return ((tx > -(100*cam_zoom) && tx < width+(100*cam_zoom)) && (ty > -(100*cam_zoom) && ty < height+(100*cam_zoom)));
+		var buffer = 5;
+		var tx = tra_rot_x(this.x,this.y); var ty = tra_rot_y(this.x,this.y); 
+		return ((tx > -(buffer*cam_zoom) && tx < width+(buffer*cam_zoom)) && (ty > -(buffer*cam_zoom) && ty < height+(buffer*cam_zoom)));
 	}
 }

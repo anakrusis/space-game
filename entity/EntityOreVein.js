@@ -74,6 +74,10 @@ class EntityOreVein extends Entity {
 	}
 
 	isOnScreen(){
-		return super.isOnScreen() && buildingDrawEnabled && cam_zoom > MAX_INTERPLANETARY_ZOOM;
+		if(!buildingDrawEnabled || cam_zoom < MAX_INTERPLANETARY_ZOOM){ return false };
+		
+		var buffer = 25;
+		var tx = tra_rot_x(this.x,this.y); var ty = tra_rot_y(this.x,this.y); 
+		return ((tx > -(buffer*cam_zoom) && tx < width+(buffer*cam_zoom)) && (ty > -(buffer*cam_zoom) && ty < height+(buffer*cam_zoom)));
 	}
 }
