@@ -215,7 +215,9 @@ function keyPressed() {
 			
 		}else if (keyCode === 86){ // V
 			VERBOSE_DEBUG_TEXT = !VERBOSE_DEBUG_TEXT;
-			//buildingDrawEnabled = !buildingDrawEnabled;	
+			
+		}else if (keyCode === 66){
+			buildingDrawEnabled = !buildingDrawEnabled;	
 			
 		}else if (keyCode === 69){ // E
 			

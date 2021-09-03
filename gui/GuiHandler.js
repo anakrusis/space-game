@@ -149,6 +149,8 @@ class GuiHandler {
 	static getBuildingGhost(){
 		//if (hoverEntity){ return null; }
 		var p = client.world.getPlayer(); if (!p){ return null; }
+		if (p.dead){ return null; }
+		
 		var nearbody = p.getNearestBody();
 		var is = p.inventory.stacks[ p.inventory.selection ]; if (!is){ return null; }
 		var it = Items.items[is.item];

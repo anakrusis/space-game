@@ -49,6 +49,10 @@ class EntityBuilding extends Entity {
 	}
 	
 	getRenderPoints() {
+		
+		if (!buildingDrawEnabled){
+			return this.getAbsolutePoints();
+		}
 		var relpoints = this.getRelRenderPoints();
 		
 		var abspoints = [];
@@ -128,6 +132,7 @@ class EntityBuilding extends Entity {
 	}
 	
 	isOnScreen(){
-		return super.isOnScreen() && buildingDrawEnabled && cam_zoom > MAX_INTERPLANETARY_ZOOM;
+		// && buildingDrawEnabled
+		return super.isOnScreen() && cam_zoom > MAX_INTERPLANETARY_ZOOM;
 	}
 }

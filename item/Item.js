@@ -2,7 +2,7 @@
 class Item {
 	constructor( name ){
 		this.name = name;
-		this.maxStackSize = 99;
+		this.maxStackSize = 16;
 		this.color = [255, 255, 255];
 		//Items.items.push(this);
 	}

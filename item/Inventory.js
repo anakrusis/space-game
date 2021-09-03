@@ -15,21 +15,26 @@ class Inventory {
 	add(itemstack){
 		// First, look for matching itemstacks and ensuring that the stack size is not too large.
         for (var i = 0; i < this.size; i++){
-            if (this.stacks[i] != null){
-                if ((this.stacks[i].item == itemstack.item) && this.stacks[i].amount < this.stacks[i].item.maxStackSize){
-
-                    // Adding the item
-                    this.stacks[i].amount += itemstack.amount;
-                    return;
-                }
-            }
+			var cs = this.stacks[i]; // current stack
+            if (!cs){ continue; }
+			if (cs.item != itemstack.item){ continue; }
+			
+			// will distribute item among several stacks if stack one fills up partly while adding...
+			var oldamt = cs.amount;
+			cs.amount += itemstack.amount; cs.amount = Math.min(cs.amount, cs.getItem().maxStackSize);
+			itemstack.amount -= ( cs.amount - oldamt );
+			
+			if (itemstack.amount <= 0){ return; }
         }
 		
+		// If no matching itemstacks exist, make as many new itemstacks as needed
 		for (var i = 0; i < this.size; i++){
             if (this.stacks[i] == null){
-				// If no matching itemstacks exist, make a new one at the first blank spot
-				this.stacks[i] = new ItemStack(itemstack.item, itemstack.amount);
-				return;
+				var newamt = Math.min(itemstack.amount, itemstack.getItem().maxStackSize)
+				this.stacks[i] = new ItemStack(itemstack.item, newamt);
+				itemstack.amount -= newamt;
+				
+				if (itemstack.amount <= 0){ return; }
 			}
 		}
 

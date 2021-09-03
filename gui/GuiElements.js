@@ -122,7 +122,7 @@ BTN_DPAD_RGHT.onClick = function(){
 var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
 
 var hdr = new GuiElement(0,0,400,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
-var bdy = new GuiElement(0,0,400,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. You can do delivery missions, exploration missions to other planets, or simply fly around leisurely. \nThere isn't much to see right now, but you can always come back later and see how things have changed!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n";
+var bdy = new GuiElement(0,0,400,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. Click or tap on the Spaceport Hanger building to start doing missions!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n";
 bdy.text += " W/S .......... accelerate/decelerate\n"
 bdy.text += " A/D .......... turn\n"
 bdy.text += " E ............ action\n" 
@@ -140,6 +140,60 @@ var sorcebuton = new GuiElement(0,0,210,40,butoncontainer); sorcebuton.text = "V
 sorcebuton.onClick = function(){
 	window.open("https://github.com/anakrusis/space-game", "_blank");;
 
+}
+
+var GROUP_CITY_INFO = new GuiElement(0,0,300,500); GROUP_CITY_INFO.autosize = true; GROUP_CITY_INFO.autopos = "top"; 
+GROUP_CITY_INFO.hide(); GROUP_CITY_INFO.autocenterX = true; GROUP_CITY_INFO.autocenterY = true;
+GROUP_CITY_INFO.TXT_CITYNAME = new GuiTextEntry(0,0,300,40,GROUP_CITY_INFO,["selectedEntity","getCity","name"]);
+
+GROUP_CITY_INFO.CNTR_INVENTORY = new GuiElement(0,0,500,500,GROUP_CITY_INFO);
+GROUP_CITY_INFO.CNTR_INVENTORY.autosize = true; GROUP_CITY_INFO.CNTR_INVENTORY.autopos = "left"; 
+
+for (var i = 0; i < 9; i++){
+	
+	var he = new GuiElement( 0, 0, 64, 64, GROUP_CITY_INFO.CNTR_INVENTORY ); he.index = i;
+	
+	he.onClick = function(){
+		//server.onUpdateRequest( this.index, "world", "getPlayer", "inventory", "selection" );
+	}
+	
+	he.onRender = function(){
+		
+		if (!selectedEntity){ return; }
+		
+		var city = selectedEntity.getCity(); var itemstk = city.resources.get(this.index);
+		var sel = city.resources.selection;
+		noFill();
+		stroke(255);
+		if ( this.index == sel ){
+			strokeWeight(3);
+			rect(this.dispx, this.dispy, this.dispwidth, this.dispheight);
+			strokeWeight(1);
+		}
+		
+		if (!itemstk){ return; }
+				
+		var scale = 18;
+		var pts = itemstk.getItem().getRelRenderPoints();
+		stroke(itemstk.getItem().color[0], itemstk.getItem().color[1], itemstk.getItem().color[2]);
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = (pts[i+1]) * scale + this.dispx - this.padding + this.width/2; 
+			var py = (-pts[i])   * scale + this.dispy - this.padding + this.height/2 + 4;
+			vertex(px,py);
+		}
+		endShape(CLOSE);
+		
+		stroke(255);
+		textAlign(RIGHT);
+		text(itemstk.amount, this.dispx + 48, this.dispy + 48 );
+		textAlign(LEFT);
+	}
+}
+
+GROUP_CITY_INFO.BTN_BACK = new GuiElement(0,0,148,40,GROUP_CITY_INFO); GROUP_CITY_INFO.BTN_BACK.text = "Back";
+GROUP_CITY_INFO.BTN_BACK.onClick = function(){
+	GROUP_CITY_INFO.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 
 // Screen for founding a city

@@ -248,5 +248,5 @@ GROUP_INFOBAR.BTN_CITYINFO.onUpdate = function(){
 	this.show();
 }
 GROUP_INFOBAR.BTN_CITYINFO.onClick = function(){
-	//GuiHandler.openWindow( GROUP_MISSION_SELECT );
+	GuiHandler.openWindow( GROUP_CITY_INFO );
 }
