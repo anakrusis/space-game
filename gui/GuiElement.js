@@ -51,23 +51,6 @@ class GuiElement {
 			this.onUpdate();
 		}
 		
-/* 		var xsum = this.dispx + this.padding;
-		var ysum = this.dispy + this.padding;
-		
-		if (this.autopos != "pee"){
-			
-			for (var i = 0; i < this.children.length; i++){
-				
-				var c = this.children[i];
-				
-				c.dispx = this.dispx + this.padding;
-				c.dispy = this.dispy + this.padding;
-				
-				xsum += c.dispwidth + this.padding;
-				
-			}
-			
-		} */
 		if (!this.staticposition){
 			var p = this.parent;
 			if (p){
@@ -230,18 +213,19 @@ class GuiElement {
 	
 	// This one also acts as a skeleton function for the real behavior which is onClick()
 	click(x,y){
-		if (!bypassGameClick){
-			for (var i = 0; i < this.children.length; i++){
-				var e  = this.children[i];
-				e.click(x,y);
-			} 
-			if (this.visible && (this.active || this.bypassActiveForClicks)){
-				if (x > this.dispx*GUI_SCALE && x < (this.dispx + this.dispwidth) * GUI_SCALE
-				 && y > this.dispy*GUI_SCALE && y < (this.dispy + this.dispheight)* GUI_SCALE ){
-				
-					this.onClick(); 
-					bypassGameClick = true;
-				}
+		for (var i = 0; i < this.children.length; i++){
+			var e  = this.children[i];
+			e.click(x,y);
+		} 
+		
+		if (bypassGameClick){ return false; }
+		
+		if (this.visible && (this.active || this.bypassActiveForClicks)){
+			if (x > this.dispx*GUI_SCALE && x < (this.dispx + this.dispwidth) * GUI_SCALE
+			 && y > this.dispy*GUI_SCALE && y < (this.dispy + this.dispheight)* GUI_SCALE ){
+			
+				this.onClick(); 
+				bypassGameClick = true;
 			}
 		}
 	}

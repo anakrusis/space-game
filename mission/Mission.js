@@ -13,7 +13,7 @@ class Mission {
 		this.failtext = "No failure text found!";
 		this.successtext = "No success text found!";
 		
-		this.objectives = [];
+		this.objectives = [[]];
 		this.currentStage = 0;
 		
 		// Used in the Mission selection menu and confirmation, gives a summary about what the mission is about
@@ -41,9 +41,8 @@ class Mission {
 				this.onFail();
 			}
 		}
-		
+	
 		// Checks to see if all objectives in a given stage are complete before moving on to the next stage
-		
 		var alldone = true;
 		for ( i = 0; i < this.objectives[this.currentStage].length; i++ ){
 			
@@ -70,7 +69,7 @@ class Mission {
 	}
 	
 	onFail(){
-		this.getSourceCity().updateMissions();
+		//this.getSourceCity().updateMissions();
 		
 		var p = server.world.getPlayer();
 		GROUP_MISSION_FAIL.children[1].text = this.failtext; p.currentMission = null;
@@ -81,7 +80,7 @@ class Mission {
 	}
 	
 	onSuccess(){
-		this.getSourceCity().updateMissions();
+		//this.getSourceCity().updateMissions();
 		
 		var p = server.world.getPlayer();
 		p.money += this.reward;
@@ -94,7 +93,7 @@ class Mission {
 	}
 	
 	onCancel(){
-		this.getSourceCity().updateMissions();
+		//this.getSourceCity().updateMissions();
 		
 		MissionHandler.onMissionEnd();
 	}

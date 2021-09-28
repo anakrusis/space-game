@@ -399,13 +399,31 @@ class City {
 	}
 	
 	updateExploreMissions(){
+		// Clears out all explore and settlement missions
+		for (var i = 0; i < this.availableMissions.length; i++){
+			var mission = this.availableMissions[i];
+			
+			if (mission instanceof MissionExploration || mission instanceof MissionSettlement){
+				this.availableMissions.splice(mission);
+			}
+		}
 		// Only the home nation can give a player exploration missions
 		if (this.getNation() != server.world.getPlayer().getNation()){ return; }
 		
 		for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
 			var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
+			if (!(b instanceof BodyPlanet)){ continue; }
+			if (b.explored){
+				
+				var m = new MissionSettlement(this.uuid, "spaceport", b);
+				this.availableMissions.push(m);
+				
+			}else{
+				var m = new MissionExploration(this.uuid, b);
+				this.availableMissions.push(m);
+			}
 			
-			if (b instanceof BodyPlanet && (!b.explored)){
+/* 			if (b instanceof BodyPlanet && (!b.explored)){
 				
 				// Adds exploration missions if there is none already.
 				var explore_mission_found = false;
@@ -425,7 +443,7 @@ class City {
 					this.availableMissions.push(m);
 				
 				}
-			}
+			} */
 		}
 	}
 	

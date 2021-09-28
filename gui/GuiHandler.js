@@ -1,5 +1,5 @@
 TITLE_VERSION = "Space Game pre alpha 0.1.2b";
-BUILD_DATE = "2021-08-23"
+BUILD_DATE = "2021-09-28"
 
 var mainelement = document.getElementById("main");
 document.title = TITLE_VERSION;
@@ -178,6 +178,18 @@ class GuiHandler {
 		}
 		b.grounded = true;
 		b.groundedBodyUUID = nearbody.uuid;
+		
+		// This prevents buildings from being placed on the wrong planet if the mission forbids it
+		if (p.currentMission){
+			if (p.currentMission instanceof MissionSettlement){
+				//console.log("p:" + p.currentMission.objectives[0][0].place.uuid);
+				//console.log("b: " + b.groundedBodyUUID);
+				if (p.currentMission.objectives[0][0].place.uuid != b.groundedBodyUUID){
+					return null;
+				}
+			}
+		}
+		
 		b.moveToIndexOnPlanet(b.startindex, nearbody, 1);
 		b.planetUUID = nearbody.uuid;
 		b.startindex = start; b.endindex = loopyMod(start + b.size, nearbody.terrainSize);

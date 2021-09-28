@@ -11,6 +11,16 @@ class Objective {
 	
 }
 
+class ObjectivePlaceBuilding extends Objective {
+	constructor( itemid, place ){
+		super();
+		this.item = itemid;
+		var itemobj = Items.items[itemid];
+		this.place = place;
+		this.text = "Place " + itemobj.name + " on " + place.get().descriptor + " " + place.name;
+	}
+}
+
 class ObjectiveBringItemToPlace extends Objective {
 	
 	constructor( itemid, quantity, place ){

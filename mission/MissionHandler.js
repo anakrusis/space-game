@@ -48,18 +48,26 @@ class MissionHandler {
 		}
 	}
 	
-	static onPlayerMoveToIndex( player, planet, index ){
-		
-		//console.log("player moved to " + index);
-		
+	static onPlayerPlaceBuilding( player, planet, item ){
 		var mission = player.currentMission;
-		
+		if (mission){	
+			for (var i = 0; i < mission.objectives[mission.currentStage].length; i++){
+				var cobj = mission.objectives[mission.currentStage][i]; // current objective
+				if (cobj instanceof ObjectivePlaceBuilding){
+					if (cobj.item == item && planet.uuid == cobj.place.uuid){
+						cobj.complete = true;
+					}
+				}
+			}
+		}
+	}
+	
+	static onPlayerMoveToIndex( player, planet, index ){
 		this.inPlaceForDelivery = false;
-		//GROUP_INFOBAR.BTN_DELIVER.hide();
+		var mission = player.currentMission;
 		if (mission){
 			
 			for (var i = 0; i < mission.objectives[mission.currentStage].length; i++){
-			
 				var cobj = mission.objectives[mission.currentStage][i]; // current objective
 				
 				if (cobj instanceof ObjectiveBringItemToPlace){

@@ -122,7 +122,7 @@ BTN_DPAD_RGHT.onClick = function(){
 var GROUP_WELCOME = new GuiElement(0,0,500,500); GROUP_WELCOME.autosize = true; GROUP_WELCOME.autopos = "top"; GROUP_WELCOME.show(); GROUP_WELCOME.autocenterX = true; GROUP_WELCOME.autocenterY = true;
 
 var hdr = new GuiElement(0,0,400,40,GROUP_WELCOME); hdr.text = "Welcome to " + TITLE_VERSION;
-var bdy = new GuiElement(0,0,400,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. Click or tap on the Spaceport Hanger building to start doing missions!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n";
+var bdy = new GuiElement(0,0,400,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. Click or tap on the Spaceport Hangar building to get started with missions!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n";
 bdy.text += " W/S .......... accelerate/decelerate\n"
 bdy.text += " A/D .......... turn\n"
 bdy.text += " E ............ action\n" 
@@ -216,20 +216,19 @@ GROUP_CITY_FOUND.BTN_YES.onClick = function(){
 	
 	// TODO Organize this between the onUse() function in the item class, and also the GuiHandler
 	
-	var p = server.world.getPlayer();
-	var city = new City( p.nationUUID, p.getChunk().x, p.getChunk().y, buildingToPlace.getPlanet().uuid );
+	var p = server.world.getPlayer(); var plnt = buildingToPlace.getPlanet();
+	var city = new City( p.nationUUID, p.getChunk().x, p.getChunk().y, plnt.uuid );
 	GROUP_CITY_FOUND.TXT_CITYNAME.commit();
 	city.name = cityName;
-	city.centerIndex = loopyMod(buildingToPlace.startindex + 2, buildingToPlace.getPlanet().terrainSize );
+	city.centerIndex = loopyMod(buildingToPlace.startindex + 2, plnt.terrainSize );
 	server.world.cities[city.uuid] = city;
-	buildingToPlace.getPlanet().explored = true;
-	buildingToPlace.getPlanet().spawnBuilding( buildingToPlace, city );
+	plnt.explored = true; plnt.spawnBuilding( buildingToPlace, city );
+	MissionHandler.onPlayerPlaceBuilding(p, plnt, "spaceport");
 	
 	city.updateMissions();
 	GROUP_CITY_FOUND.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	
 	p.inventory.shrink("spaceport",1); buildingToPlace = null;
-
 }
 
 // main menu
@@ -621,6 +620,7 @@ GROUP_MISSION_SELECT.onShow = function(){
 	GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS.children = [];
 	
 	var selectedCity = selectedEntity.getCity();
+	selectedCity.updateMissions();
 	var missions = selectedCity.getAvailableMissions();
 	
 	if (missions.length == 0){

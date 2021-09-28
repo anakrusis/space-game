@@ -5,6 +5,10 @@ class BuildingHouse extends EntityBuilding {
 		this.name = "House";
 		this.size = 1;
 		this.template = template;
+		if (this.template){
+			this.size = Buildings.buildings[this.template].size;
+		}
+		this.endindex   = loopyMod(startindex + this.size - 1, terrsize);
 	}
 	
 	getRelRenderPoints(){

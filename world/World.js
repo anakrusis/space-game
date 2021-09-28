@@ -20,7 +20,8 @@ class World {
 	
 	init(){
 		
-		this.seed = Math.floor ( 4304 )//random() * 10000 );
+		//this.seed = Math.floor ( 4304 ) 
+		this.seed = random() * 10000;
 		//this.seed = (845);
 		//this.seed = (7295);
 		//this.seed = (2653);
@@ -71,9 +72,6 @@ class World {
 		for (var uuid in this.cities){
 			var city = this.cities[uuid]; city.updateMissions();
 		}
-		
-		//this.player.inventory.add( new ItemStack( Items.ITEM_IRON, 4 ) );
-		
 	}
 	
 	// This function works by searching for planets within a 50 degree difference of the ideal temperature, i.e. ~15C
