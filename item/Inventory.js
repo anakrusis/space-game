@@ -37,7 +37,14 @@ class Inventory {
 				if (itemstack.amount <= 0){ return; }
 			}
 		}
-
+	}
+	
+	combine(inventory){
+		for (var q = 0; q < inventory.size; q++){
+			if (inventory.get(q)){
+				this.add( inventory.get(q) );
+			}
+		}
 	}
 	
 	shrink(itemtype, amount){

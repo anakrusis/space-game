@@ -62,10 +62,15 @@ function setup(){
 	
 	server = new Server();
 	server.init(); server.world.init();
-	//server.world = new World();
 
 	client = new Client();
 	update(); update(); update(); // I guess it takes three ticks to position everything correctly (including the camera and player)
+	
+/* 	var ship = new EntityTruck(7500, 8192, 0); var n = server.world.getPlayer().getNation();
+	ship.nationUUID = n.uuid;
+	ship.groundedBodyUUID = n.getHomePlanet().uuid; ship.grounded = true;
+	ship.targetIndex = n.getCapitalCity().centerIndex;
+	ship.moveToSpawnPoint(); server.world.spawnEntity(ship); */
 	
 	GuiHandler.init();
 	

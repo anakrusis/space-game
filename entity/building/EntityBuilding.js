@@ -105,8 +105,16 @@ class EntityBuilding extends Entity {
 			if (this.productionProgress == this.productionTime){
 				
 				var itemstack = new ItemStack(this.productionItem, 1);
-				this.getCity().resources.add( itemstack );
-				this.getCity().updateMissions();
+				var truck = new EntityTruck(200,200,0);
+				truck.nationUUID = this.getCity().nationUUID;
+				truck.groundedBodyUUID = this.getPlanet().uuid; truck.grounded = true;
+				truck.targetIndex = this.getCity().centerIndex;
+				
+				truck.moveToIndexOnPlanet(middleindex, this.getPlanet(), 0);
+				server.world.spawnEntity(truck);
+				truck.inventory.add(itemstack);
+				//this.getCity().resources.add( itemstack );
+				//this.getCity().updateMissions();
 				
 				this.productionProgress = 0;
 			}

@@ -63,32 +63,29 @@ class MissionDelivery extends Mission {
 	}
 	
 	getDestinationCity(){
-
 		return server.world.cities[ this.destinationCityUUID ];
 	
 	}
 	
 	onFail(){
 		super.onFail();
-		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 	}
 	
 	onSuccess(){
 		
 		super.onSuccess();
-		
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 		MissionHandler.inPlaceForDelivery = false;
 	}
 	
 	onCancel(){
+		super.onCancel();
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 	}
 	
 	onStart(){
 		super.onStart();
-		
 		server.world.getPlayer().inventory.add( new ItemStack( this.item, this.quantity ) );
 	}
 }

@@ -44,6 +44,7 @@ class World {
 		playerNation.cityUUIDs.push(capitalCity.uuid);
 		playerNation.capitalCityUUID = capitalCity.uuid;
 		
+			
 		// Other nations
 /* 		for (var i = 0; i < 4; i++){
 			

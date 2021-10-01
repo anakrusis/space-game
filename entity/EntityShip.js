@@ -6,6 +6,7 @@ class EntityShip extends Entity {
 		
 		// Core Properties
 		this.name = "Ship";
+		this.inventory = new Inventory(9);
 		
 		// Referential properties
 		this.nationUUID = null;

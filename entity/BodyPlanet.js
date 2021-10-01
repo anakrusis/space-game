@@ -376,7 +376,8 @@ class BodyPlanet extends EntityBody {
 			this.tiles[relIndex].hasRoad = true;
 			this.roads[relIndex] = true;
 		} */
-		city.centerIndex = cityCenterIndex;
+		
+		city.centerIndex = (cityCenterIndex + 2) % this.terrainSize; // the spaceport is 5 tiles wide so this centers it
 		server.world.cities[city.uuid] = city;
 		return city;
 	}

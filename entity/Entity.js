@@ -301,7 +301,7 @@ class Entity {
 
         for (var i = 0; i < 20; i++){
             var randomdir = (2 * Math.PI) * random();
-			var particle = new ParticleSmoke(this.x, this.y, randomdir); particle.color = [255, 128, 0]; particle.velocity = 1; particle.size = 0.1;
+			var particle = new ParticleSmoke(this.x, this.y, randomdir); particle.color = [255, 128, 0]; particle.velocity = Math.random(); particle.size = 0.1;
             server.world.spawnEntity(particle);
         }
     }

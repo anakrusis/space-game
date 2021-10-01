@@ -16,4 +16,8 @@ class Nation {
 	getCapitalCity(){
 		return server.world.cities[this.capitalCityUUID];
 	}
+	
+	getHomePlanet(){
+		return server.world.getChunk(this.homeChunkX, this.homeChunkY).bodies[ this.homePlanetUUID ];
+	}
 }

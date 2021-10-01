@@ -12,19 +12,25 @@ class MissionSettlement extends Mission {
 	}
 	
 	onCancel(){
+		super.onCancel();
 		server.world.getPlayer().inventory.shrink(this.item, 1);
+		server.world.getPlayer().inventory.shrink("passengers", 16);
 	}
 	
 	onFail(){
 		super.onFail();
-		
+		server.world.getPlayer().inventory.shrink("passengers", 16);
 		server.world.getPlayer().inventory.shrink(this.item, 1);
 	}
 	
 	onStart(){
 		super.onStart();
-		
+		server.world.getPlayer().inventory.add( new ItemStack( "passengers", 16 ) );
 		server.world.getPlayer().inventory.add( new ItemStack( this.item, 1 ) );
+	}
+	onSuccess(){
+		super.onSuccess();
+		server.world.getPlayer().inventory.shrink( "passengers", 16 );
 	}
 	
 	getIcon(){
