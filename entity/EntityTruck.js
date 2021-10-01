@@ -1,0 +1,3 @@
+class EntityTruck extends Entity {
+	
+}

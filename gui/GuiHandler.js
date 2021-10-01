@@ -78,7 +78,7 @@ class GuiHandler {
 		
 		for (var i = 0; i < this.allElements.length; i++){
 			var e = this.allElements[i];
-			if (e.active){
+			if (e.active || e == GROUP_HOTBAR){
 				e.update();
 			}
 		}
@@ -116,7 +116,6 @@ class GuiHandler {
 		element.active = true;
 		
 		element.show();
-		
 	}
 	
 	static onClick(x,y){

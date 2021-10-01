@@ -8,7 +8,7 @@ function love.load()
 	NaN = "NaN";
 	
 	-- can temporarily modify this to have stuff when reopening a buildings points
-	buildingpoints = {-1,-1,-1,-0.25,-0.25,-0.25,-0.25,0.25,-1,0.25,-1,1,0.5,1,0.5,-1,-1,-1,NaN,NaN,-0.5,-0.75,-0,-0.75,0,-0.5,-0.5,-0.5,-0.5,-0.75,NaN,NaN,-0.5,0.5,-0,0.5,-0,0.75,-0.5,0.75,-0.5,0.5,NaN,NaN,1,-0.75,1.5,-0.75,1.5,-0.5,1,-0.5,1,-0.75,NaN,NaN,1,0.5,1.5,0.5,1.5,0.5,1.5,0.75,1,0.75,1,0.5,NaN,NaN,0.5,-1,1.75,-1,2.25,0,1.75,1,0.5,1,0.5,-1,NaN,NaN,1.5,-1.25,1.75,-1,1.5,-1.25,NaN,NaN,1.75,1,1.5,1.25,1.75,1,NaN,NaN,};
+	buildingpoints = {-1,-2,0.75,-2,1.5,-1.25,0.75,-0.5,0.75,1,-1,1,-1,-2,NaN,NaN,1.5,-1.25,1.5,0.5,0.75,1.25,0.75,1,0.75,-0.5,1.5,-1.25,NaN,NaN,0.75,-0.5,-1,-0.5,0.75,-0.5,NaN,NaN,-1,-1.5,-0.5,-1.5,-0.5,-1,-1,-1,NaN,NaN,0.5,-1.75,-0,-1.75,-0,-1.75,-0,-1.5,0.5,-1.5,0.5,-1.75,NaN,NaN,0.5,-1,-0,-1,-0,-1,-0,-0.75,0.5,-0.75,0.5,-1,NaN,NaN,0.5,-0.25,-0,-0.25,-0,0,0.5,0,0.5,-0.25,NaN,NaN,0.5,0.5,-0,0.5,-0,0.75,0.5,0.75,0.5,0.5,NaN,NaN,-0.25,-0.25,-0.75,-0.25,-0.75,0,-0.25,0,-0.25,-0.25,NaN,NaN,-0.25,0.5,-0.75,0.5,-0.75,0.75,-0.25,0.75,-0.25,0.5,NaN,NaN,};
 	
 	templatepoints = {1.5,-1,1.5,1,-1,1,-1,-1}
 	
@@ -45,32 +45,50 @@ function love.keypressed( key, scancode, isrepeat )
 			output = output .. buildingpoints[i] .. ","
 		
 		end
-		
 		output = output .. "]};"
 		
 		file:write(output)
-		
 		file:close()
+	end
 	
+	if key == "up" then
+		for i = 1, #buildingpoints, 2 do
+			if (buildingpoints[i] ~= NaN) then
+				buildingpoints[i] = buildingpoints[i] + (1/SNAPSIZE);
+			end
+		end
+	end
+	if key == "down" then
+		for i = 1, #buildingpoints, 2 do
+			if (buildingpoints[i] ~= NaN) then
+				buildingpoints[i] = buildingpoints[i] - (1/SNAPSIZE);
+			end
+		end
+	end
+	
+	if key == "left" then
+		for i = 2, #buildingpoints, 2 do
+			if (buildingpoints[i] ~= NaN) then
+				buildingpoints[i] = buildingpoints[i] - (1/SNAPSIZE);
+			end
+		end
+	end
+	if key == "right" then
+		for i = 2, #buildingpoints, 2 do
+			if (buildingpoints[i] ~= NaN) then
+				buildingpoints[i] = buildingpoints[i] + (1/SNAPSIZE);
+			end
+		end
 	end
 end
 
 function love.mousepressed( x, y, button, istouch, presses )
 
 	abx = untra_x(x); aby = untra_y(y);
-	
-	--abx = abx + originx; aby = aby + originy;
-	--abx = abx * math.cos(-math.pi/2); aby = aby * math.sin(-math.pi/2);
-	--abx = abx - originx; aby = aby - originy;
-	
 	angle = math.pi/2;
-	
 	nx = abx*math.cos(angle) - aby*math.sin(angle)
-	
 	ny = abx*math.sin(angle) + aby*math.cos(angle)
-	
-	nx = math.ceil(nx*SNAPSIZE)/SNAPSIZE; ny = math.floor(ny*SNAPSIZE)/SNAPSIZE
-	
+	nx = math.floor((nx*SNAPSIZE)+0.5)/SNAPSIZE; ny = math.floor((ny*SNAPSIZE)+0.5)/SNAPSIZE
 	print(nx .. " " .. ny);
 	
 	table.insert(buildingpoints,nx); table.insert(buildingpoints,ny);
@@ -148,8 +166,14 @@ function love.draw()
 		if lastpointx ~= "NaN" then
 			love.graphics.circle( "line", tra_x(lastpointx), tra_y(lastpointy), 5 )
 		end
-	
 	end
+	
+	abx = untra_x(love.mouse.getX()); aby = untra_y(love.mouse.getY());
+	angle = math.pi/2;
+	nx = abx*math.cos(angle) - aby*math.sin(angle)
+	ny = abx*math.sin(angle) + aby*math.cos(angle)
+	nx = math.floor((nx*SNAPSIZE)+0.5)/SNAPSIZE; ny = math.floor((ny*SNAPSIZE)+0.5)/SNAPSIZE
+	love.graphics.circle( "fill", tra_x(nx), tra_y(ny), 5 )
 	
 	love.graphics.pop()
 	

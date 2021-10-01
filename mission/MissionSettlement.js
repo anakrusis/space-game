@@ -7,6 +7,8 @@ class MissionSettlement extends Mission {
 		
 		this.displaytext  = "Settlement of " + this.destination.name + "\n";
 		this.displaytext += "\n$" + this.reward;
+		
+		this.iconColor = body.color;
 	}
 	
 	onCancel(){
@@ -23,5 +25,22 @@ class MissionSettlement extends Mission {
 		super.onStart();
 		
 		server.world.getPlayer().inventory.add( new ItemStack( this.item, 1 ) );
+	}
+	
+	getIcon(){
+		
+		var points = [];
+		var pointscount = 10;
+
+        for (var i = 0; i < pointscount; i++){
+            var angle = frameCount/100 + (i * (2 * Math.PI) / pointscount);
+
+            var pointx = rot_x(angle, 1, 0.0);
+            var pointy = rot_y(angle, 1, 0.0);
+			
+			points.push(pointx); points.push(pointy);
+        }
+
+        return points;
 	}
 }

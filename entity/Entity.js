@@ -14,6 +14,7 @@ class Entity {
 		
         this.name = "Entity";
         this.color = [ 255, 255, 255 ];
+		this.linecolor = null;
 		this.filled = true;
 		this.renderPriority = 4;
 		
@@ -47,6 +48,9 @@ class Entity {
 		if (selectedEntity == this){
 			stroke(255, 128 * (1 + Math.sin(framecount / 15)), 0);
 			strokeWeight(6);
+		}else if (this.linecolor != null){
+			stroke(this.linecolor[0], this.linecolor[1], this.linecolor[2]);
+			strokeWeight(2);
 		}else{
 			stroke(this.color[0], this.color[1], this.color[2]);
 			strokeWeight(2);

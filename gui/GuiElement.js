@@ -257,45 +257,46 @@ class GuiElement {
 			//this.text = this.text.toUpperCase();
 			//textWrap(LINE)
 			//
-			if (!FANCY_TEXT){
-				text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+			//if (!FANCY_TEXT){
+			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
 				
-			}else{
-				this.lines = 0;
-				var dx = this.dispx + this.padding; var dy = this.dispy + this.padding;
-				
-				var SOURCE_SIZE = 8;
-				var DEST_SIZE = 16;
-				var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_SIZE ) ;
-				
-				while ( i < this.text.length ){
+			//noStroke(); noFill();
+			//}else{
+			this.lines = 0;
+			var dx = this.dispx + this.padding; var dy = this.dispy + this.padding;
+			
+			var SOURCE_SIZE = 8;
+			var DEST_WIDTH = 9.60; var DEST_HEIGHT = 20;
+			var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_WIDTH ) ;
+			
+			while ( i < this.text.length ){
 
 
-					var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
+				var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
+				
+				if ( c != 32 ){
 					
-					if ( c != 32 ){
-					//image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight])
-						image(FONT, dx, dy, DEST_SIZE, DEST_SIZE, cx * SOURCE_SIZE, cy * SOURCE_SIZE, SOURCE_SIZE, SOURCE_SIZE);
-					}
+					//rect(dx,dy,DEST_WIDTH,DEST_HEIGHT)
+				}
+				
+				dx += ( DEST_WIDTH * 1 ); column++;
+				
+				if (c == 32){
+					var f = this.text.substring(i+1); var tospace = f.split(" "); var tonl = f.split("\n");
 					
-					dx += Math.ceil( DEST_SIZE * 1 ); column++;
+					var f2 = ( tospace[0].length < tonl[0].length ) ? tospace : tonl;
 					
-					if (c == 32){
-						var f = this.text.substring(i+1); var tospace = f.split(" "); var tonl = f.split("\n");
-						
-						var f2 = ( tospace[0].length < tonl[0].length ) ? tospace : tonl;
-						
-						if ( column + (f2[0].length) > this.maxcolumns ){ 
-							dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
-							column = 0; this.lines++;
-						}
-					}else if (this.text.substring(i,i+1) == "\n"){
-						dy += ( DEST_SIZE ); dx = this.dispx + this.padding;
+					if ( column + (f2[0].length) > this.maxcolumns ){ 
+						dy += ( DEST_HEIGHT ); dx = this.dispx + this.padding;
 						column = 0; this.lines++;
 					}
-					i++;
+				}else if (this.text.substring(i,i+1) == "\n"){
+					dy += ( DEST_HEIGHT ); dx = this.dispx + this.padding;
+					column = 0; this.lines++;
 				}
+				i++;
 			}
+			
 		}else{
 			this.lines = 0;
 		}

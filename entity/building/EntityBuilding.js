@@ -5,6 +5,7 @@ class EntityBuilding extends Entity {
 		this.template = null; // Many buildings, like the spaceport, have only a single form and accept no template
 		
 		this.filled = false;
+		//this.linecolor = [0,0,0];
 		this.renderPriority = 2;
 		this.size = bldgsize; if (!this.size){ this.size = 1; }
 		

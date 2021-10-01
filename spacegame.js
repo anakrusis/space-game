@@ -96,6 +96,7 @@ function draw(){
 	lod = Math.max( 0, lod );
 	lod = Math.min( 8, lod );
 	
+	//background(128,128,240);
 	background(6,0,6);
 	
 	if ( drawEnabled ){
