@@ -77,6 +77,9 @@ class MissionDelivery extends Mission {
 		super.onSuccess();
 		server.world.getPlayer().inventory.shrink(this.item, this.quantity);
 		MissionHandler.inPlaceForDelivery = false;
+		
+		var dest = server.world.cities[ this.destinationCityUUID ];
+		dest.resources.add( new ItemStack( this.item, this.quantity ) );
 	}
 	
 	onCancel(){
@@ -87,5 +90,8 @@ class MissionDelivery extends Mission {
 	onStart(){
 		super.onStart();
 		server.world.getPlayer().inventory.add( new ItemStack( this.item, this.quantity ) );
+		
+		var source = server.world.cities[ this.sourceCityUUID ];
+		source.resources.shrink( this.item, this.quantity );
 	}
 }

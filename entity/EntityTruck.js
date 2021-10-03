@@ -48,11 +48,12 @@ class EntityTruck extends EntityShip {
 		}
 		//super.update();
 		var gb = this.getGroundedBody();
-		this.dir = Math.atan2(this.y-gb.y, this.x-gb.x);
+		//this.dir = Math.atan2(this.y-gb.y, this.x-gb.x);
 		
 		if (!this.currentIndex){
 			this.currentIndex = CollisionUtil.messyIndexFromEntityAngle(this,gb);
 		}
+		var currentRounded = Math.round(this.currentIndex);
 		var currentClean = Math.floor(this.currentIndex);
 		this.left = gb.isIndexLeftOfIndex( currentClean, this.targetIndex ); 
 		if ( this.left ){
@@ -62,6 +63,9 @@ class EntityTruck extends EntityShip {
 			this.currentIndex -= 0.025;
 			this.flip = false;
 		}
+		var points = gb.getAbsPointsSlice(currentRounded, (currentRounded+1) % gb.terrainSize);
+		var angle = Math.atan2( points[1]-points[3], points[0]-points[2] );
+		//this.dir = angle;
 		
 		var build = gb.tiles[currentClean].getBuilding();
 		if (build){
@@ -73,5 +77,6 @@ class EntityTruck extends EntityShip {
 		}
 		
 		this.moveToIndexOnPlanet(this.currentIndex, gb, 0);
+		this.dir = angle + Math.PI/2; // Trucks drive on the slope of the land (perpendicular dir)
 	}
 }

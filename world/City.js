@@ -31,7 +31,7 @@ class City {
 	}
 	
 	getPlayerSpawnIndex(){
-		return this.centerIndex + 2;
+		return this.centerIndex;
 	}
 	
 	getBuilding(index){

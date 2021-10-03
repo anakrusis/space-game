@@ -338,7 +338,7 @@ class BodyPlanet extends EntityBody {
 		var newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, cityCenterIndex, this.terrainSize);
 		this.spawnBuilding( newbuilding, city );
 		
-/* 		for (var i = -cityRadius; i <= cityRadius; i++){
+		for (var i = -cityRadius; i <= cityRadius; i++){
 			
 			var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
 			
@@ -375,7 +375,7 @@ class BodyPlanet extends EntityBody {
 			
 			this.tiles[relIndex].hasRoad = true;
 			this.roads[relIndex] = true;
-		} */
+		}
 		
 		city.centerIndex = (cityCenterIndex + 2) % this.terrainSize; // the spaceport is 5 tiles wide so this centers it
 		server.world.cities[city.uuid] = city;
