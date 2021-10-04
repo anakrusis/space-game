@@ -53,6 +53,8 @@ class EntityTruck extends EntityShip {
 		if (!this.currentIndex){
 			this.currentIndex = CollisionUtil.messyIndexFromEntityAngle(this,gb);
 		}
+		this.currentIndex %= gb.terrainSize;
+		
 		var currentRounded = Math.round(this.currentIndex);
 		var currentClean = Math.floor(this.currentIndex);
 		this.left = gb.isIndexLeftOfIndex( currentClean, this.targetIndex ); 

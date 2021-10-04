@@ -10,6 +10,13 @@ class EntityOreVein extends Entity {
 		this.groundedBodyUUID = planetuuid;
 	}
 	
+	render(){
+		super.render();
+		
+		stroke(255,0,0);
+		circle( tra_rot_x(this.x,this.y), tra_rot_y(this.x,this.y), 5 );
+	}
+	
 	getPlanet(){
 		return this.getChunk().getBody(this.planetUUID);
 	}
@@ -25,7 +32,7 @@ class EntityOreVein extends Entity {
 		// becomes 125, 126, 127, 128, 129... and iterates smoothely
 		var points = this.getPlanet().getAbsPointsSlice(this.startindex, this.endindex);
 		
-		var middleindex = Math.round( (ende + this.startindex) / 2 ); //console.log(middleindex);
+		var middleindex = Math.round( (ende + this.startindex) / 2 ); 
 		middleindex = loopyMod(middleindex, this.getPlanet().terrainSize);
 		
 		var terr = this.getPlanet().getAbsPointsSlice(middleindex, middleindex);
@@ -48,9 +55,11 @@ class EntityOreVein extends Entity {
 		this.grounded = true;
 		this.groundedBodyUUID = this.planetUUID
 		
-		var angle = this.getPlanet().dir + (this.startindex * (2 * Math.PI) / this.getPlanet().terrainSize);
-		this.x = this.getPlanet().x + rot_x( angle, this.getPlanet().getRadius(), 0 )
-		this.y = this.getPlanet().y + rot_y( angle, this.getPlanet().getRadius(), 0 )
+		var plnt = this.getPlanet();
+		var rad = plnt.terrain[this.startindex] + plnt.getRadius();
+		var angle = plnt.dir + (this.startindex * (2 * Math.PI) / plnt.terrainSize);
+		this.x = plnt.x + rot_x( angle, rad, 0 );
+		this.y = plnt.y + rot_y( angle, rad, 0 );
 		
 				// This moves the entity along with a planet by anticipating where it will be in the next tick
 		if (this.getGroundedBody() instanceof BodyPlanet) {
