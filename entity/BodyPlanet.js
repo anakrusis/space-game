@@ -422,6 +422,10 @@ class BodyPlanet extends EntityBody {
 			this.tiles[index].buildingUUID = building.uuid;
 			this.tiles[index].hasRoad = true;
 			this.roads[index] = true;
+			
+			if (city){
+				this.tiles[index].cityUUID = city.uuid;
+			}
 		}
 		building.grounded = true;
 		building.groundedBodyUUID = this.uuid;

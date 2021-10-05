@@ -185,6 +185,11 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			infostring += "= Index: " + index + "\n";
 			infostring += "= Density: " + dns + "\n";
 			
+			var cty = e.tiles[index].getCity();
+			if (cty){
+				infostring += "= City: " + cty.name + "\n";
+			}
+			
 		}else if (e instanceof EntityBuilding){
 			
 			infostring += e.productionProgress + "/" + e.productionTime + "\n";

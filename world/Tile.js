@@ -7,6 +7,7 @@ class Tile {
 		this.index = index;
 		this.height = height;
 		this.buildingUUID = null;
+		this.cityUUID     = null;
 		this.oreVeinUUID  = null;
 		this.hasRoad      = false;
 		
@@ -14,8 +15,10 @@ class Tile {
 	}
 	
 	getBuilding(){
-
 		return server.world.entities[ this.buildingUUID ];
+	}
 	
+	getCity(){
+		return server.world.cities[ this.cityUUID ];
 	}
 }
