@@ -104,7 +104,7 @@ class EntityBuilding extends Entity {
 			
 			if (this.productionProgress == this.productionTime){
 				
-				var itemstack = new ItemStack(this.productionItem, 1);
+				var itemstack = new ItemStack(this.productionItem, 10);
 				var truck = new EntityTruck(200,200,0);
 				truck.nationUUID = this.getCity().nationUUID;
 				truck.groundedBodyUUID = this.getPlanet().uuid; truck.grounded = true;

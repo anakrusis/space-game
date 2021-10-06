@@ -146,6 +146,13 @@ var GROUP_CITY_INFO = new GuiElement(0,0,300,500); GROUP_CITY_INFO.autosize = tr
 GROUP_CITY_INFO.hide(); GROUP_CITY_INFO.autocenterX = true; GROUP_CITY_INFO.autocenterY = true;
 GROUP_CITY_INFO.TXT_CITYNAME = new GuiTextEntry(0,0,300,40,GROUP_CITY_INFO,["selectedEntity","getCity","name"]);
 
+GROUP_CITY_INFO.TXT_CITYINFO = new GuiElement(0,0,300,25,GROUP_CITY_INFO);
+GROUP_CITY_INFO.TXT_CITYINFO.onShow = function(){
+	var city = selectedEntity.getCity();
+	this.text = "";
+	this.text += "Population: " + city.population + "\n";
+}
+
 GROUP_CITY_INFO.CNTR_INVENTORY = new GuiElement(0,0,500,500,GROUP_CITY_INFO);
 GROUP_CITY_INFO.CNTR_INVENTORY.autosize = true; GROUP_CITY_INFO.CNTR_INVENTORY.autopos = "left"; 
 

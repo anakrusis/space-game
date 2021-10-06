@@ -14,7 +14,7 @@ class EntityBody extends Entity {
 		
 		this.gravUUID = null;
 		
-		this.explored = true;
+		this.explored = false;
 	}
 	
 	render(){

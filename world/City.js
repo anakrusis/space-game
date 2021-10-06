@@ -8,6 +8,8 @@ class City {
 		this.chunkx = chunkx;
 		this.chunky = chunky;
 		this.population = 0;
+		this.updateInterval = 999;
+		this.updateTime = Math.floor( Math.random() * this.updateInterval );
 		
 		this.claimedTileIndexes = [];
 		
@@ -20,6 +22,7 @@ class City {
 		
 		this.resources = new Inventory(100); // like a citywide collective inventory of goods..
 		// I guess every city is like a centralized command economy because its simpler to program lmao
+		this.resources.add( new ItemStack("food",30) ); // starting amount to kickstart city growth
 		
 		this.availableMissions = [];
 		
@@ -110,17 +113,39 @@ class City {
 	}
 	
 	update(){
-		if ( server.world.worldTime % 60 == 59 ){ this.updateDensities(); this.doDensityEvent(); }
+		this.updateTime--;
+		if (this.updateTime > 0){ return; }
+		
+		this.updateTime = this.updateInterval;
+		
+		this.updateDensities(); this.doDensityEvent();
+		
+		var plnt = this.getPlanet();
+		this.population = 0;
+		for (var i = 0; i < this.claimedTileIndexes.length; i++){
+			var ind = this.claimedTileIndexes[i];
+			var d = plnt.densities[ind];
+			if (d){
+				this.population += Math.floor( d );
+			}
+		}
 	}
 	
 	updateDensities(){
 		
 		var densityaddamt = 1; // set really high right now for testing
 		
+		this.resources.shrink("food",1);
+		
 		for (var uuid of this.buildingUUIDs){
 			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
 			if (!(building instanceof BuildingSpaceport || building instanceof BuildingHouse || building instanceof BuildingMine)){ continue; }
 			if (building instanceof BuildingHouse){ densityaddamt = 0.1; }
+			
+			// In the abscence of food, density will decrease? (testing out)
+			if (this.resources.totalAmount("food") == 0){ 
+				densityaddamt *= -1; 
+			}
 			
 			var terrsize = plnt.terrainSize;
 			var buildingradius = 5;
@@ -143,6 +168,7 @@ class City {
 					var amt = densityaddamt * ( ( buildingradius - dist) / buildingradius );
 				}
 				plnt.densities[i] += amt;
+				plnt.densities[i] = Math.max(plnt.densities[i], 0);
 			}
 		}
 	}
@@ -316,7 +342,7 @@ class City {
 				bldg = new BuildingMine( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize);
 				break;
 			case "none":
-				plnt.removeBuilding(adjustedIndex); console.log("building intentionally demolished"); return true;
+				plnt.removeBuilding(cb); console.log("building intentionally demolished"); return true;
 				break;
 		}
 		

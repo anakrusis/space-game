@@ -11,7 +11,7 @@ class TemplateNone extends BuildingTemplate {
 	constructor(){
 		super();
 		this.buildingtype = "none";
-		this.density = 0;
+		this.density = 0.001;
 		this.size = 1;
 	}
 }
@@ -77,7 +77,7 @@ class TemplateMine1 extends BuildingTemplate {
 	constructor(){
 		super();
 		this.buildingtype = "mine";
-		this.density = null;
+		this.density = 0;
 		this.size = 1;
 	}
 }

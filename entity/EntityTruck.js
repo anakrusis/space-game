@@ -53,7 +53,7 @@ class EntityTruck extends EntityShip {
 		if (!this.currentIndex){
 			this.currentIndex = CollisionUtil.messyIndexFromEntityAngle(this,gb);
 		}
-		this.currentIndex %= gb.terrainSize;
+		this.currentIndex = loopyMod(this.currentIndex, gb.terrainSize);
 		
 		var currentRounded = Math.round(this.currentIndex);
 		var currentClean = Math.floor(this.currentIndex);
@@ -65,11 +65,11 @@ class EntityTruck extends EntityShip {
 			this.currentIndex -= 0.025;
 			this.flip = false;
 		}
-		var points = gb.getAbsPointsSlice(currentRounded, (currentRounded+1) % gb.terrainSize);
-		var angle = Math.atan2( points[1]-points[3], points[0]-points[2] );
-		//this.dir = angle;
+		var points = gb.getAbsPointsSlice(currentRounded, (currentRounded + 1) % gb.terrainSize);
+		var angle = Math.atan2( points[1] - points[3], points[0] - points[2] );
 		
-		var build = gb.tiles[currentClean].getBuilding();
+		var tile  = gb.tiles[currentClean];
+		var build = tile.getBuilding();
 		if (build){
 			var city = build.getCity();
 			if ( build instanceof BuildingSpaceport && currentClean == this.targetIndex){
