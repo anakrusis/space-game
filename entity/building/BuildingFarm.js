@@ -5,7 +5,7 @@ class BuildingFarm extends EntityBuilding {
 		this.name = "Farm";
 		this.productionItem = "food";
 		this.size = 2;
-		this.densityaddamt = 0.01;
+		this.densityaddamt = 0.1;
 	}
 
 	getRelRenderPoints(){

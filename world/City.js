@@ -133,10 +133,7 @@ class City {
 		
 		this.updateTime = this.updateInterval - 1; this.updateCount++;
 		
-		this.updateDensities(); this.doDensityEvent();
-		if (this.updateCount % 5 == 0){
-			this.updateFood();
-		}
+		this.updateDensities(); this.doDensityEvent(); this.updateFood();
 		
 		var plnt = this.getPlanet();
 		this.population = 0;
@@ -151,16 +148,20 @@ class City {
 	}
 	
 	updateFood(){
-		// Base food use for city
-		this.resources.shrink("food",1);
-		// 1 food per house
-		this.resources.shrink("food", this.houseCount );
+		if (this.updateCount % 5 == 0){
+			// Base food use for city
+			this.resources.shrink("food",1);
+			// 1 food per house
+			this.resources.shrink("food", this.houseCount );
+		}
 		
-		this.foodTicksRemaining = this.resources.totalAmount("food") * this.updateInterval * 5 * (1 + this.houseCount);
-		var demandstrt = 50000;
-		var d = ( demandstrt - this.foodTicksRemaining ) / demandstrt; 
-		d = Math.max(0,d);
-		this.demands["food"] = d;
+		var totalfood = this.resources.totalAmount("food");
+		this.foodTicksRemaining = totalfood * this.updateInterval * 5 * (1 + this.houseCount);
+		
+		// Ideally strives for at least 8 food per house plus the base 8, to say that it is not in a state of want
+		var idealfoodamt = 8 * (1 + this.houseCount);
+		var ratio = totalfood / idealfoodamt;
+		this.demands["food"] = Math.max(0, 1 - ratio);
 	}
 	
 	updateDensities(){
@@ -171,10 +172,10 @@ class City {
 		
 		for (var uuid of this.buildingUUIDs){
 			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
-			if (!building.densityaddamt){ continue; }
+			if (!building.densityaddamt || building.abandoned){ continue; }
 			densityaddamt = building.densityaddamt;
 			
-			// Just doing a count for now (later used in updateFood)
+			// Just doing a count for now (later used in updateFood) but abandoned buildings don't count
 			if (building instanceof BuildingHouse && !building.abandoned){ this.houseCount++; }
 			
 			// In the abscence of food, density will decrease? (testing out)
@@ -275,6 +276,11 @@ class City {
 			var diff = Math.abs( template.density - plnt.densities[index] )
 			var chance = 1 / diff;
 			
+			// Special case where the chance of building farms is inflated during periods of food demand
+			if (template.buildingtype == "farm"){
+				chance *= ( 1 + ( 4 * this.demands["food"] ) );
+			}
+			
 			// If the diff is 0, the chance will be INFINITY!!! so we have to replace this chance value with something really big but not infinity, or the weighted random will just totally break
 			if (chance === Infinity){ chance = 10000; }
 			
@@ -283,9 +289,9 @@ class City {
 			
 			sum += chance;
 		}
-		for (i = 0; i < keys.length; i++){
+/* 		for (i = 0; i < keys.length; i++){
 			console.log( keys[i] + ": " + chances[i]);
-		}
+		} */
 		
 		// Here is the weighted random which selects a template to build
 		var selectedKey;

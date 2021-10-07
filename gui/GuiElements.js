@@ -152,7 +152,8 @@ GROUP_CITY_INFO.TXT_CITYINFO.onShow = function(){
 	this.text = "";
 	this.text += "Population: " + city.population + "\n";
 	this.text += "Food time: " + (city.foodTicksRemaining / 60) + "s\n";
-	this.text += "Food demand: " + city.demands["food"] + "\n";
+	var fooddemand = Math.floor(city.demands["food"] * 1000) / 1000;
+	this.text += "Food demand: " + fooddemand + "\n";
 }
 
 GROUP_CITY_INFO.CNTR_INVENTORY = new GuiElement(0,0,500,500,GROUP_CITY_INFO);

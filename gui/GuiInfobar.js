@@ -193,7 +193,9 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 		}else if (e instanceof EntityBuilding){
 			
 			infostring += e.productionProgress + "/" + e.productionTime + "\n";
-			
+			if (e.abandoned){
+				infostring += "Abandoned\n";
+			}
 		}
 		
 		this.text = infostring;	
