@@ -17,6 +17,8 @@ class EntityBuilding extends Entity {
 		this.productionTime = -1;
 		this.productionProgress = -1;
 		this.productionItem = null;
+		
+		this.abandoned = false;
 	}
 	
 	getChunk(){
@@ -99,12 +101,12 @@ class EntityBuilding extends Entity {
         }
 		this.ticksExisted++;
 		
-		if (this.productionItem){
+		if (this.productionItem && !this.abandoned){
 			this.productionProgress++;
 			
 			if (this.productionProgress == this.productionTime){
 				
-				var itemstack = new ItemStack(this.productionItem, 4);
+				var itemstack = new ItemStack(this.productionItem, 8);
 				var truck = new EntityTruck(200,200,0);
 				truck.nationUUID = this.getCity().nationUUID;
 				truck.groundedBodyUUID = this.getPlanet().uuid; truck.grounded = true;
@@ -143,5 +145,10 @@ class EntityBuilding extends Entity {
 	isOnScreen(){
 		// && buildingDrawEnabled
 		return super.isOnScreen() && cam_zoom > MAX_INTERPLANETARY_ZOOM;
+	}
+	
+	abandon(){
+		this.color = [ 64, 64, 64 ];
+		this.abandoned = true;
 	}
 }

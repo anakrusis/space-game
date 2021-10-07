@@ -379,6 +379,9 @@ class BodyPlanet extends EntityBody {
 		
 		city.centerIndex = (cityCenterIndex + 2) % this.terrainSize; // the spaceport is 5 tiles wide so this centers it
 		server.world.cities[city.uuid] = city;
+		
+		city.addPopulation(20);
+		
 		return city;
 	}
 	

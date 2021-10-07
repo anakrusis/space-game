@@ -10,6 +10,7 @@ class City {
 		this.population = 0;
 		this.updateInterval = 240;
 		this.updateTime = Math.floor( Math.random() * this.updateInterval );
+		this.updateCount = 0;
 		
 		this.claimedTileIndexes = [];
 		
@@ -32,6 +33,15 @@ class City {
 		this.availableMissions = [];
 		
 		this.type = this.constructor.name;
+	}
+	
+	addPopulation(val){
+		var plnt = this.getPlanet(); var l = this.claimedTileIndexes.length;
+		for (var i = 0; i < l; i++){
+			var ind = this.claimedTileIndexes[i];
+			if (!plnt.densities[ind]){ plnt.densities[ind] = 0; }
+			plnt.densities[ind] += ((val*10)/l);
+		}
 	}
 	
 	getChunk(){
@@ -121,9 +131,12 @@ class City {
 		this.updateTime--;
 		if (this.updateTime > 0){ return; }
 		
-		this.updateTime = this.updateInterval - 1;
+		this.updateTime = this.updateInterval - 1; this.updateCount++;
 		
 		this.updateDensities(); this.doDensityEvent();
+		if (this.updateCount % 5 == 0){
+			this.updateFood();
+		}
 		
 		var plnt = this.getPlanet();
 		this.population = 0;
@@ -135,9 +148,16 @@ class City {
 			}
 		}
 		this.population = Math.floor( this.population / 10 );
-		this.foodTicksRemaining = this.resources.totalAmount("food") * this.updateInterval * (1 + this.houseCount);
+	}
+	
+	updateFood(){
+		// Base food use for city
+		this.resources.shrink("food",1);
+		// 1 food per house
+		this.resources.shrink("food", this.houseCount );
 		
-		var demandstrt = 10000;
+		this.foodTicksRemaining = this.resources.totalAmount("food") * this.updateInterval * 5 * (1 + this.houseCount);
+		var demandstrt = 50000;
 		var d = ( demandstrt - this.foodTicksRemaining ) / demandstrt; 
 		d = Math.max(0,d);
 		this.demands["food"] = d;
@@ -146,7 +166,7 @@ class City {
 	updateDensities(){
 		
 		var densityaddamt; // now in the building classes
-		this.resources.shrink("food",1)
+		//this.resources.shrink("food",1)
 		this.houseCount = 0;
 		
 		for (var uuid of this.buildingUUIDs){
@@ -154,8 +174,8 @@ class City {
 			if (!building.densityaddamt){ continue; }
 			densityaddamt = building.densityaddamt;
 			
-			// Every house costs 1 food per update (in addition to the base food cost above);
-			if (building instanceof BuildingHouse){ this.resources.shrink("food",1); }
+			// Just doing a count for now (later used in updateFood)
+			if (building instanceof BuildingHouse && !building.abandoned){ this.houseCount++; }
 			
 			// In the abscence of food, density will decrease? (testing out)
 			if (this.resources.totalAmount("food") == 0){ 
@@ -289,7 +309,14 @@ class City {
 		if (!template){ console.log("no valid template"); return false; }
 		
 		// Won't try to overwrite a building with another identical building
-		if (ogtemplate == template){ console.log("template is the same (" + template.constructor.name + ")"); return false; }
+		if (ogtemplate == template){
+			if (cb){
+				if (!cb.abandoned){
+					console.log("building template is the same (" + template.constructor.name + ")"); return false;
+				}
+			}
+			console.log("template is the same (" + template.constructor.name + ")"); return false;
+		}
 		
 		// This part adjusts the index so it doesnt overlap certain buildings when built on the edge of city limits
 		var adjustedIndex = index;
@@ -310,10 +337,16 @@ class City {
 				bldg = new BuildingMine( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize);
 				break;
 			case "none":
-				if (this.demands["food"] > 0 && cb instanceof BuildingFarm){
-					console.log("won't demolish farm due to food demand"); return false;
+				if (this.demands["food"] > 0 && this.demands["food"] < 1 && cb instanceof BuildingFarm){
+					if ( !cb.abandoned ){
+						console.log("won't demolish farm due to food demand"); return false;
+					}
 				}else{
-					plnt.removeBuilding(cb); console.log("building intentionally demolished"); return true;
+					//plnt.removeBuilding(cb); 
+					if (cb){
+						cb.abandon();
+						console.log("building abandoned"); return true;
+					}
 				}
 				break;
 		}
@@ -356,10 +389,35 @@ class City {
 	}
 	
 	updateMissions(){
+		
+		// Clears out all missions
+		for (var i = 0; i < this.availableMissions.length; i++){
+			var mission = this.availableMissions[i];
+			this.availableMissions.splice(mission);
+		}
+		
 		this.updateExploreMissions();
-		this.updateDeliveryMission( "passengers" );
-		this.updateDeliveryMission( "food" );
-		this.updateDeliveryMission( "iron" );
+		this.updateFoodMissions();
+		//this.updateDeliveryMission( "passengers" );
+		//this.updateDeliveryMission( "food" );
+		//this.updateDeliveryMission( "iron" );
+	}
+	
+	updateFoodMissions(){
+		// City has to like, have food lol
+		var totalamt = this.resources.totalAmount( "food" );
+		if (totalamt < 5){ return; }
+		// Will give away one fifth of total food, or 64, whichever is less
+		var amt = Math.floor(totalamt / 5); amt = Math.min(64, amt);
+		
+		var cities = server.world.cities;
+		for (var uuid in cities){
+			var c = cities[uuid];
+			if (c.demands["food"] > 0 && c != this){
+				var m = new MissionDelivery(this.uuid, c.uuid, "food", amt);
+				this.availableMissions.push(m);
+			}
+		}
 	}
 	
 	findDeliveryMission( itemtype ){
@@ -374,7 +432,7 @@ class City {
 	}
 	
 	updateDeliveryMission( itemtype ){
-		// Can't have delivery missions if there aren't at least 2 cities
+/* 		// Can't have delivery missions if there aren't at least 2 cities
 		if (Object.keys(server.world.cities).length <= 1){ return; }
 		
 		// Will try to find an existing mission of the corresponding item type
@@ -393,18 +451,10 @@ class City {
 			randomcity = server.world.cities[keys[ keys.length * random() << 0]];
 		}
 		var m = new MissionDelivery(this.uuid, randomcity.uuid, itemtype, amt);
-		this.availableMissions.push(m);
+		this.availableMissions.push(m); */
 	}
 	
 	updateExploreMissions(){
-		// Clears out all explore and settlement missions
-		for (var i = 0; i < this.availableMissions.length; i++){
-			var mission = this.availableMissions[i];
-			
-			if (mission instanceof MissionExploration || mission instanceof MissionSettlement){
-				this.availableMissions.splice(mission);
-			}
-		}
 		// Only the home nation can give a player exploration missions
 		if (this.getNation() != server.world.getPlayer().getNation()){ return; }
 		
