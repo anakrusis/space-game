@@ -4,6 +4,7 @@ class BuildingMine extends EntityBuilding {
 		super(x,y,planetuuid, cityuuid, startindex, terrsize);
 		this.name = "Mine";
 		this.productionItem = "iron";
+		this.densityaddamt = 0.33;
 	}
 	
 	getRelRenderPoints(){

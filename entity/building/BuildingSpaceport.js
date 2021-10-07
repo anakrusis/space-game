@@ -4,6 +4,7 @@ class BuildingSpaceport extends EntityBuilding {
 		super(x,y,planetuuid, cityuuid, startindex, terresize, 5);
 		this.name = "Spaceport Hangar";
 		this.size = 5;
+		this.densityaddamt = 1;
 	}
 	
 	render(){

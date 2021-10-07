@@ -4,6 +4,7 @@ class BuildingHouse extends EntityBuilding {
 		super(x,y,planetuuid, cityuuid, startindex, terrsize);
 		this.name = "House";
 		this.size = 1;
+		this.densityaddamt = 0.1;
 		this.template = template;
 		if (this.template){
 			this.size = Buildings.buildings[this.template].size;

@@ -151,6 +151,8 @@ GROUP_CITY_INFO.TXT_CITYINFO.onShow = function(){
 	var city = selectedEntity.getCity();
 	this.text = "";
 	this.text += "Population: " + city.population + "\n";
+	this.text += "Food time: " + (city.foodTicksRemaining / 60) + "s\n";
+	this.text += "Food demand: " + city.demands["food"] + "\n";
 }
 
 GROUP_CITY_INFO.CNTR_INVENTORY = new GuiElement(0,0,500,500,GROUP_CITY_INFO);

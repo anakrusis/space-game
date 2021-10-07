@@ -8,7 +8,7 @@ class City {
 		this.chunkx = chunkx;
 		this.chunky = chunky;
 		this.population = 0;
-		this.updateInterval = 999;
+		this.updateInterval = 240;
 		this.updateTime = Math.floor( Math.random() * this.updateInterval );
 		
 		this.claimedTileIndexes = [];
@@ -23,6 +23,11 @@ class City {
 		this.resources = new Inventory(100); // like a citywide collective inventory of goods..
 		// I guess every city is like a centralized command economy because its simpler to program lmao
 		this.resources.add( new ItemStack("food",30) ); // starting amount to kickstart city growth
+		this.demands = {
+			"food": 0,
+		}
+		this.foodTicksRemaining = null; // how much time left until starvation
+		this.houseCount = 0; // how many houses (for food use calculation)
 		
 		this.availableMissions = [];
 		
@@ -116,7 +121,7 @@ class City {
 		this.updateTime--;
 		if (this.updateTime > 0){ return; }
 		
-		this.updateTime = this.updateInterval;
+		this.updateTime = this.updateInterval - 1;
 		
 		this.updateDensities(); this.doDensityEvent();
 		
@@ -129,18 +134,28 @@ class City {
 				this.population += Math.floor( d );
 			}
 		}
+		this.population = Math.floor( this.population / 10 );
+		this.foodTicksRemaining = this.resources.totalAmount("food") * this.updateInterval * (1 + this.houseCount);
+		
+		var demandstrt = 10000;
+		var d = ( demandstrt - this.foodTicksRemaining ) / demandstrt; 
+		d = Math.max(0,d);
+		this.demands["food"] = d;
 	}
 	
 	updateDensities(){
 		
-		var densityaddamt = 1; // set really high right now for testing
-		
-		this.resources.shrink("food",1);
+		var densityaddamt; // now in the building classes
+		this.resources.shrink("food",1)
+		this.houseCount = 0;
 		
 		for (var uuid of this.buildingUUIDs){
 			var building = server.world.entities[uuid]; var plnt = this.getPlanet();
-			if (!(building instanceof BuildingSpaceport || building instanceof BuildingHouse || building instanceof BuildingMine)){ continue; }
-			if (building instanceof BuildingHouse){ densityaddamt = 0.1; }
+			if (!building.densityaddamt){ continue; }
+			densityaddamt = building.densityaddamt;
+			
+			// Every house costs 1 food per update (in addition to the base food cost above);
+			if (building instanceof BuildingHouse){ this.resources.shrink("food",1); }
 			
 			// In the abscence of food, density will decrease? (testing out)
 			if (this.resources.totalAmount("food") == 0){ 
@@ -196,42 +211,6 @@ class City {
 		}
 		var shuffledIndices = this.shuffle(allIndices);
 		
-		// Selects the index of the tile with the greatest difference in density between itself and the template of the building currently occupying it
-/* 		var biggestdensitydiff = 0; var index; var ogtemplate;
-		for (var i = 0; i < shuffledIndices.length; i++){
-			var ci = shuffledIndices[i];
-			var ct; // current template
-			var cb = this.getBuilding(ci); // current building
-			
-			// Kind of working backwards to find a template given a building, should probably be alot less messy
-			if (!cb){
-				ct = Buildings.buildings["none"];
-			}else{
-				switch (cb.type){
-					// The city will not modify the spaceport because it is neccessary for survival
-					case "BuildingSpaceport":
-						continue;
-					case "BuildingHouse":
-						ct = Buildings.buildings[cb.template];
-						break;
-					case "BuildingFarm":
-						ct = Buildings.buildings["farm2"];
-						break;
-					default:
-						ct = Buildings.buildings["none"];
-						break;
-				}
-			}
-			
-			if (!ct){ continue; }
-			
-			if (!plnt.densities[ci]){ plnt.densities[ci] = 0 };
-			var diff = Math.abs( ct.density - plnt.densities[ci] );
-			if ( diff >= biggestdensitydiff ){
-				biggestdensitydiff = diff; index = ci; ogtemplate = ct;
-			}
-		} */
-		
 		// this just picks a random index
 		var indexindex = Math.floor( Math.random() * shuffledIndices.length );
 		var index = shuffledIndices[ indexindex ];
@@ -263,7 +242,6 @@ class City {
 			}
 		}
 		var ogtemplate = ct;
-		//console.log(biggestdensitydiff);
 		
 		// It is now time to calculate the chance of all different possible buildings being built, given the ideal density of the building templates and the density of the tile
 		var keys    = [];
@@ -285,7 +263,9 @@ class City {
 			
 			sum += chance;
 		}
-		//console.log(chances);
+		for (i = 0; i < keys.length; i++){
+			console.log( keys[i] + ": " + chances[i]);
+		}
 		
 		// Here is the weighted random which selects a template to build
 		var selectedKey;
@@ -316,18 +296,6 @@ class City {
 		if (index == truemin){
 			adjustedIndex = loopyMod( index - (template.size - 1), terrsize ); console.log("index adjusted (" + index + " -> " + adjustedIndex + ")");
 		}
-/* 		for (var q = index; q <= index + template.size - 1; q++){
-			var ci = loopyMod(q, terrsize);
-			var oldbuildinguuid = plnt.tiles[ci].buildingUUID;
-			if (oldbuildinguuid){ 
-				
-				if (plnt.isIndexLeftOfIndex( ci, this.centerIndex )){
-					adjustedIndex--; 
-				}else{
-					adjustedIndex++;
-				}
-			}
-		} */
 		
 		// This part creates the building given the template
 		var bldg;
@@ -342,7 +310,11 @@ class City {
 				bldg = new BuildingMine( plnt.x, plnt.y, plnt.uuid, this.uuid, adjustedIndex, plnt.terrainSize);
 				break;
 			case "none":
-				plnt.removeBuilding(cb); console.log("building intentionally demolished"); return true;
+				if (this.demands["food"] > 0 && cb instanceof BuildingFarm){
+					console.log("won't demolish farm due to food demand"); return false;
+				}else{
+					plnt.removeBuilding(cb); console.log("building intentionally demolished"); return true;
+				}
 				break;
 		}
 		
@@ -448,28 +420,6 @@ class City {
 				var m = new MissionExploration(this.uuid, b);
 				this.availableMissions.push(m);
 			}
-			
-/* 			if (b instanceof BodyPlanet && (!b.explored)){
-				
-				// Adds exploration missions if there is none already.
-				var explore_mission_found = false;
-				for (var i = 0; i < this.availableMissions.length; i++){
-					var mission = this.availableMissions[i];
-					
-					if (mission instanceof MissionExploration){
-						if (mission.destination.uuid == b.uuid){
-							explore_mission_found = true; break;
-						}
-					}
-				}
-				
-				if (!explore_mission_found){
-
-					var m = new MissionExploration(this.uuid, b);
-					this.availableMissions.push(m);
-				
-				}
-			} */
 		}
 	}
 	

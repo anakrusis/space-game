@@ -2,7 +2,7 @@
 // These can be seen as like differing " species " of buildings, in the cases where the buildings have mostly the same behavior
 class BuildingTemplate {
 	constructor(){
-		this.density = 50;
+		this.density = 0;
 		this.size    = 1;
 	}
 }
@@ -68,7 +68,7 @@ class TemplateFarm2 extends BuildingTemplate {
 	constructor(){
 		super();
 		this.buildingtype = "farm";
-		this.density = 10;
+		this.density = 5;
 		this.size = 2;
 	}
 }
