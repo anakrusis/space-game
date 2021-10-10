@@ -8,6 +8,7 @@ class City {
 		this.chunkx = chunkx;
 		this.chunky = chunky;
 		this.population = 0;
+		this.pophistory = [];
 		this.updateInterval = 240;
 		this.updateTime = Math.floor( Math.random() * this.updateInterval );
 		this.updateCount = 0;
@@ -145,6 +146,7 @@ class City {
 			}
 		}
 		this.population = Math.floor( this.population / 10 );
+		this.pophistory.push(this.population);
 	}
 	
 	updateFood(){

@@ -144,9 +144,15 @@ sorcebuton.onClick = function(){
 
 var GROUP_CITY_INFO = new GuiElement(0,0,300,500); GROUP_CITY_INFO.autosize = true; GROUP_CITY_INFO.autopos = "top"; 
 GROUP_CITY_INFO.hide(); GROUP_CITY_INFO.autocenterX = true; GROUP_CITY_INFO.autocenterY = true;
-GROUP_CITY_INFO.TXT_CITYNAME = new GuiTextEntry(0,0,300,40,GROUP_CITY_INFO,["selectedEntity","getCity","name"]);
+GROUP_CITY_INFO.CNTR_TOP = new GuiElement(0,0,300,300,GROUP_CITY_INFO);
+GROUP_CITY_INFO.CNTR_TOP.autosize = true; GROUP_CITY_INFO.CNTR_TOP.autopos = "left"; 
 
-GROUP_CITY_INFO.TXT_CITYINFO = new GuiElement(0,0,300,25,GROUP_CITY_INFO);
+GROUP_CITY_INFO.CNTR_TOPLEFT = new GuiElement(0,0,300,300,GROUP_CITY_INFO.CNTR_TOP);
+GROUP_CITY_INFO.CNTR_TOPLEFT.autosize = true; GROUP_CITY_INFO.CNTR_TOPLEFT.autopos = "top"; 
+
+GROUP_CITY_INFO.TXT_CITYNAME = new GuiTextEntry(0,0,300,40,GROUP_CITY_INFO.CNTR_TOPLEFT,["selectedEntity","getCity","name"]);
+
+GROUP_CITY_INFO.TXT_CITYINFO = new GuiElement(0,0,300,25,GROUP_CITY_INFO.CNTR_TOPLEFT);
 GROUP_CITY_INFO.TXT_CITYINFO.onShow = function(){
 	var city = selectedEntity.getCity();
 	this.text = "";
@@ -154,6 +160,25 @@ GROUP_CITY_INFO.TXT_CITYINFO.onShow = function(){
 	this.text += "Food time: " + (city.foodTicksRemaining / 60) + "s\n";
 	var fooddemand = Math.floor(city.demands["food"] * 1000) / 1000;
 	this.text += "Food demand: " + fooddemand + "\n";
+}
+
+GROUP_CITY_INFO.TXT_POPHIST = new GuiElement(0,0,300,150,GROUP_CITY_INFO.CNTR_TOP);
+GROUP_CITY_INFO.TXT_POPHIST.onRender = function(){
+	
+	var city = selectedEntity.getCity(); var n = city.getNation();
+	noFill();
+	stroke(n.color[0], n.color[1], n.color[2]);
+	var hist = city.pophistory;
+	var max = Math.max(...hist);
+	beginShape();
+	for (var i = 0; i < hist.length; i++){
+		var x = (( i / hist.length ) * this.dispwidth) + this.dispx;
+		//var y = ((hist[i] / max) * this.dispheight) + this.dispy;
+		var y = this.dispy + this.dispheight - (( hist[i] / max ) * this.dispheight )
+		
+		vertex(x,y);
+	}
+	endShape();
 }
 
 GROUP_CITY_INFO.CNTR_INVENTORY = new GuiElement(0,0,500,500,GROUP_CITY_INFO);
