@@ -15,8 +15,8 @@ class MissionSettlement extends Mission {
 		this.displaytext  = "Settlement of " + this.destination.name + "\n";
 		this.displaytext += "\n$" + this.reward;
 		
-		this.desc = "Several families are prepared to construct a settlement on the " + body.descriptor + " " + this.destination.name + ".\nOur nation wishes them safety and health in this great voyage.";
-		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nThis is a terrible loss for our nation, and we will remember the families who gave their lives on this day.\n"
+		this.desc = "Several families are prepared to construct a settlement on the " + body.descriptor + " " + this.destination.name + ".\nOur nation wishes them, along with you, their worthy pilot, best of luck and a safe voyage.";
+		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nThe travellers and their families never reached the " + body.descriptor + " " + this.destination.name + ".\nThis is a sad day for our nation.\n"
 		this.successtext = "The settlement on " + body.descriptor + " " + this.destination.name + " was successfully founded!\nOur nation rejoices at the wonder of a new city on the faraway " + body.descriptor + ".\nThis day will be remembered in history!\n";
 		
 		if (body){
@@ -27,23 +27,27 @@ class MissionSettlement extends Mission {
 	onCancel(){
 		super.onCancel();
 		server.world.getPlayer().inventory.shrink(this.item, 1);
+		server.world.getPlayer().inventory.shrink("food", 30);
 		server.world.getPlayer().inventory.shrink("passengers", 16);
 	}
 	
 	onFail(){
 		super.onFail();
+		server.world.getPlayer().inventory.shrink("food", 30);
 		server.world.getPlayer().inventory.shrink("passengers", 16);
 		server.world.getPlayer().inventory.shrink(this.item, 1);
 	}
 	
 	onStart(){
 		super.onStart();
-		server.world.getPlayer().inventory.add( new ItemStack( "passengers", 16 ) );
 		server.world.getPlayer().inventory.add( new ItemStack( this.item, 1 ) );
+		server.world.getPlayer().inventory.add( new ItemStack( "passengers", 16 ) );
+		server.world.getPlayer().inventory.add( new ItemStack( "food", 30 ) );
 	}
 	onSuccess(){
 		super.onSuccess();
 		server.world.getPlayer().inventory.shrink( "passengers", 16 );
+		server.world.getPlayer().inventory.shrink("food", 30);
 	}
 	
 	getIcon(){

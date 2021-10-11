@@ -20,7 +20,7 @@ class MissionExploration extends Mission {
 		this.displaytext += "\n$" + this.reward;
 		
 		this.desc = "Our nation is ready to send a crewed mission to the " + body.descriptor + " " + this.destination.name + ".\nWe will be eagerly awaiting your safe return.";
-		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nThis is a terrible loss for our nation, though we must continue onwards in the pursuit of scientific knowledge.\n"
+		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nDespite this loss, we must continue onwards in the pursuit of scientific knowledge.\n"
 		this.successtext = "The mission to " + this.destination.name + " was a success!\nOur nation celebrates this great achievement and is ever thankful for your contribution to science!"
 		
 		this.objectives = [ [ new ObjectiveGoToPlace( this.destination ) ], [ new ObjectiveGoToPlace( new Place( sorcecity.getSpaceport() ) ) ] ];

@@ -264,6 +264,7 @@ GROUP_CITY_FOUND.BTN_YES.onClick = function(){
 	GROUP_CITY_FOUND.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 	
 	p.inventory.shrink("spaceport",1); buildingToPlace = null;
+	city.addPopulation(16);
 }
 
 // main menu
@@ -538,8 +539,8 @@ var success_title = new GuiElement(0,0,300,40,GROUP_MISSION_SUCCESS); success_ti
 
 var toto = new GuiElement(0,0,300,40,GROUP_MISSION_SUCCESS);
 
-var bobbobo = new GuiElement(0,0,150,40,GROUP_MISSION_SUCCESS); bobbobo.text = "Ok";
-bobbobo.onClick = function(){
+GROUP_MISSION_SUCCESS.BTN_BACK = new GuiElement(0,0,150,40,GROUP_MISSION_SUCCESS); GROUP_MISSION_SUCCESS.BTN_BACK.text = "Ok";
+GROUP_MISSION_SUCCESS.BTN_BACK.onClick = function(){
 	GROUP_MISSION_SUCCESS.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 
@@ -553,8 +554,8 @@ var fail_title = new GuiElement(0,0,300,40,GROUP_MISSION_FAIL); fail_title.text 
 
 var tete = new GuiElement(0,0,300,40,GROUP_MISSION_FAIL);
 
-var bb = new GuiElement(0,0,150,40,GROUP_MISSION_FAIL); bb.text = "Ok";
-bb.onClick = function(){
+GROUP_MISSION_FAIL.BTN_BACK = new GuiElement(0,0,150,40,GROUP_MISSION_FAIL); GROUP_MISSION_FAIL.BTN_BACK.text = "Ok";
+GROUP_MISSION_FAIL.BTN_BACK.onClick = function(){
 	GROUP_MISSION_FAIL.hide(); GuiHandler.openWindow(GROUP_INFOBAR);
 }
 

@@ -10,13 +10,6 @@ class EntityOreVein extends Entity {
 		this.groundedBodyUUID = planetuuid;
 	}
 	
-	render(){
-		super.render();
-		
-		stroke(255,0,0);
-		circle( tra_rot_x(this.x,this.y), tra_rot_y(this.x,this.y), 5 );
-	}
-	
 	getPlanet(){
 		return this.getChunk().getBody(this.planetUUID);
 	}
