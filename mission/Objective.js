@@ -17,7 +17,9 @@ class ObjectivePlaceBuilding extends Objective {
 		this.item = itemid;
 		var itemobj = Items.items[itemid];
 		this.place = place;
-		this.text = "Place " + itemobj.name + " on " + place.get().descriptor + " " + place.name;
+		if (itemobj){
+			this.text = "Place " + itemobj.name + " on " + place.get().descriptor + " " + place.name;
+		}
 	}
 }
 

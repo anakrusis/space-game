@@ -55,11 +55,18 @@ class EntityOreVein extends Entity {
 		this.grounded = true;
 		this.groundedBodyUUID = this.planetUUID
 		
+		var ende = this.endindex;
+		if (this.endindex < this.startindex){
+			ende += this.terrainSize;
+		}
+		var middleindex = Math.round( (ende + this.startindex) / 2 ); 
+		middleindex = loopyMod(middleindex, this.getPlanet().terrainSize);
+		
 		var plnt = this.getPlanet();
-		var rad = plnt.terrain[this.startindex] + plnt.getRadius();
-		var angle = plnt.dir + (this.startindex * (2 * Math.PI) / plnt.terrainSize);
-		this.x = plnt.x + rot_x( angle, rad, 0 );
-		this.y = plnt.y + rot_y( angle, rad, 0 );
+		var rad = plnt.terrain[middleindex] + plnt.getRadius();
+		var ang = plnt.dir + (middleindex * (2 * Math.PI) / plnt.terrainSize);
+		this.x = plnt.x + rot_x( ang, rad, 0 );
+		this.y = plnt.y + rot_y( ang, rad, 0 );
 		
 				// This moves the entity along with a planet by anticipating where it will be in the next tick
 		if (this.getGroundedBody() instanceof BodyPlanet) {

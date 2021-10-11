@@ -64,7 +64,7 @@ class Entity {
 			
 			px = ((px - this.x) * this.scale) + this.x;  py = ((py - this.y) * this.scale) + this.y; 
 			
-			vertex(tra_rot_x(px,py), tra_rot_y(px,py));
+			vertex(Math.round(tra_rot_x(px,py)), Math.round(tra_rot_y(px,py)));
 		}
 		endShape(CLOSE);
 		

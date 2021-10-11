@@ -80,5 +80,7 @@ class EntityTruck extends EntityShip {
 		
 		this.moveToIndexOnPlanet(this.currentIndex, gb, 0);
 		this.dir = angle + Math.PI/2; // Trucks drive on the slope of the land (perpendicular dir)
+		
+		this.scale = 1;
 	}
 }

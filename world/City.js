@@ -238,7 +238,10 @@ class City {
 		var indexindex = Math.floor( Math.random() * shuffledIndices.length );
 		var index = shuffledIndices[ indexindex ];
 		
-		if (!index){ console.log("no valid index found"); return false; }
+		if (!index){ 
+			if ( CITY_LOGGERS ) { console.log("no valid index found"); } 
+			return false; 
+		}
 		
 		var cb = this.getBuilding(index); // current building
 		var ct;
@@ -249,7 +252,8 @@ class City {
 			switch (cb.type){
 				// The city will not modify the spaceport because it is neccessary for survival
 				case "BuildingSpaceport":
-					console.log("selected index belongs to spaceport"); return false;
+					if ( CITY_LOGGERS ) { console.log("selected index belongs to spaceport"); } 
+					return false;
 				case "BuildingHouse":
 					ct = Buildings.buildings[cb.template];
 					break;
@@ -307,29 +311,35 @@ class City {
 			}
 			sum -= chances[q];
 		}
-		var template = Buildings.buildings[selectedKey]; //console.log(template);
+		var template = Buildings.buildings[selectedKey];
 		
 		// Overriding template on special cases: mines will spawn always on ore vein tiles
 		if ( plnt.tiles[index].oreVeinUUID != null ){
 			template = Buildings.buildings["mine1"];
 		}
 		
-		if (!template){ console.log("no valid template"); return false; }
+		if (!template){ 
+			if ( CITY_LOGGERS ) { console.log("no valid template"); } 
+			return false; 
+		}
 		
 		// Won't try to overwrite a building with another identical building
 		if (ogtemplate == template){
 			if (cb){
 				if (!cb.abandoned){
-					console.log("building template is the same (" + template.constructor.name + ")"); return false;
+					if ( CITY_LOGGERS ) {console.log("building template is the same (" + template.constructor.name + ")"); }
+					return false;
 				}
 			}
-			console.log("template is the same (" + template.constructor.name + ")"); return false;
+			if ( CITY_LOGGERS ) { console.log("template is the same (" + template.constructor.name + ")"); }
+			return false;
 		}
 		
 		// This part adjusts the index so it doesnt overlap certain buildings when built on the edge of city limits
 		var adjustedIndex = index;
 		if (index == truemin){
-			adjustedIndex = loopyMod( index - (template.size - 1), terrsize ); console.log("index adjusted (" + index + " -> " + adjustedIndex + ")");
+			adjustedIndex = loopyMod( index - (template.size - 1), terrsize ); 
+			if ( CITY_LOGGERS ) { console.log("index adjusted (" + index + " -> " + adjustedIndex + ")"); }
 		}
 		
 		// This part creates the building given the template
@@ -347,19 +357,22 @@ class City {
 			case "none":
 				if (this.demands["food"] > 0 && this.demands["food"] < 1 && cb instanceof BuildingFarm){
 					if ( !cb.abandoned ){
-						console.log("won't demolish farm due to food demand"); return false;
+						if ( CITY_LOGGERS ) { console.log("won't demolish farm due to food demand"); }
+						return false;
 					}
 				}else{
 					//plnt.removeBuilding(cb); 
 					if (cb){
 						cb.abandon();
-						console.log("building abandoned"); return true;
+						if ( CITY_LOGGERS ) { console.log("building abandoned"); }
+						return true;
 					}
 				}
 				break;
 		}
 		
-		if (!bldg){ console.log("no valid building"); return false; }
+		if (!bldg){ if ( CITY_LOGGERS ) { console.log("no valid building"); }
+		return false; }
 		
 		// There are now TWO PASSES which will check several things to ensure this spot is valid
 			
@@ -367,13 +380,23 @@ class City {
 		for (var q = adjustedIndex; q < adjustedIndex + template.size; q++){
 			var ci = loopyMod(q, terrsize);
 			var ob = plnt.tiles[ci].getBuilding();
-			if (ob instanceof BuildingSpaceport){ console.log("Can't place building over spaceport"); return false;}
+			
+			if (ob instanceof BuildingSpaceport){ 
+				if ( CITY_LOGGERS ) { console.log("Can't place building over spaceport"); }
+				return false;
+			}
 			
 			var height = plnt.tiles[ci].height;
-			if (height < 0){ console.log("Can't place building underwater!"); return false; }
+			if (height < 0){ 
+				if ( CITY_LOGGERS ) { console.log("Can't place building underwater!"); } 
+				return false; 
+			}
 			
 			var cc = plnt.tiles[ci].cityUUID;
-			if (cc && cc != this.uuid){ console.log("Can't place building in another city"); return false; }
+			if (cc && cc != this.uuid){ 
+				if ( CITY_LOGGERS ) { console.log("Can't place building in another city"); }
+				return false; 
+			}
 		}
 		
 		// SECOND PASS: This part clears any buildings that may be already present in the space where the new building will occupy

@@ -23,8 +23,8 @@ class EntityShip extends Entity {
 	}
 	
 	render(){
-		
-		if (cam_zoom < 1.5){ this.scale = 20/cam_zoom; } else { this.scale = 1; }
+		// Trucks don't get big on the zoomed-out map, they just dont matter that much
+		this.scale = (cam_zoom < 1.5 && !(this instanceof EntityTruck ) ) ? (20 / cam_zoom) : 1;
 		
 		super.render();
 		
@@ -36,6 +36,7 @@ class EntityShip extends Entity {
 		var futurePointsY = [];
 		var nearbody = this.getNearestBody();
 		var bgr = nearbody.getGravityBody()
+		if (!bgr){ return [[],[]]; }
 		
 		var cx = this.x; var cy = this.y; var cdir = this.dir;
 		var fv = [];

@@ -8,7 +8,9 @@ class MissionSettlement extends Mission {
 		this.displaytext  = "Settlement of " + this.destination.name + "\n";
 		this.displaytext += "\n$" + this.reward;
 		
-		this.iconColor = body.color;
+		if (body){
+			this.iconColor = body.color;
+		}
 	}
 	
 	onCancel(){

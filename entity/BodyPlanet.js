@@ -276,7 +276,7 @@ class BodyPlanet extends EntityBody {
 	populateOreVeins(){
 		var oreveinscount = RandomUtil.fromRangeI(5,20);
 		for (var i = 0; i < 10; i++){
-			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5)
+			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5);
 			var ent = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
 			server.world.spawnEntity( ent );
 			
@@ -338,9 +338,10 @@ class BodyPlanet extends EntityBody {
 		var newbuilding = new BuildingSpaceport( this.x, this.y, this.uuid, city.uuid, cityCenterIndex, this.terrainSize);
 		this.spawnBuilding( newbuilding, city );
 		
-/* 		for (var i = -cityRadius; i <= cityRadius; i++){
+		for (var i = -cityRadius; i <= cityRadius; i++){
 			
 			var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
+			this.densities[relIndex] = RandomUtil.fromRangeI(1,10);
 			
 			var newbuilding;
 			if (i == 0){
@@ -363,6 +364,7 @@ class BodyPlanet extends EntityBody {
 					if ( random() < probability ){
 						
 						newbuilding = new BuildingHouse( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize, "housesmall1");
+						this.densities[relIndex] += RandomUtil.fromRangeI(5,20);
 						
 					}else{
 						
@@ -371,16 +373,33 @@ class BodyPlanet extends EntityBody {
 					}
 				}					
 			}
+			if (this.terrainIndexDistance(relIndex,cityCenterIndex + 2) < 5){
+				this.densities[relIndex] += RandomUtil.fromRangeI(20,100);
+			}
+			
 			this.spawnBuilding( newbuilding, city );
 			
 			this.tiles[relIndex].hasRoad = true;
 			this.roads[relIndex] = true;
-		} */
+		}
 		
 		city.centerIndex = (cityCenterIndex + 2) % this.terrainSize; // the spaceport is 5 tiles wide so this centers it
 		server.world.cities[city.uuid] = city;
 		
-		city.addPopulation(20);
+		//city.addPopulation( RandomUtil.fromRangeI(10,100) );
+		
+/* 		var age = RandomUtil.fromRangeI(100,1000);
+		for (var i = 0; i < age; i++){
+			var lastfood = city.resources.totalAmount("food");
+			
+			city.updateTime = 0;
+			city.update();
+			
+			var currentfood = city.resources.totalAmount("food");
+			var diff = Math.abs(lastfood - currentfood);
+			
+			city.resources.add( new ItemStack( "food", diff ) );
+		} */
 		
 		return city;
 	}
