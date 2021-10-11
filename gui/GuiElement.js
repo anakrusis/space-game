@@ -303,7 +303,7 @@ class GuiElement {
 				i++;
 			}
 			fill(255); noStroke();
-			text( this.disptext, this.dispx + this.padding, this.dispy + this.padding + 14 )
+			text( this.disptext, this.dispx + this.padding, this.dispy + this.padding + 13 )
 			
 		}else{
 			this.lines = 0;

@@ -56,7 +56,7 @@ function setup(){
 	
 	createCanvas(windowWidth, windowHeight);
 	frameRate(60);
-	textFont("Courier"); textSize(32);
+	textFont("Courier"); textSize(32); 
 	pixelDensity(1);
 	noSmooth();
 	

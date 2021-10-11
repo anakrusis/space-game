@@ -15,8 +15,9 @@ class MissionSettlement extends Mission {
 		this.displaytext  = "Settlement of " + this.destination.name + "\n";
 		this.displaytext += "\n$" + this.reward;
 		
-		this.desc = "Several families are prepared to construct a settlement on the " + body.descriptor + " " + this.destination.name + ".\nOur nation cheers them onward in this great voyage.";
-		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nThis is a terrible loss for our nation, though we must continue onwards in the pursuit of scientific knowledge.\n"
+		this.desc = "Several families are prepared to construct a settlement on the " + body.descriptor + " " + this.destination.name + ".\nOur nation wishes them safety and health in this great voyage.";
+		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nThis is a terrible loss for our nation, and we will remember the families who gave their lives on this day.\n"
+		this.successtext = "The settlement on " + body.descriptor + " " + this.destination.name + " was successfully founded!\nOur nation rejoices at the wonder of a new city on the faraway " + body.descriptor + ".\nThis day will be remembered in history!\n";
 		
 		if (body){
 			this.iconColor = body.color;

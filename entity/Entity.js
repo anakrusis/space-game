@@ -39,6 +39,7 @@ class Entity {
 		if (!this.scale){
 			this.scale = 1;
 		}
+		strokeJoin(BEVEL);
 		
 		if (this.filled){
 			fill(this.color[0], this.color[1], this.color[2]);
@@ -64,7 +65,7 @@ class Entity {
 			
 			px = ((px - this.x) * this.scale) + this.x;  py = ((py - this.y) * this.scale) + this.y; 
 			
-			vertex(Math.round(tra_rot_x(px,py)), Math.round(tra_rot_y(px,py)));
+			vertex((tra_rot_x(px,py)), (tra_rot_y(px,py)));
 		}
 		endShape(CLOSE);
 		
