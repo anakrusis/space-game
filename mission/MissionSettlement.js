@@ -2,11 +2,21 @@ class MissionSettlement extends Mission {
 	constructor(sourceCityUUID, item, body){
 		super(sourceCityUUID);
 		this.destination = new Place(body);
+		
+		var sorcecity = server.world.cities[ this.sourceCityUUID ];
+		if (!sorcecity){ return; }
+		
+		this.distance = CollisionUtil.euclideanDistance( sorcecity.getSpaceport().x, sorcecity.getSpaceport().y, body.x, body.y );
+		this.reward = 50 * Math.round ( this.distance / 300 );
+		
 		this.item = item;
 		this.objectives = [ [ new ObjectivePlaceBuilding( this.item, this.destination ) ] ];
 		
 		this.displaytext  = "Settlement of " + this.destination.name + "\n";
 		this.displaytext += "\n$" + this.reward;
+		
+		this.desc = "Several families are prepared to construct a settlement on the " + body.descriptor + " " + this.destination.name + ".\nOur nation cheers them onward in this great voyage.";
+		this.failtext = "The mission to " + this.destination.name + " was unsuccessful.\nThis is a terrible loss for our nation, though we must continue onwards in the pursuit of scientific knowledge.\n"
 		
 		if (body){
 			this.iconColor = body.color;

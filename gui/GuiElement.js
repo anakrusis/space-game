@@ -258,21 +258,25 @@ class GuiElement {
 			//textWrap(LINE)
 			//
 			//if (!FANCY_TEXT){
-			text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
-				
-			//noStroke(); noFill();
+			//text( this.text, this.dispx + this.padding, this.dispy + this.padding, this.dispwidth - (this.padding*2));
+			
+			this.disptext = this.text;
+			
+			//stroke(255,0,0); noFill();
 			//}else{
 			this.lines = 0;
 			var dx = this.dispx + this.padding; var dy = this.dispy + this.padding;
 			
 			var SOURCE_SIZE = 8;
 			var DEST_WIDTH = 9.60; var DEST_HEIGHT = 20;
-			var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_WIDTH ) ;
+			var i = 0; var column = 0; this.maxcolumns = Math.floor ( this.dispwidth / DEST_WIDTH ) - 1;
 			
+			// This big loop serves several purposes-- it is a homemade word wrap with more control than the default p5.js word wrap
+			// it also can render rectangles underneath the text, which can be used for text background color
+			// (or with text rendered using the multiply blendmode, it can be used to do colored text as well!)
 			while ( i < this.text.length ){
 
-
-				var c = this.text.charCodeAt(i); var cy = Math.floor( c / 16 ); var cx = c % 16;
+				var c = this.text.charCodeAt(i);
 				
 				if ( c != 32 ){
 					
@@ -289,6 +293,8 @@ class GuiElement {
 					if ( column + (f2[0].length) > this.maxcolumns ){ 
 						dy += ( DEST_HEIGHT ); dx = this.dispx + this.padding;
 						column = 0; this.lines++;
+						
+						this.disptext = [this.disptext.slice(0, i), "\n", f].join('')
 					}
 				}else if (this.text.substring(i,i+1) == "\n"){
 					dy += ( DEST_HEIGHT ); dx = this.dispx + this.padding;
@@ -296,6 +302,8 @@ class GuiElement {
 				}
 				i++;
 			}
+			fill(255); noStroke();
+			text( this.disptext, this.dispx + this.padding, this.dispy + this.padding + 14 )
 			
 		}else{
 			this.lines = 0;
