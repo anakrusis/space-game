@@ -24,6 +24,8 @@ class BodyPlanet extends EntityBody {
 		this.tiles = [];
 		this.roads = [];
 		this.densities = [];
+		this.population = 0;
+		
 		this.generateTerrain();
 		this.hasOcean  = false;
 		this.initLOD();
@@ -40,6 +42,7 @@ class BodyPlanet extends EntityBody {
 		this.starUUID = starUUID;
 		this.oceanUUID = null;
 		this.gravUUID = null;
+		this.cityUUIDs = [];
 		
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 90), 2 ) ) ) ;
 		this.calculateHumidity();
@@ -124,12 +127,21 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	drawRoads(){
+		
+		var index = server.world.getPlayer().terrainIndex;
+		var fov = Math.round ( 500 / cam_zoom ); var half = Math.floor(this.terrainSize / 2);
+		var exp = Math.pow(2, lod);
+		var start = ( index - fov ) - ((index - fov) % exp);
+		var finsh = ( index + fov ) - ((index + fov) % exp);
+		
 		stroke(128);
 		strokeWeight(0.5 * cam_zoom);
-		for (var i = 0; i < this.terrainSize; i++){
-			if (this.tiles[ i ].hasRoad){
+		for (var i = start; i < finsh; i++){
+			var ind = loopyMod(i, this.terrainSize);
+			
+			if (this.tiles[ ind ].hasRoad){
 				beginShape();
-				var slice = this.getAbsPointsSlice( i, i );
+				var slice = this.getAbsPointsSlice( ind, ind );
 				vertex(tra_rot_x(slice[0],slice[1]), tra_rot_y(slice[0],slice[1])); 
 				
 				vertex(tra_rot_x(slice[2],slice[3]), tra_rot_y(slice[2],slice[3]));
@@ -153,19 +165,10 @@ class BodyPlanet extends EntityBody {
 		
 		var amt = 4
 		for (var i = 2; i < points.length; i += amt){
-			
 			points[i] = 0;
 			points[i+1] = 0;
-			//points.splice(i, amt);
-			
-			for (var j = 0; j < amt; j++){
-				
-				//points[i + j] = 0;
-				//points[i + j + 1] = 0;
-			}
-			
-			//console.log(i);
 		}
+		
 		for (var i = 2; i < points.length; i++){
 			
 			if ( points[i] == 0 ){
@@ -178,9 +181,7 @@ class BodyPlanet extends EntityBody {
 	
 	getRenderPoints(){
 		var index = server.world.getPlayer().terrainIndex;
-		
 		var fov = Math.round ( 500 / cam_zoom ); var half = Math.floor(this.terrainSize / 2);
-		//fov = Math.min(fov, half);
 		
 		if ( fov > this.terrainSize / 2 ) { 
 		

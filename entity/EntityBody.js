@@ -151,18 +151,8 @@ class EntityBody extends Entity {
     }
 	
 	getRenderPoints(){
-		
 		var ap = this.getAbsolutePoints();
-		
-/* 		var amt = 2
-		
-		for (i = 0; i < ap.length; i += amt){
-			
-			ap.splice(i, 2);
-		}
-		 */
 		return ap;
-		
 	}
 	
 	getRadius(){ return this.radius; }

@@ -8,9 +8,11 @@ function love.load()
 	NaN = "NaN";
 	
 	-- can temporarily modify this to have stuff when reopening a buildings points
-	buildingpoints = {-2.5,-5.75,-1,-5.75,-1,5.75,-2.5,5.75,-2.5,-5.75,2.5,-5.75,2.5,5.75,-1,5.75,-2.5,5.75,-2.5,-5.75,2.5,-5.75,3.75,-2.75,4.25,-0.25,4.25,0.25,3.75,3.25,2.75,5.75,-2.5,5.75,};
+	buildingpoints = {NaN,NaN,2.75,2,3.25,1,3.25,-1,2.75,0,2.75,2,NaN,NaN,-1,-2,-1,2,-2.5,2,-2.5,-2,-1,-2,NaN,NaN,-1,-2,2.75,-2,3.25,-1,2.75,0,-1,0,NaN,NaN,2.75,0,2.75,2,-1,2,-1,0,2.75,0};
 	
 	templatepoints = {1.5,-1,1.5,1,-1,1,-1,-1}
+	
+	editpoint = #buildingpoints + 1;
 	
 	SNAPSIZE = 4;
 end
@@ -31,7 +33,14 @@ function love.keypressed( key, scancode, isrepeat )
 	if key == "z" then
 		
 		table.remove(buildingpoints); table.remove(buildingpoints);
+		editpoint = editpoint - 2;
+		editpoint = math.max(1,editpoint)
+	end
 	
+	if key == "kp4" then
+		editpoint = editpoint - 2;
+		editpoint = math.max(1,editpoint)
+		print(editpoint);
 	end
 	
 	if key == "x" then
@@ -89,9 +98,13 @@ function love.mousepressed( x, y, button, istouch, presses )
 	nx = abx*math.cos(angle) - aby*math.sin(angle)
 	ny = abx*math.sin(angle) + aby*math.cos(angle)
 	nx = math.floor((nx*SNAPSIZE)+0.5)/SNAPSIZE; ny = math.floor((ny*SNAPSIZE)+0.5)/SNAPSIZE
-	print(nx .. " " .. ny);
+	--print(nx .. " " .. ny);
 	
-	table.insert(buildingpoints,nx); table.insert(buildingpoints,ny);
+	print(editpoint);
+	--table.insert(buildingpoints, nx); table.insert(buildingpoints,ny);
+	buildingpoints[editpoint] = nx; buildingpoints[editpoint+1] = ny;
+	editpoint = editpoint + 2;
+	print(editpoint);
 end
 
 function drawObject(array, offsetx, offsety)
@@ -161,10 +174,15 @@ function love.draw()
 	drawObject(playerpoints, playerx, playery);
 	drawObject(buildingpoints, 0, 0);
 	
-	if #buildingpoints > 0 then
-		lastpointx = buildingpoints[#buildingpoints-1]; lastpointy = buildingpoints[#buildingpoints];
-		if lastpointx ~= "NaN" then
-			love.graphics.circle( "line", tra_x(lastpointx), tra_y(lastpointy), 5 )
+	if #buildingpoints > 0 and editpoint > 1 then
+		-- lastpointx = buildingpoints[#buildingpoints-1]; lastpointy = buildingpoints[#buildingpoints];
+		-- if lastpointx ~= "NaN" then
+			-- love.graphics.circle( "line", tra_x(lastpointx), tra_y(lastpointy), 5 )
+		-- end
+		
+		epx = buildingpoints[editpoint-2]; epy = buildingpoints[editpoint-1];
+		if epx ~= "NaN" then
+			love.graphics.circle( "line", tra_x(epx), tra_y(epy), 5 )
 		end
 	end
 	
