@@ -125,9 +125,10 @@ var hdr = new GuiElement(0,0,400,40,GROUP_WELCOME); hdr.text = "Welcome to " + T
 var bdy = new GuiElement(0,0,400,40,GROUP_WELCOME); bdy.text = "This is a little game about piloting a multi-purpose spaceplane. Click or tap on the Spaceport Hangar building to get started with missions!\n\nIf the game is running slowly, try low resolution mode in the settings!\n\nControls:\n\n";
 bdy.text += " W/S .......... accelerate/decelerate\n"
 bdy.text += " A/D .......... turn\n"
-bdy.text += " E ............ action\n" 
-bdy.text += " +/- .......... zoom\n" 
+bdy.text += " E ............ action\n"
+bdy.text += " mouse click .. select objects\n"
 bdy.text += " mouse wheel .. zoom\n"
+bdy.text += " +/- .......... zoom\n" 
 bdy.text += " P ............ toggle camera rotation";
 
 var butoncontainer = new GuiElement(0,0,400,64, GROUP_WELCOME); butoncontainer.autosize = true;  butoncontainer.autopos = "left";

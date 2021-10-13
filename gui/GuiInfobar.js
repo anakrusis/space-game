@@ -180,14 +180,16 @@ GROUP_INFOBAR.ELM_ENTITYINFO.onUpdate = function(){
 			var hum = Math.round(e.humidity * 100);
 			infostring += "= Humidity: " + hum + "%\n\n"
 			
-			var index = CollisionUtil.indexFromPosition(cursorAbsX,cursorAbsY,e)
-			var dns = Math.round( e.densities[ index ] * 1000 ) / 1000;
-			infostring += "= Index: " + index + "\n";
-			infostring += "= Density: " + dns + "\n";
-			
-			var cty = e.tiles[index].getCity();
-			if (cty){
-				infostring += "= City: " + cty.name + "\n";
+			if (VERBOSE_DEBUG_TEXT){
+				var index = CollisionUtil.indexFromPosition(cursorAbsX,cursorAbsY,e)
+				var dns = Math.round( e.densities[ index ] * 1000 ) / 1000;
+				infostring += "= Index: " + index + "\n";
+				infostring += "= Density: " + dns + "\n";
+				
+				var cty = e.tiles[index].getCity();
+				if (cty){
+					infostring += "= City: " + cty.name + "\n";
+				}
 			}
 			
 		}else if (e instanceof EntityBuilding){
