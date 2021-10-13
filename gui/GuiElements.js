@@ -167,13 +167,20 @@ GROUP_CITY_INFO.TXT_POPHIST.onRender = function(){
 	
 	var city = selectedEntity.getCity(); var n = city.getNation();
 	noFill();
-	stroke(n.color[0], n.color[1], n.color[2]);
 	var hist = city.pophistory;
 	var max = Math.max(...hist);
+	
+	stroke(48);
+	for (var i = 1; i <= 7; i++){
+		var y = this.dispy + this.dispheight - (( i / 8 ) * this.dispheight )
+		line(this.dispx,y,this.dispx+this.dispwidth,y)
+		text ( Math.round(max * ( i / 8 )), this.dispx + 4, y )
+	}
+	
+	stroke(n.color[0], n.color[1], n.color[2]);
 	beginShape();
 	for (var i = 0; i < hist.length; i++){
 		var x = (( i / hist.length ) * this.dispwidth) + this.dispx;
-		//var y = ((hist[i] / max) * this.dispheight) + this.dispy;
 		var y = this.dispy + this.dispheight - (( hist[i] / max ) * this.dispheight )
 		
 		vertex(x,y);
