@@ -10,6 +10,13 @@ class EntityOreVein extends Entity {
 		this.groundedBodyUUID = planetuuid;
 	}
 	
+	render(){
+		super.render();
+		
+		//stroke(255,0,0);
+		//circle( tra_rot_x(this.x,this.y), tra_rot_y(this.x,this.y), 5 );
+	}
+	
 	getPlanet(){
 		return this.getChunk().getBody(this.planetUUID);
 	}
@@ -52,11 +59,12 @@ class EntityOreVein extends Entity {
 		if (this.endindex < this.startindex){
 			ende += this.terrainSize;
 		}
-		var middleindex = Math.round( (ende + this.startindex) / 2 ); 
+		var middleindex = (ende + this.startindex) / 2;
+		if (middleindex % 1 == 0){ middleindex += 0.5; }
 		middleindex = loopyMod(middleindex, this.getPlanet().terrainSize);
 		
 		var plnt = this.getPlanet();
-		var rad = plnt.terrain[middleindex] + plnt.getRadius();
+		var rad = plnt.terrain[Math.floor(middleindex)] + plnt.getRadius();
 		var ang = plnt.dir + (middleindex * (2 * Math.PI) / plnt.terrainSize);
 		this.x = plnt.x + rot_x( ang, rad, 0 );
 		this.y = plnt.y + rot_y( ang, rad, 0 );

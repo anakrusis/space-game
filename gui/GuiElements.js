@@ -630,9 +630,7 @@ mission_cancel_yes.onClick = function(){
 	GROUP_MISSION_CANCEL_CURRENT.hide();
 	GuiHandler.openWindow(GROUP_INFOBAR);
 	selectedMission.onStart();
-	
 }
-
 
 var mission_cancel_no = new GuiElement(0,0,100,40,mission_cancel_cntr); mission_cancel_no.text = "No";
 mission_cancel_no.onClick = function(){
@@ -642,51 +640,82 @@ mission_cancel_no.onClick = function(){
 // MISSION SELECT: Menu with the list of missions available
 
 var GROUP_MISSION_SELECT = new GuiElement(0, 0, 0, 0); GROUP_MISSION_SELECT.hide(); GROUP_MISSION_SELECT.autosize = true;
-
 GROUP_MISSION_SELECT.autocenterX = true; GROUP_MISSION_SELECT.autocenterY = true;
-
-var tittle = new GuiElement(0,0,305,40,GROUP_MISSION_SELECT); tittle.text = "Missions";
-
-GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS = new GuiScrollContainer(0,0,0,0,GROUP_MISSION_SELECT,3);
-
 GROUP_MISSION_SELECT.onShow = function(){
-	
+	GROUP_MISSION_SELECT.ELM_CNTR_NTNL.hide();
+}
+
+GROUP_MISSION_SELECT.ELM_TITLE = new GuiElement(0,0,305,40,GROUP_MISSION_SELECT); GROUP_MISSION_SELECT.ELM_TITLE.text = "Missions";
+
+// The two tabs for differing mission types (for now)
+GROUP_MISSION_SELECT.ELM_CNTR_TOP = new GuiElement(0,0,700,64, GROUP_MISSION_SELECT); GROUP_MISSION_SELECT.ELM_CNTR_TOP.autosize = true;  GROUP_MISSION_SELECT.ELM_CNTR_TOP.autopos = "left"; 
+
+GROUP_MISSION_SELECT.BTN_CMRC = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT.ELM_CNTR_TOP); 
+GROUP_MISSION_SELECT.BTN_CMRC.text = "Commercial";
+GROUP_MISSION_SELECT.BTN_CMRC.onClick = function(){
+	GROUP_MISSION_SELECT.ELM_CNTR_NTNL.hide(); GROUP_MISSION_SELECT.ELM_CNTR_CMRC.show();
+}
+GROUP_MISSION_SELECT.BTN_NTNL = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT.ELM_CNTR_TOP); 
+GROUP_MISSION_SELECT.BTN_NTNL.text = "National";
+GROUP_MISSION_SELECT.BTN_NTNL.onClick = function(){
+	GROUP_MISSION_SELECT.ELM_CNTR_NTNL.show(); GROUP_MISSION_SELECT.ELM_CNTR_CMRC.hide();
+}
+
+GROUP_MISSION_SELECT.ELM_CNTR_CMRC = new GuiScrollContainer(0,0,0,0,GROUP_MISSION_SELECT,3);
+GROUP_MISSION_SELECT.ELM_CNTR_CMRC.onShow = function(){
 	if (!(selectedEntity instanceof BuildingSpaceport)){ return; }
 	
-	GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS.children = [];
+	this.children = [];
 	
 	var selectedCity = selectedEntity.getCity();
 	selectedCity.updateMissions();
 	var missions = selectedCity.getAvailableMissions();
 	
-	if (missions.length == 0){
-		var errtext = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS); errtext.text = "Sorry, no missions available! You can check back some time soon.";
-		return;
-	}
-	
-	for (mission of missions){		
-		
-		var button = new GuiElement(0,0,300,40,GROUP_MISSION_SELECT.ELM_CNTR_MISSIONS); button.text = mission.displaytext; button.mission = mission;
+	var count = 0;
+	for (mission of missions){
+		if (!(mission instanceof MissionDelivery)){ continue; }
+		var button = new GuiMissionDisplay(0,0,300,40,this,mission);
 		button.onClick = function(){
 			selectedMission = this.mission;
 			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
 		}
-		button.onRender = function(){
-			
-			var scale = 18;
-			var pts = this.mission.getIcon();
-			noFill()
-			stroke(this.mission.iconColor[0], this.mission.iconColor[1], this.mission.iconColor[2]);
-			beginShape();
-			for (i = 0; i < pts.length; i += 2){
-				var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
-				var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
-				vertex(px,py);
-			}
-			endShape(CLOSE);
-		}
+		count++;
+	}
+	
+	if (count == 0){
+		var errtext = new GuiElement(0,0,300,40,this); errtext.text = "Sorry, no missions available! You can check back some time soon.";
+		return;
 	}
 }
+
+GROUP_MISSION_SELECT.ELM_CNTR_NTNL = new GuiScrollContainer(0,0,0,0,GROUP_MISSION_SELECT,3);
+GROUP_MISSION_SELECT.ELM_CNTR_NTNL.onShow = function(){
+	if (!(selectedEntity instanceof BuildingSpaceport)){ return; }
+	
+	this.children = [];
+	
+	var selectedCity = selectedEntity.getCity();
+	selectedCity.updateMissions();
+	var missions = selectedCity.getAvailableMissions();
+	
+	var count = 0;
+	for (mission of missions){
+		if (mission instanceof MissionDelivery){ continue; }
+		var button = new GuiMissionDisplay(0,0,300,40,this,mission);
+		button.onClick = function(){
+			selectedMission = this.mission;
+			GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_MISSION_CONFIRM);
+		}
+		count++;
+	}
+	
+	if (count == 0){
+		var errtext = new GuiElement(0,0,300,40,this); errtext.text = "National missions are only available in your home nation.";
+		return;
+	}
+}
+
+
 GROUP_MISSION_SELECT.BTN_BACK = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT); GROUP_MISSION_SELECT.BTN_BACK.text = "Back";
 GROUP_MISSION_SELECT.BTN_BACK.onClick = function(){
 	GROUP_MISSION_SELECT.hide(); GuiHandler.openWindow(GROUP_INFOBAR);

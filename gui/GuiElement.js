@@ -51,6 +51,11 @@ class GuiElement {
 			this.onUpdate();
 		}
 		
+		for (var i = 0; i < this.children.length; i++){
+			var e  = this.children[i];
+			e.update();
+		}
+		
 		if (!this.staticposition){
 			var p = this.parent;
 			if (p){
@@ -193,11 +198,6 @@ class GuiElement {
 			var h = 22 * this.lines + this.padding*5;
 		}
 		this.dispheight = Math.max(this.dispheight, h);
-		
-		for (var i = 0; i < this.children.length; i++){
-			var e  = this.children[i];
-			e.update();
-		}
 		
 		if (this.visible){
 			this.ticksShown++;
@@ -453,10 +453,10 @@ class GuiScrollContainer extends GuiElement {
 		//this.upbutton.text = "/\\"; this.downbutton.text = "V";
 		//this.upbutton.hide();
 		this.upbutton.onClick = function(){
-			this.parent.scrollindex--; this.parent.ticksShown = 0;
+			this.parent.scrollindex--; //this.parent.ticksShown = 0;
 		}
 		this.downbutton.onClick = function(){
-			this.parent.scrollindex++; this.parent.ticksShown = 0;
+			this.parent.scrollindex++; //this.parent.ticksShown = 0;
 		}
 		
 		this.upbutton.onRender = function(){
@@ -469,6 +469,10 @@ class GuiScrollContainer extends GuiElement {
 			var tpad = 5; var spad = 2; // top pad and side pad of triangle
 			triangle(this.dispx + this.dispwidth/2, this.dispy + this.dispheight - tpad, this.dispx + spad, this.dispy + tpad, this.dispx + this.dispwidth - spad, this.dispy + tpad);
 		}
+	}
+	
+	onShow(){
+		this.onUpdate();
 	}
 	
 	onUpdate(){
@@ -528,8 +532,12 @@ class GuiScrollContainer extends GuiElement {
 		//console.log(upped);
 		
 		//rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
-		
-		rect( this.upbutton.dispx, upped, this.upbutton.dispwidth, barheight );
+		if (barheight > 0 && barheight != Infinity){
+			fill(0); stroke(255);
+			rect( this.upbutton.dispx, this.upbutton.dispy, this.upbutton.dispwidth, this.downbutton.dispy- this.upbutton.dispy );
+			fill(255);
+			rect( this.upbutton.dispx, upped, this.upbutton.dispwidth, barheight );
+		}
 	}
 }
 
@@ -566,7 +574,6 @@ class GuiCheckbox extends GuiElement {
 class GuiSlider extends GuiElement {
 	
 	constructor(x,y,width,height,parent,patharray, min, max){
-		
 		super(x,y,width,60,parent);
 		
 		this.min = min; this.max = max;
@@ -611,5 +618,27 @@ class GuiSlider extends GuiElement {
 		rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
 		
 	}
+}
+
+class GuiMissionDisplay extends GuiElement {
 	
+	constructor(x,y,width,height,parent,mission){
+		super(x,y,300,height,parent);
+		this.mission = mission;
+		this.text = mission.displaytext;
+	}
+	
+	onRender(){
+		var scale = 18;
+		var pts = this.mission.getIcon();
+		noFill()
+		stroke(this.mission.iconColor[0], this.mission.iconColor[1], this.mission.iconColor[2]);
+		beginShape();
+		for (i = 0; i < pts.length; i += 2){
+			var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
+			var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
+			vertex(px,py);
+		}
+		endShape(CLOSE);
+	}
 }
