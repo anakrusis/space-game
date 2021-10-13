@@ -563,53 +563,31 @@ GROUP_MISSION_FAIL.BTN_BACK.onClick = function(){
 
 var GROUP_MISSION_CONFIRM = new GuiElement(0,0,0,0); GROUP_MISSION_CONFIRM.hide(); GROUP_MISSION_CONFIRM.autosize = true;
 GROUP_MISSION_CONFIRM.autocenterX = true; GROUP_MISSION_CONFIRM.autocenterY = true;
+
+GROUP_MISSION_CONFIRM.ELM_TITLE = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); GROUP_MISSION_CONFIRM.ELM_TITLE.text = "Mission Confirmation";
+GROUP_MISSION_CONFIRM.ELM_MISSION_INFO = new GuiMissionDisplay(0,0,300,40,GROUP_MISSION_CONFIRM);
+GROUP_MISSION_CONFIRM.ELM_BODY = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); GROUP_MISSION_CONFIRM.ELM_BODY.text = "Are you sure you want to accept this mission?\n";
+GROUP_MISSION_CONFIRM.ELM_CNTR = new GuiElement(0,0,700,64, GROUP_MISSION_CONFIRM); GROUP_MISSION_CONFIRM.ELM_CNTR.autosize = true;  GROUP_MISSION_CONFIRM.ELM_CNTR.autopos = "left";
+
+GROUP_MISSION_CONFIRM.BTN_YES = new GuiElement(0,0,148,40,GROUP_MISSION_CONFIRM.ELM_CNTR); GROUP_MISSION_CONFIRM.BTN_YES.text = "OK";
+GROUP_MISSION_CONFIRM.BTN_YES.onClick = function(){
+	GROUP_MISSION_CONFIRM.hide(); 
+	
+	if (server.world.getPlayer().currentMission){
+		GuiHandler.openWindow(GROUP_MISSION_CANCEL_CURRENT);
+		
+	} else {
+		GuiHandler.openWindow(GROUP_INFOBAR);
+		selectedMission.onStart();
+	}
+}
+
+GROUP_MISSION_CONFIRM.BTN_BACK = new GuiElement(0,0,148,40,GROUP_MISSION_CONFIRM.ELM_CNTR); GROUP_MISSION_CONFIRM.BTN_BACK.text = "Cancel";
+GROUP_MISSION_CONFIRM.BTN_BACK.onClick = function(){
+	GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_MISSION_SELECT);
+}
 GROUP_MISSION_CONFIRM.onShow = function(){
-	
-	this.children = []; // For dynamic button arrangements, it has to reset each time or else they will just KEEP STACKING LOL
-	
-	var tittle = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); tittle.text = "Mission Confirmation";
-	
-	var missioninfo = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); missioninfo.text = selectedMission.displaytext;
-	missioninfo.onRender = function(){
-		
-		var scale = 18;
-		var pts = selectedMission.getIcon();
-		noFill()
-		stroke(selectedMission.iconColor[0], selectedMission.iconColor[1], selectedMission.iconColor[2]);
-		beginShape();
-		for (i = 0; i < pts.length; i += 2){
-			var px = (pts[i+1]) * scale + this.dispx - this.padding*8 + this.width; 
-			var py = (-pts[i])  * scale + this.dispy - this.padding*2 + this.height + 4;
-			vertex(px,py);
-		}
-		endShape(CLOSE);
-	}
-	
-	var t2 = new GuiElement(0,0,300,40,GROUP_MISSION_CONFIRM); t2.text = "Are you sure you want to accept this mission?\n";
-
-	var mission_sure_cntr = new GuiElement(0,0,700,64, GROUP_MISSION_CONFIRM); mission_sure_cntr.autosize = true;  mission_sure_cntr.autopos = "left";
-
-	var yesbtn = new GuiElement(0,0,148,40,mission_sure_cntr); yesbtn.text = "OK";
-	yesbtn.onClick = function(){
-		GROUP_MISSION_CONFIRM.hide(); 
-		
-		if (server.world.getPlayer().currentMission){
-			
-			GuiHandler.openWindow(GROUP_MISSION_CANCEL_CURRENT);
-			
-		} else {
-			
-			GuiHandler.openWindow(GROUP_INFOBAR);
-			selectedMission.onStart();
-			
-		}
-	}
-	
-	this.BTN_BACK = new GuiElement(0,0,148,40,mission_sure_cntr); this.BTN_BACK.text = "Cancel";
-	this.BTN_BACK.onClick = function(){
-		GROUP_MISSION_CONFIRM.hide(); GuiHandler.openWindow(GROUP_MISSION_SELECT);
-	}
-	
+	GROUP_MISSION_CONFIRM.ELM_MISSION_INFO.setMission(selectedMission);
 }
 
 // MISSION CANCEL EXISTING: Menu for when you already are in a mission and going to cancel it.
@@ -643,6 +621,7 @@ var GROUP_MISSION_SELECT = new GuiElement(0, 0, 0, 0); GROUP_MISSION_SELECT.hide
 GROUP_MISSION_SELECT.autocenterX = true; GROUP_MISSION_SELECT.autocenterY = true;
 GROUP_MISSION_SELECT.onShow = function(){
 	GROUP_MISSION_SELECT.ELM_CNTR_NTNL.hide();
+	GROUP_MISSION_SELECT.BTN_CMRC.borderweight = 3; GROUP_MISSION_SELECT.BTN_NTNL.borderweight = 1;
 }
 
 GROUP_MISSION_SELECT.ELM_TITLE = new GuiElement(0,0,305,40,GROUP_MISSION_SELECT); GROUP_MISSION_SELECT.ELM_TITLE.text = "Missions";
@@ -654,11 +633,13 @@ GROUP_MISSION_SELECT.BTN_CMRC = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT.E
 GROUP_MISSION_SELECT.BTN_CMRC.text = "Commercial";
 GROUP_MISSION_SELECT.BTN_CMRC.onClick = function(){
 	GROUP_MISSION_SELECT.ELM_CNTR_NTNL.hide(); GROUP_MISSION_SELECT.ELM_CNTR_CMRC.show();
+	GROUP_MISSION_SELECT.BTN_CMRC.borderweight = 3; GROUP_MISSION_SELECT.BTN_NTNL.borderweight = 1;
 }
 GROUP_MISSION_SELECT.BTN_NTNL = new GuiElement(0,0,150,40,GROUP_MISSION_SELECT.ELM_CNTR_TOP); 
 GROUP_MISSION_SELECT.BTN_NTNL.text = "National";
 GROUP_MISSION_SELECT.BTN_NTNL.onClick = function(){
 	GROUP_MISSION_SELECT.ELM_CNTR_NTNL.show(); GROUP_MISSION_SELECT.ELM_CNTR_CMRC.hide();
+	GROUP_MISSION_SELECT.BTN_NTNL.borderweight = 3; GROUP_MISSION_SELECT.BTN_CMRC.borderweight = 1;
 }
 
 GROUP_MISSION_SELECT.ELM_CNTR_CMRC = new GuiScrollContainer(0,0,0,0,GROUP_MISSION_SELECT,3);

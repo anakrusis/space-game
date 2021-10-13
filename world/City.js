@@ -406,15 +406,6 @@ class City {
 			if (!ob){ continue; }
 			
 			plnt.removeBuilding(ob);
-			
-/* 			var p = loopyMod(q, terrsize);
-			var ob = plnt.tiles[p].getBuilding();
-			if (!ob){ continue; }
-			
-			ob.dead = true;
-			plnt.tiles[p].buildingUUID = null;
-			var uuidIndex = this.buildingUUIDs.findIndex(ob.uuid);
-			this.buildingUUID.splice(uuidIndex,1);  */ 
 		}
 		plnt.spawnBuilding( bldg, this );
 	}
@@ -428,7 +419,10 @@ class City {
 		}
 		
 		this.updateExploreMissions();
+		// Nowadays, each of these have special requirements and behaviors
 		this.updateFoodMissions();
+		this.updateIronMissions();
+		this.updatePassengerMissions();
 		//this.updateDeliveryMission( "passengers" );
 		//this.updateDeliveryMission( "food" );
 		//this.updateDeliveryMission( "iron" );
@@ -446,6 +440,36 @@ class City {
 			var c = cities[uuid];
 			if (c.demands["food"] > 0 && c != this){
 				var m = new MissionDelivery(this.uuid, c.uuid, "food", amt);
+				this.availableMissions.push(m);
+			}
+		}
+	}
+	
+	updateIronMissions(){
+		var totalamt = this.resources.totalAmount( "iron" );
+		if (totalamt < 3){ return; }
+		// Will give away one third of total iron, or 64, whichever is less
+		// (Iron is not really useful yet, so its ok to kinda give it away)
+		var amt = Math.floor(totalamt / 3); amt = Math.min(64, amt);
+		
+		var cities = server.world.cities;
+		for (var uuid in cities){
+			var c = cities[uuid];
+			if (c != this && c.resources.totalAmount("iron") < 10 ){
+				var m = new MissionDelivery(this.uuid, c.uuid, "iron", amt);
+				this.availableMissions.push(m);
+			}
+		}
+	}
+	updatePassengerMissions(){
+		if (this.population < 16){ return; }
+		
+		var cities = server.world.cities;
+		for (var uuid in cities){
+			var c = cities[uuid];
+			if (c != this && c.population < this.population ){
+				var amt = RandomUtil.fromRangeI(8,24) * 2; amt = Math.max(16, amt);
+				var m = new MissionDelivery(this.uuid, c.uuid, "passengers", amt);
 				this.availableMissions.push(m);
 			}
 		}
@@ -492,8 +516,9 @@ class City {
 		for ( var uuid in server.world.getChunk(this.chunkx,this.chunky).bodies ){
 			var b = server.world.getChunk(this.chunkx,this.chunky).bodies[uuid];
 			if (!(b instanceof BodyPlanet)){ continue; }
+			if (b == this.getPlanet()){ continue; }
+			
 			if (b.explored){
-				
 				var m = new MissionSettlement(this.uuid, "spaceport", b);
 				this.availableMissions.push(m);
 				

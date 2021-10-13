@@ -82,6 +82,7 @@ class MissionDelivery extends Mission {
 		
 		var dest = server.world.cities[ this.destinationCityUUID ];
 		dest.resources.add( new ItemStack( this.item, this.quantity ) );
+		dest.addPopulation( this.quantity );
 	}
 	
 	onCancel(){
@@ -95,5 +96,6 @@ class MissionDelivery extends Mission {
 		
 		var source = server.world.cities[ this.sourceCityUUID ];
 		source.resources.shrink( this.item, this.quantity );
+		source.addPopulation( 0 - this.quantity );
 	}
 }

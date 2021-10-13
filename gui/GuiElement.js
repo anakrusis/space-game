@@ -7,6 +7,7 @@ class GuiElement {
 		this.width = width;
 		this.height = height;
 		this.padding = 5;
+		this.borderweight = 1;
 		
 		this.dispx = this.x + this.padding;
 		this.dispy = this.y + this.padding;
@@ -246,11 +247,13 @@ class GuiElement {
 		
 		if (!this.transparent){ fill(0); } else { noFill(); blendMode(DIFFERENCE); }
 		stroke(255);
+		strokeWeight(this.borderweight);
 			
 		rect( this.dispx, this.dispy, this.dispwidth, this.dispheight );
 		
 		if (this.transparent){ blendMode(BLEND); }
 		noStroke();
+		strokeWeight(1);
 		fill(255);
 		
 		if (this.text != ""){
@@ -532,7 +535,7 @@ class GuiScrollContainer extends GuiElement {
 		//console.log(upped);
 		
 		//rect( (coeff * (this.dispwidth - this.dispheight + 30 )) + this.dispx, this.dispy + 30, this.dispheight - 30, this.dispheight - 30 );
-		if (barheight > 0 && barheight != Infinity){
+		if (this.children.length > this.minelements){
 			fill(0); stroke(255);
 			rect( this.upbutton.dispx, this.upbutton.dispy, this.upbutton.dispwidth, this.downbutton.dispy- this.upbutton.dispy );
 			fill(255);
@@ -624,6 +627,13 @@ class GuiMissionDisplay extends GuiElement {
 	
 	constructor(x,y,width,height,parent,mission){
 		super(x,y,300,height,parent);
+		this.mission = mission;
+		if (this.mission){
+			this.text = mission.displaytext;
+		}
+	}
+	
+	setMission(mission){
 		this.mission = mission;
 		this.text = mission.displaytext;
 	}
