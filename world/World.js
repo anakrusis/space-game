@@ -21,12 +21,16 @@ class World {
 	init(){
 		
 		//this.seed = Math.floor ( 4304 ) 
-		this.seed = random() * 10000;
+		this.seed = Math.random() * 10000;
 		//this.seed = (845);
 		//this.seed = (7295);
 		//this.seed = (2653);
 		//this.seed = (7647);
 		p5.prototype.randomSeed(this.seed);
+		this.random = new Random( this.seed );
+		
+		this.chunkseedoffset = this.random.nextInt(-1000,1000);
+		//console.log(this.chunkseedoffset);
 		
 		var homePlanet = this.findHomePlanet();
 		homePlanet.makeLush(); homePlanet.explored = true;
@@ -216,7 +220,9 @@ class World {
 			this.chunks[chunkx] = [];
 		}
 		if (!this.chunks[chunkx][chunky]){
-			this.chunks[chunkx][chunky] = new Chunk(chunkx, chunky);
+			var c = new Chunk(chunkx, chunky);
+			c.init();
+			this.chunks[chunkx][chunky] = c;
 		}
 		this.loadedChunksX.push(chunkx);
 		this.loadedChunksY.push(chunky);

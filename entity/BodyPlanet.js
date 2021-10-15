@@ -362,7 +362,7 @@ class BodyPlanet extends EntityBody {
 					var dist = this.terrainIndexDistance( relIndex, cityCenterIndex + 2 );
 					var probability = 4 / dist;
 					
-					if ( random() < probability ){
+					if ( RandomUtil.fromRangeF(0, 1) < probability ){
 						
 						newbuilding = new BuildingHouse( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize, "housesmall1");
 						this.densities[relIndex] += RandomUtil.fromRangeI(5,20);
