@@ -8,6 +8,9 @@ class World {
 		this.chunks        = [];
 		this.loadedChunksX = []; // a pair of X and Y coordinates of every loaded chunk
 		this.loadedChunksY = [];
+		this.generatedChunksX = []; // coordinates of every chunk that has been generated ever
+		this.generatedChunksY = [];
+		
 		this.entities      = {};
 		this.nations       = {};
 		this.cities        = {};
@@ -16,21 +19,32 @@ class World {
 		
 		this.type = this.constructor.name;
 		this.history = new History();
+		
+		this.version = BUILD_DATE;
 	}
 	
 	init(){
 		
 		//this.seed = Math.floor ( 4304 ) 
-		this.seed = Math.random() * 10000;
+		this.seed = 2399.2322235776433//Math.random() * 10000;
 		//this.seed = (845);
 		//this.seed = (7295);
 		//this.seed = (2653);
 		//this.seed = (7647);
-		p5.prototype.randomSeed(this.seed);
+		//p5.prototype.randomSeed(this.seed);
 		this.random = new Random( this.seed );
 		
+/* 		var q = this.random.next();
+		console.log(this.random.state);
+		q++;
+		console.log(this.random.state); */
+		
+		//for (var i = 0; i < 100; i++){
+		//	var p = this.random.next(); console.log(p);
+		//}
+		
 		this.chunkseedoffset = this.random.nextInt(-1000,1000);
-		//console.log(this.chunkseedoffset);
+		console.log(this.chunkseedoffset);
 		
 		var homePlanet = this.findHomePlanet();
 		homePlanet.makeLush(); homePlanet.explored = true;
@@ -215,14 +229,27 @@ class World {
 		return loadedchunks;
 	}
 	
+	getGeneratedChunks(){
+		var genchunks = [];
+		for (var i = 0; i < this.generatedChunksX.length; i++){
+			var chunkx = this.generatedChunksX[i]; var chunky = this.generatedChunksY[i];
+			var cc = this.chunks[chunkx][chunky];
+			genchunks.push(cc);
+		}
+		return genchunks;
+	}
+	
 	loadChunk(chunkx, chunky){
 		if (!this.chunks[chunkx]){
 			this.chunks[chunkx] = [];
 		}
 		if (!this.chunks[chunkx][chunky]){
 			var c = new Chunk(chunkx, chunky);
-			c.init();
 			this.chunks[chunkx][chunky] = c;
+			c.init();
+			
+			this.generatedChunksX.push(chunkx);
+			this.generatedChunksY.push(chunky);
 		}
 		this.loadedChunksX.push(chunkx);
 		this.loadedChunksY.push(chunky);

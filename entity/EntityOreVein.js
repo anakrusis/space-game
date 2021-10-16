@@ -80,7 +80,8 @@ class EntityOreVein extends Entity {
 			this.x += (futurePlanetX - planet.getX());
 			this.y += (futurePlanetY - planet.getY());
 		}
-
+		
+		//console.log(this.groundedBodyUUID);
 		var body = this.getGroundedBody();
 		// This moves the entity along with any rotating body
 		this.dir += body.rotSpeed;

@@ -6,29 +6,17 @@ class BodyPlanet extends EntityBody {
 		this.name = Nymgen.newName();
 		this.descriptor = "planet";
 		this.icon = "🪐"
-		//this.color = [192,192,192];
 		
-		var dirthue = RandomUtil.fromRangeF(0,0.1);
-		var dirtsat = RandomUtil.fromRangeF(-0.3,0.5);
-		var dirtlig = RandomUtil.fromRangeF(0.2,0.5);
-		
-		this.color = RandomUtil.hslToRgb(dirthue, dirtsat, dirtlig);
 		this.hasDynamicScale = true;
 		
-		//var v = Math.pow(this.radius, 2)
-		//this.terrainSize = Math.round(v * (1/192));
 		this.terrainSize = Math.round(this.radius * (40/16));
-		//console.log(this.terrainSize);
 		this.terrainSize -= (this.terrainSize % 64);
-		//this.radius = this.terrainSize / (40/16)
 		this.tiles = [];
 		this.roads = [];
 		this.densities = [];
 		this.population = 0;
 		
-		this.generateTerrain();
-		this.hasOcean  = false;
-		this.initLOD();
+		this.hasOcean = false;
 		
 		// Physics properties
 		this.canEntitiesCollide = true;
@@ -45,9 +33,30 @@ class BodyPlanet extends EntityBody {
 		this.cityUUIDs = [];
 		
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 90), 2 ) ) ) ;
-		this.calculateHumidity();
 		
 		//this.populateOreVeins();
+	}
+	
+	init(){
+		var c = this.getChunk(); var range = 100000000000;
+		this.random = new Random( c.random.nextInt( -range, range ) );
+		
+		// The terrain generation is always the first to invoked the new Random object
+		// so that when it is saved and loaded it can be reconstructed from seed with the initial state
+		this.generateTerrain();
+		
+		// LOD, ore veins and humidity rely on terrain, so they will come immediately after
+		this.initLOD();
+		this.populateOreVeins();
+		this.calculateHumidity();
+		
+		// the rest of these properties are not dependent on terrain so they will go here
+		
+		// color values
+		var dirthue = this.random.nextFloat(0,0.1);
+		var dirtsat = this.random.nextFloat(-0.3,0.5);
+		var dirtlig = this.random.nextFloat(0.2,0.5);
+		this.color = MathUtil.hslToRgb(dirthue, dirtsat, dirtlig);
 	}
 	
 	initLOD(){
@@ -97,19 +106,13 @@ class BodyPlanet extends EntityBody {
 		var grassPrevalence = 1 - (Math.abs( this.temperature - 288 ) / 40);
 		grassPrevalence = Math.max(0,grassPrevalence);
 		
-		this.grassColor = RandomUtil.hslToRgb( hue, 0.9, 0.4 );
+		this.grassColor = MathUtil.hslToRgb( hue, 0.9, 0.4 );
 		
 		var r = (this.grassColor[0] * grassPrevalence) + (this.color[0] * (1 - grassPrevalence));
 		var g = (this.grassColor[1] * grassPrevalence) + (this.color[1] * (1 - grassPrevalence));
 		var b = (this.grassColor[2] * grassPrevalence) + (this.color[2] * (1 - grassPrevalence));
 		
 		this.color = [r,g,b];
-		
-		//this.populateOreVeins();
-		
-		//var r = (grassColor[0] + this.color[0]) / 2;
-		//var g = (grassColor[0] + this.color[0]) / 2;
-		//var b = (grassColor[0] + this.color[0]) / 2;
 	}
 	
 	render(){
@@ -213,6 +216,7 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	generateTerrain(){
+		this.tiles   = [];
 		this.terrain = [];
 		var octaves = [];
 		
@@ -248,7 +252,7 @@ class BodyPlanet extends EntityBody {
 	fillOctave(len, scale, coeff){
 		var out = []
 		for (var i = 0; i < len / scale; i++){
-			var val = RandomUtil.fromRangeF(-coeff,coeff);
+			var val = this.random.nextFloat(-coeff,coeff);
 			for (var j = 0; j < scale; j++){
 				out.push ( val );
 			}
@@ -284,8 +288,8 @@ class BodyPlanet extends EntityBody {
 			for (var j = ent.startindex; j <= end; j++){
 				
 				var index = loopyMod(j, this.terrainSize);
-				
-				this.tiles[index].oreVeinUUID = ent.uuid;
+				var tile = this.tiles[index];
+				tile.oreVeinUUID = ent.uuid;
 			}
 		}
 	}

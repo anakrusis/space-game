@@ -14,7 +14,8 @@ class WorldLoader {
 		ItemStack,
 		ForceVector,
 		History,
-		HistoryEvent
+		HistoryEvent,
+		Random
 	};
 	
 	// will export a json string
@@ -25,13 +26,14 @@ class WorldLoader {
 		
 		var worldclone = this.loadWorld( p ); //console.log(worldclone);
 		
-		for (var chunk of worldclone.getLoadedChunks()){
+		for (var chunk of worldclone.getGeneratedChunks()){
 
 			for (var uuid in chunk.bodies){
 		
 				var body = chunk.bodies[uuid];
 				if (!( body instanceof BodyPlanet )){ continue; }
 				
+				body.terrain = [];
 				body.tiles = [];
 				body.forms = [];
 			}
@@ -48,13 +50,13 @@ class WorldLoader {
 		// I'm not sure why but loadWorld() pollutes the server.world with a bunch of corrupt OreVein entities
 		// so this gets rid of them by deleting entitys without a proper X position (wich is initialized in all good entities)
 		
-		for ( var uuid in server.world.entities ){
+/* 		for ( var uuid in server.world.entities ){
 		
 			var e = server.world.entities[uuid];	
 			if ( e.x != 0 && !e.x ){
 				delete server.world.entities[uuid];
 			}
-		}
+		} */
 		
 		// Reinstating tile objects in situations where they are empty, and also planet LOD forms 
 		
@@ -65,9 +67,23 @@ class WorldLoader {
 				var body = chunk.bodies[uuid];
 				if (!( body instanceof BodyPlanet )){ continue; }
 				
+				// Performs a swap if the terrain is found to be empty:
+				// the body's prng is replaced temporarily with a new one in its initial state.
+				// the terrain is generated anew, and then the old rng with the latter state returns
+				var emptyterrainflag = false;
+				if ( body.terrain == [] ){
+					var r = body.random;
+					var tempr = new Random( r.seed );
+					body.random = tempr;
+					body.generateTerrain();
+					
+					body.random = r;
+					emptyterrainflag = true;
+				}
+				
 				body.initLOD();
 				
-				if (body.tiles.length > 0){ continue; }
+				if (body.tiles.length > 0 && !emptyterrainflag){ console.log("no tilemaking"); continue; }
 				
 				body.tiles = [];
 				for ( var i = 0; i < body.terrainSize; i++){
@@ -80,8 +96,9 @@ class WorldLoader {
 					
 					// Checks if any ore veins or buildings have a spot on the tile
 					for ( var entityuuid in dw.entities ) {
-						
 						var e = dw.entities[entityuuid];
+						// must actually be on the planet (wow!)
+						if ( e.planetUUID != body.uuid ){ continue; }
 						if ( (!(e instanceof EntityOreVein)) && (!(e instanceof EntityBuilding)) ){ continue; }
 						
 						var startindex = e.startindex; var endindex = e.endindex;

@@ -17,6 +17,10 @@ class EntityBody extends Entity {
 		this.explored = false;
 	}
 	
+	init(){
+		
+	}
+	
 	render(){
 		
 		if (this.hasDynamicScale){

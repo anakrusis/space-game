@@ -3,7 +3,6 @@ class Chunk {
 		this.x = x;
 		this.y = y;
 		this.bodies = {};
-		this.random = new Random();
 		
 		this.type = this.constructor.name;
 	}
@@ -43,14 +42,12 @@ class Chunk {
 				}
 			}
 			
-			console.log(this.random.state);
+			//console.log(this.random.state);
 			var planettry = this.random.next(); console.log(planettry);
 			if ( planettry < planetChance && neighborhoodClear){
 				
 				var radius = this.random.nextFloat(256,1024);
 				var planet = new BodyPlanet(star.getX() + orbitDistance, star.getY(), 0, radius, orbitDistance, star.uuid);
-				planet.populateOreVeins();
-				
 				this.spawnBody(planet);
 				
 				// TODO the chance of moons should ramp up with bigger radius planets
@@ -64,8 +61,6 @@ class Chunk {
 					moon.icon = "🌙";
 					moon.updatePriority = 0;
 					moon.descriptor = "moon";
-					
-					moon.populateOreVeins(); // temporarily pulled out here because it relies on establishing a uuid first
 					
 					// TODO spawn all moons afterwards so they dont affect the orbit positioning
 					this.spawnBody(moon);
@@ -90,6 +85,7 @@ class Chunk {
 			this.spawnBody(bgr);
 			body.gravUUID = bgr.uuid;
 		}
+		body.init();
 	}
 	
 	update(){
