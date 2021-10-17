@@ -33,8 +33,6 @@ class BodyPlanet extends EntityBody {
 		this.cityUUIDs = [];
 		
 		this.temperature = ( 10000000000000000 / ( Math.pow( (this.orbitDistance * 90), 2 ) ) ) ;
-		
-		//this.populateOreVeins();
 	}
 	
 	init(){
@@ -47,7 +45,7 @@ class BodyPlanet extends EntityBody {
 		
 		// LOD, ore veins and humidity rely on terrain, so they will come immediately after
 		this.initLOD();
-		this.populateOreVeins();
+		//this.populateOreVeins();
 		this.calculateHumidity();
 		
 		// the rest of these properties are not dependent on terrain so they will go here
@@ -279,21 +277,24 @@ class BodyPlanet extends EntityBody {
 	}
 	
 	populateOreVeins(){
-		var oreveinscount = RandomUtil.fromRangeI(5,20);
+		var oreveinscount = this.random.nextInt(5,20);
 		for (var i = 0; i < 10; i++){
-			var pos = RandomUtil.fromRangeI(0,this.terrainSize); var end = pos + RandomUtil.fromRangeI(1,5);
+			
+			var pos = this.random.nextInt(0,this.terrainSize); 
+			var end = pos + this.random.nextInt(1,5);
 			var ent = new EntityOreVein(this.x, this.y, this.uuid, pos, end);
 			server.world.spawnEntity( ent );
 			
 			for (var j = ent.startindex; j <= end; j++){
 				
-				var index = loopyMod(j, this.terrainSize);
+				var index = MathUtil.mod(j, this.terrainSize);
 				var tile = this.tiles[index];
 				tile.oreVeinUUID = ent.uuid;
 			}
 		}
 	}
 	
+	// Picks a random location on the planet,
 	// returns the city if it can do it, else returns false.
 	spawnCity(nation){
 		var cityPlaceAttempts = 30;
@@ -305,7 +306,7 @@ class BodyPlanet extends EntityBody {
 		// based from a center point outwards in a certain number of tiles
 		for (var a = 0; a < cityPlaceAttempts; a++){
 			
-			var cityCenterIndex = RandomUtil.fromRangeI(0, this.terrainSize);
+			var cityCenterIndex = this.random.nextInt(0, this.terrainSize);
 			
 			// The radius starts at a high value and goes down as more city placing attempts are made until it reaches a low value.
 			// This way there can be almost always found a place to put a city between sizes of 8 and 24
@@ -316,7 +317,7 @@ class BodyPlanet extends EntityBody {
 			var cityCenterValid = true;
 			for (var i = -cityRadius; i <= cityRadius; i++){
 				
-				var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
+				var relIndex = MathUtil.mod((cityCenterIndex + i), this.terrainSize);
 				var tile = this.tiles[relIndex];
 				
 				// Tiles under sea level ( or very close to sea level ) cannot be part of a city. 
@@ -346,7 +347,7 @@ class BodyPlanet extends EntityBody {
 		for (var i = -cityRadius; i <= cityRadius; i++){
 			
 			var relIndex = loopyMod((cityCenterIndex + i), this.terrainSize);
-			this.densities[relIndex] = RandomUtil.fromRangeI(1,10);
+			this.densities[relIndex] = this.random.nextFloat(1,10);
 			
 			var newbuilding;
 			if (i == 0){
@@ -366,10 +367,10 @@ class BodyPlanet extends EntityBody {
 					var dist = this.terrainIndexDistance( relIndex, cityCenterIndex + 2 );
 					var probability = 4 / dist;
 					
-					if ( RandomUtil.fromRangeF(0, 1) < probability ){
+					if ( this.random.next() < probability ){
 						
 						newbuilding = new BuildingHouse( this.x, this.y, this.uuid, city.uuid, relIndex, this.terrainSize, "housesmall1");
-						this.densities[relIndex] += RandomUtil.fromRangeI(5,20);
+						this.densities[relIndex] += this.random.nextFloat(5,20);
 						
 					}else{
 						
@@ -379,7 +380,7 @@ class BodyPlanet extends EntityBody {
 				}					
 			}
 			if (this.terrainIndexDistance(relIndex,cityCenterIndex + 2) < 5){
-				this.densities[relIndex] += RandomUtil.fromRangeI(20,100);
+				this.densities[relIndex] += this.random.nextFloat(20,100);
 			}
 			
 			this.spawnBuilding( newbuilding, city );

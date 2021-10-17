@@ -66,12 +66,13 @@ class EntityOreVein extends Entity {
 		var plnt = this.getPlanet();
 		var rad = plnt.terrain[Math.floor(middleindex)] + plnt.getRadius();
 		var ang = plnt.dir + (middleindex * (2 * Math.PI) / plnt.terrainSize);
+		
 		this.x = plnt.x + rot_x( ang, rad, 0 );
 		this.y = plnt.y + rot_y( ang, rad, 0 );
 		
-				// This moves the entity along with a planet by anticipating where it will be in the next tick
-		if (this.getGroundedBody() instanceof BodyPlanet) {
-			var planet = this.getGroundedBody();
+		// This moves the entity along with a planet by anticipating where it will be in the next tick
+		if (this.getPlanet() instanceof BodyPlanet) {
+			var planet = this.getPlanet();
 			// Added on an extra step (2pi/orbitPeriod) because planets update after entities (lol)
 			var angle = planet.getOrbitAngle() + (Math.PI * 2) / planet.getOrbitPeriod();
 			var futurePlanetX = rot_x(angle, planet.getOrbitDistance(), 0) + planet.getStar().getX();
@@ -80,9 +81,8 @@ class EntityOreVein extends Entity {
 			this.x += (futurePlanetX - planet.getX());
 			this.y += (futurePlanetY - planet.getY());
 		}
-		
-		//console.log(this.groundedBodyUUID);
-		var body = this.getGroundedBody();
+	
+		var body = this.getPlanet();
 		// This moves the entity along with any rotating body
 		this.dir += body.rotSpeed;
 		this.x = rot_x(body.rotSpeed, this.x - body.x, this.y - body.y) + body.getX();

@@ -59,8 +59,8 @@ class WorldLoader {
 		} */
 		
 		// Reinstating tile objects in situations where they are empty, and also planet LOD forms 
-		
-		for (var chunk of dw.getLoadedChunks()){
+		var chunks = dw.getGeneratedChunks().length > 0 ? dw.getGeneratedChunks() : dw.getLoadedChunks();
+		for (var chunk of chunks){
 
 			for (var uuid in chunk.bodies){
 		
@@ -71,7 +71,7 @@ class WorldLoader {
 				// the body's prng is replaced temporarily with a new one in its initial state.
 				// the terrain is generated anew, and then the old rng with the latter state returns
 				var emptyterrainflag = false;
-				if ( body.terrain == [] ){
+				if ( body.terrain.length == 0 ){
 					var r = body.random;
 					var tempr = new Random( r.seed );
 					body.random = tempr;

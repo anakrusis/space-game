@@ -15,7 +15,6 @@ class MathUtil {
 	
 	// From the source here on https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
 	//
-	
 	static hslToRgb(h, s, l){
 		var r, g, b;
 
@@ -39,5 +38,11 @@ class MathUtil {
 		}
 
 		return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	}
+	
+	// This is a modulo function that, unlike the JS modulo, wraps negative inputs up higher (Dunno how to words)
+	// Uhh like for example, -1 mod 6 would be 5 with this, and not -1
+	static mod(x, m) {
+		return (x % m + m) % m;
 	}
 }
